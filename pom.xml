@@ -28,6 +28,7 @@
 
         <okhttp.version>4.9.3</okhttp.version>
         <common.version>2.2022.05.13_07.24-6eadb37dec31</common.version>
+        <mockk-version>1.12.4</mockk-version>
     </properties>
 
     <dependencies>
@@ -126,6 +127,12 @@
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
             <version>0.4.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk-version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

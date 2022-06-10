@@ -63,8 +63,7 @@ data class TilgangBulkResponse(
 
 data class PolicyDecision(
 	val policy: Policy,
-	val decision: Decision,
-	val reason: Reason,
+	val decision: Decision
 )
 
 data class Reason(
