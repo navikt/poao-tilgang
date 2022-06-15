@@ -11,7 +11,7 @@
 
     <modules>
         <module>core</module>
-        <module>common-http</module>
+        <module>api</module>
         <module>application</module>
         <module>client</module>
     </modules>
@@ -52,7 +52,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.poao-tilgang</groupId>
-                <artifactId>common-http</artifactId>
+                <artifactId>api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

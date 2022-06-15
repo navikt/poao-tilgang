@@ -2,10 +2,10 @@ package no.nav.poao_tilgang.client.microsoft_graph
 
 import no.nav.common.rest.client.RestClient.baseClient
 import no.nav.poao_tilgang.core.domain.AzureObjectId
-import no.nav.poao_tilgang.rest.JsonUtils.fromJsonString
-import no.nav.poao_tilgang.rest.JsonUtils.toJsonString
-import no.nav.poao_tilgang.rest.RestUtils.authorization
-import no.nav.poao_tilgang.rest.RestUtils.toJsonRequestBody
+import no.nav.poao_tilgang.utils.JsonUtils.fromJsonString
+import no.nav.poao_tilgang.utils.JsonUtils.toJsonString
+import no.nav.poao_tilgang.utils.RestUtils.authorization
+import no.nav.poao_tilgang.utils.RestUtils.toJsonRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 

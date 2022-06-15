@@ -1,9 +1,9 @@
-package no.nav.poao_tilgang.cache
+package no.nav.poao_tilgang.utils
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.kotest.matchers.shouldBe
-import no.nav.poao_tilgang.cache.CacheUtils.tryCacheFirstNotNull
-import no.nav.poao_tilgang.cache.CacheUtils.tryCacheFirstNullable
+import no.nav.poao_tilgang.utils.CacheUtils.tryCacheFirstNotNull
+import no.nav.poao_tilgang.utils.CacheUtils.tryCacheFirstNullable
 import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicInteger
 

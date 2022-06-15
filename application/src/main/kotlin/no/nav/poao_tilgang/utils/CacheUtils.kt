@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.cache
+package no.nav.poao_tilgang.utils
 
 import com.github.benmanes.caffeine.cache.Cache
 
