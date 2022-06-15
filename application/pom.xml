@@ -18,10 +18,6 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -41,14 +37,14 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>no.nav.poao-tilgang</groupId>
             <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.poao-tilgang</groupId>
+            <artifactId>common-http</artifactId>
         </dependency>
 
         <dependency>
@@ -58,10 +54,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>token-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>rest</artifactId>
         </dependency>
 
         <dependency>

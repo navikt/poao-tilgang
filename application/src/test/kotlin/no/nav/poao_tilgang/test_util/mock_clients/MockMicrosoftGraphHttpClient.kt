@@ -4,7 +4,7 @@ import no.nav.poao_tilgang.client.microsoft_graph.AdGruppe
 import no.nav.poao_tilgang.client.microsoft_graph.MicrosoftGraphClientImpl
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.test_util.MockHttpClient
-import no.nav.poao_tilgang.utils.JsonUtils.toJsonString
+import no.nav.poao_tilgang.rest.JsonUtils.toJsonString
 import java.util.*
 
 class MockMicrosoftGraphHttpClient : MockHttpClient() {

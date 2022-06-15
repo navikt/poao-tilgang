@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.utils
+package no.nav.poao_tilgang.rest
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode

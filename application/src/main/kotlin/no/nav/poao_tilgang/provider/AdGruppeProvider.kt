@@ -5,7 +5,7 @@ import no.nav.poao_tilgang.client.microsoft_graph.MicrosoftGraphClient
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
-import no.nav.poao_tilgang.utils.CacheUtils.tryCacheFirstNotNull
+import no.nav.poao_tilgang.cache.CacheUtils.tryCacheFirstNotNull
 import org.springframework.stereotype.Component
 import java.time.Duration
 

@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.utils
+package no.nav.poao_tilgang.rest
 
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request

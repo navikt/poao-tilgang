@@ -3,7 +3,7 @@ package no.nav.poao_tilgang.controller
 import io.kotest.matchers.shouldBe
 import no.nav.poao_tilgang.client.microsoft_graph.AdGruppe
 import no.nav.poao_tilgang.test_util.IntegrationTest
-import no.nav.poao_tilgang.utils.RestUtils.toJsonRequestBody
+import no.nav.poao_tilgang.rest.RestUtils.toJsonRequestBody
 import org.junit.jupiter.api.Test
 import java.util.*
 
