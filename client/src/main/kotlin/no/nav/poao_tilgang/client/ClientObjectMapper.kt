@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
-object KotlinObjectMapper {
+object ClientObjectMapper {
 	val objectMapper: ObjectMapper = ObjectMapper()
 		.registerKotlinModule()
 		.registerModule(JavaTimeModule())
+		.registerModule(DomainTypesModule())
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
 }
