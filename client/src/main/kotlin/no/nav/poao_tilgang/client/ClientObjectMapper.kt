@@ -9,7 +9,5 @@ object ClientObjectMapper {
 	val objectMapper: ObjectMapper = ObjectMapper()
 		.registerKotlinModule()
 		.registerModule(JavaTimeModule())
-		.registerModule(DomainTypesModule())
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
 }
