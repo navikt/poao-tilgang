@@ -61,7 +61,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 		)
 
 		val expectedJson = """
-			{"decision":{"message":"NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]","reason":"MANGLER_TILGANG_TIL_AD_GRUPPE","type":"DENY"}}
+			{"decision":{"type":"DENY","message":"NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]","reason":"MANGLER_TILGANG_TIL_AD_GRUPPE"}}
 		""".trimIndent()
 
 		response.code shouldBe 200
@@ -96,7 +96,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 		)
 
 		val expectedJson = """
-			{"decision":{"type":"PERMIT"}}
+			{"decision":{"type":"PERMIT","message":null,"reason":null}}
 		""".trimIndent()
 
 		response.code shouldBe 200

@@ -4,8 +4,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import no.nav.poao_tilgang.client.microsoft_graph.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGrupper
-import no.nav.poao_tilgang.core.domain.Decision
-import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.test_util.IntegrationTest
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -42,7 +40,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 		decision shouldBe Decision.Deny(
 			"NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]",
-			DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
+			"MANGLER_TILGANG_TIL_AD_GRUPPE"
 		)
 	}
 
