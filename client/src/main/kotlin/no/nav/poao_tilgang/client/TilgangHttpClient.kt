@@ -3,7 +3,7 @@ package no.nav.poao_tilgang.client
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
-import no.nav.poao_tilgang.api.dto.DecisionDto
+import no.nav.poao_tilgang.api.dto.DecisionType
 import no.nav.poao_tilgang.api.dto.HarTilgangTilModiaRequest
 import no.nav.poao_tilgang.api.dto.TilgangResponse
 import no.nav.poao_tilgang.client.ClientObjectMapper.objectMapper
@@ -18,7 +18,7 @@ class TilgangHttpClient(
 	private val client: OkHttpClient = RestClient.baseClient()
 ) : TilgangClient {
 
-	override fun harVeilederTilgangTilModia(navIdent: String): DecisionDto {
+	override fun harVeilederTilgangTilModia(navIdent: String): Decision {
 		val requestJson = objectMapper.writeValueAsString(HarTilgangTilModiaRequest(navIdent))
 
 		val url = joinPaths(baseUrl, "/api/v1/tilgang/modia")
@@ -33,7 +33,20 @@ class TilgangHttpClient(
 
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
 
-			objectMapper.readValue<TilgangResponse>(body).decision
+			responseToDecision(objectMapper.readValue(body))
+		}
+	}
+
+	private fun responseToDecision(response: TilgangResponse): Decision {
+		return when (response.decision.type) {
+			DecisionType.PERMIT -> Decision.Permit
+			DecisionType.DENY -> {
+				val message = response.decision.message
+				val reason = response.decision.reason
+				check(message != null) { "message cannot be null" }
+				check(reason != null) { "reason cannot be null" }
+				Decision.Deny(message, reason)
+			}
 		}
 	}
 }
