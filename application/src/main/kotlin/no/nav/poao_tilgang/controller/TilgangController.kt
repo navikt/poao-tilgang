@@ -36,7 +36,7 @@ class TilgangController(
 				type = DecisionType.PERMIT, message = null, reason = null
 			)
 			is Decision.Deny -> DecisionDto(
-				type = DecisionType.DENY, message = decision.message, reason = decision.reason.reason
+				type = DecisionType.DENY, message = decision.message, reason = decision.reason.name
 			)
 		}
 		return TilgangResponse(decisionDto)
