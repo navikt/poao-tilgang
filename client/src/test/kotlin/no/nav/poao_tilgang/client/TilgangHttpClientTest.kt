@@ -17,7 +17,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 	@Test
 	fun `harTilgangTilModia - should return 401 when not authenticated`() {
 		val exception = shouldThrow<RuntimeException> {
-			TilgangHttpClient(serverUrl()) { "" }
+			TilgangHttpClient(serverUrl(), { "" })
 				.harVeilederTilgangTilModia(navIdent)
 		}
 		exception.message shouldBe ("Feilende kall med statuskode 401 mot ${serverUrl()}/api/v1/tilgang/modia")
@@ -25,7 +25,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 403 when not machine-to-machine request`() {
-		val tilgangHttpClient = TilgangHttpClient(serverUrl()) { oAuthServer.issueAzureAdToken() }
+		val tilgangHttpClient = TilgangHttpClient(serverUrl(), { oAuthServer.issueAzureAdToken() })
 		val exception = shouldThrow<RuntimeException> {
 			tilgangHttpClient.harVeilederTilgangTilModia(navIdent)
 		}
@@ -37,7 +37,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 		mockAdGrupperResponse(listOf("Gruppe1", "Gruppe2"))
 
-		val decision = TilgangHttpClient(serverUrl()) { oAuthServer.issueAzureAdM2MToken() }
+		val decision = TilgangHttpClient(serverUrl(), { oAuthServer.issueAzureAdM2MToken() })
 			.harVeilederTilgangTilModia(navIdent)
 
 		decision shouldBe Decision.Deny(
@@ -50,7 +50,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 	fun `harTilgangTilModia - should return 'permit' if member of correct ad group`() {
 		mockAdGrupperResponse(listOf(AdGrupper.MODIA_OPPFOLGING	, "Gruppe2"))
 
-		val decision = TilgangHttpClient(serverUrl()) { oAuthServer.issueAzureAdM2MToken() }
+		val decision = TilgangHttpClient(serverUrl(), { oAuthServer.issueAzureAdM2MToken() })
 			.harVeilederTilgangTilModia(navIdent)
 
 		decision shouldBe Decision.Permit

@@ -14,8 +14,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class TilgangHttpClient(
 	private val baseUrl: String,
-	private val client: OkHttpClient = RestClient.baseClient(),
-	private val authToken: () -> String,
+	private val authTokenProvider: () -> String,
+	private val client: OkHttpClient = RestClient.baseClient()
 ) : TilgangClient {
 
 	override fun harVeilederTilgangTilModia(navIdent: String): Decision {
@@ -24,7 +24,7 @@ class TilgangHttpClient(
 		val url = joinPaths(baseUrl, "/api/v1/tilgang/modia")
 
 		val request = Request.Builder().url(url).post(requestJson.toRequestBody("application/json".toMediaType()))
-			.header("Authorization", "Bearer ${authToken()}").build()
+			.header("Authorization", "Bearer ${authTokenProvider()}").build()
 
 		return client.newCall(request).execute().let { response ->
 			if (!response.isSuccessful) {
