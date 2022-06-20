@@ -16,11 +16,6 @@
 
         <dependency>
             <groupId>no.nav.poao-tilgang</groupId>
-            <artifactId>core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.poao-tilgang</groupId>
             <artifactId>api</artifactId>
         </dependency>
 
