@@ -20,12 +20,12 @@ class TilgangService(
 	private fun <I> executePolicy(policyName: String, policyInput: I, policy: (input: I) -> Decision): Decision {
 		val decision = policy.invoke(policyInput)
 
-		log(policyName, policyInput, decision)
+		secureLogPolicyResult(policyName, policyInput, decision)
 
 		return decision
 	}
 
-	private fun <I> log(policyName: String, input: I, decision: Decision) {
+	private fun <I> secureLogPolicyResult(policyName: String, input: I, decision: Decision) {
 		val logLine = listOfNotNull(
 			logValueWithDescription(policyName, "Policy result name"),
 			logValueWithDescription(input, "input"),
