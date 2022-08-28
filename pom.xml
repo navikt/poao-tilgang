@@ -40,7 +40,7 @@
         <mockk.version>1.12.4</mockk.version>
         <kotest.version>5.3.0</kotest.version>
         <okhttp.version>4.10.0</okhttp.version>
-        <common.version>2.2022.07.01_07.12-6a0864fa6938</common.version>
+        <common.version>2.2022.08.05_09.14-03f10c73206e</common.version>
     </properties>
 
     <dependencyManagement>
