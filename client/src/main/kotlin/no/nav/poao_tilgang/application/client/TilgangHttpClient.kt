@@ -3,9 +3,9 @@ package no.nav.poao_tilgang.application.client
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
-import no.nav.poao_tilgang.api.dto.DecisionType
-import no.nav.poao_tilgang.api.dto.HarTilgangTilModiaRequest
-import no.nav.poao_tilgang.api.dto.TilgangResponse
+import no.nav.poao_tilgang.api.dto.request.HarTilgangTilModiaRequest
+import no.nav.poao_tilgang.api.dto.response.DecisionType
+import no.nav.poao_tilgang.api.dto.response.TilgangResponse
 import no.nav.poao_tilgang.application.client.ClientObjectMapper.objectMapper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient

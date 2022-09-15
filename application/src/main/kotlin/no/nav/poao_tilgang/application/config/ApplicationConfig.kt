@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.application.config
 
+import no.nav.common.abac.*
 import no.nav.common.log.LogFilter
 import no.nav.common.token_client.builder.AzureAdTokenClientBuilder
 import no.nav.common.token_client.client.MachineToMachineTokenClient
@@ -31,6 +32,26 @@ open class ApplicationConfig {
 		registration.order = 1
 		registration.addUrlPatterns("/*")
 		return registration
+	}
+
+	@Bean
+	open fun abacClient(): AbacClient {
+		val client = AbacHttpClient(
+			"",
+			{""}
+		)
+
+		return AbacCachedClient(client)
+	}
+
+	@Bean
+	open fun pep(abacClient: AbacClient): Pep {
+		return VeilarbPep(
+			"poao-tilgang",
+			abacClient,
+			null,
+			null
+		)
 	}
 
 }
