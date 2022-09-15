@@ -3,6 +3,8 @@ package no.nav.poao_tilgang.application.controller
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.PolicyEvaluationRequestDto
+import no.nav.poao_tilgang.api.dto.request.PolicyId
+import no.nav.poao_tilgang.api.dto.request.policy_input.*
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
 import no.nav.poao_tilgang.api.dto.response.DecisionType
 import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
@@ -32,7 +34,7 @@ class PolicyController(
 
 	@ProtectedWithClaims(issuer = Issuer.AZURE_AD)
 	@PostMapping("/evaluate")
-	fun evaluatePolicies(@RequestBody evaluatePoliciesRequest: EvaluatePoliciesRequest): EvaluatePoliciesResponse {
+	fun evaluatePolicies(@RequestBody evaluatePoliciesRequest: EvaluatePoliciesRequest<JsonNode>): EvaluatePoliciesResponse {
 		authService.verifyRequestIsMachineToMachine()
 
 		val evaluations = evaluatePoliciesRequest.requests
@@ -41,8 +43,8 @@ class PolicyController(
 		return EvaluatePoliciesResponse(evaluations)
 	}
 
-	private fun evaluateRequest(request: PolicyEvaluationRequestDto): PolicyEvaluationResultDto {
-		val policyInput = mapToPolicyInput(request.policyName, request.policyInput)
+	private fun evaluateRequest(request: PolicyEvaluationRequestDto<JsonNode>): PolicyEvaluationResultDto {
+		val policyInput = mapToPolicyInput(request.policyId, request.policyInput)
 
 		val result = policyService.evaluatePolicyRequest(
 			PolicyEvaluationRequest(request.requestId, policyInput)
@@ -51,14 +53,33 @@ class PolicyController(
 		return PolicyEvaluationResultDto(result.requestId, toDecisionDto(result.decision))
 	}
 
-	private fun mapToPolicyInput(policyName: String, policyInput: JsonNode): PolicyInput {
-		return when (policyName) {
-			EksternBrukerPolicy.name -> fromJsonNode<EksternBrukerPolicy.Input>(policyInput)
-			FortroligBrukerPolicy.name -> fromJsonNode<FortroligBrukerPolicy.Input>(policyInput)
-			ModiaPolicy.name -> fromJsonNode<ModiaPolicy.Input>(policyInput)
-			SkjermetPersonPolicy.name -> fromJsonNode<SkjermetPersonPolicy.Input>(policyInput)
-			StrengtFortroligBrukerPolicy.name -> fromJsonNode<StrengtFortroligBrukerPolicy.Input>(policyInput)
-			else -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Ukjent policy $policyName")
+	private fun mapToPolicyInput(policyId: PolicyId, policyInput: JsonNode): PolicyInput {
+		return when (policyId) {
+			PolicyId.EKSTERN_BRUKER_V1 -> {
+				val dto = fromJsonNode<EksternBrukerPolicyInputDto>(policyInput)
+
+				EksternBrukerPolicy.Input(
+					navIdent = dto.navIdent,
+					norskIdent = dto.norskIdent
+				)
+			}
+			PolicyId.FORTROLIG_BRUKER_V1 -> {
+				val dto =  fromJsonNode<FortroligBrukerPolicyInputDto>(policyInput)
+				FortroligBrukerPolicy.Input(dto.navIdent)
+			}
+			PolicyId.MODIA_V1 -> {
+				val dto =  fromJsonNode<ModiaPolicyInputDto>(policyInput)
+				ModiaPolicy.Input(dto.navIdent)
+			}
+			PolicyId.SKJERMET_PERSON_V1 -> {
+				val dto =  fromJsonNode<SkjermetPersonPolicyInputDto>(policyInput)
+				SkjermetPersonPolicy.Input(dto.navIdent)
+			}
+			PolicyId.STRENGT_FORTROLIG_BRUKER_V1 -> {
+				val dto =  fromJsonNode<StrengtFortroligBrukerPolicyInputDto>(policyInput)
+				StrengtFortroligBrukerPolicy.Input(dto.navIdent)
+			}
+			else -> throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Ukjent policy $policyId")
 		}
 	}
 

@@ -1,10 +1,9 @@
 package no.nav.poao_tilgang.api.dto.request
 
-import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
-data class PolicyEvaluationRequestDto(
+data class PolicyEvaluationRequestDto<I>(
     val requestId: UUID,
-    val policyInput: JsonNode,
-    val policyName: String
+    val policyInput: I,
+    val policyId: PolicyId
 )
