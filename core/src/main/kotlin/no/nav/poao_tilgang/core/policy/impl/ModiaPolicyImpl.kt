@@ -10,6 +10,8 @@ class ModiaPolicyImpl(
 	private val adGruppeProvider: AdGruppeProvider
 ) : ModiaPolicy {
 
+	override val name = "HarNavAnsattTilgangTilModia"
+
 	companion object {
 		private val tilgangTilModiaGrupper = listOf(
 			AdGrupper.MODIA_GENERELL,

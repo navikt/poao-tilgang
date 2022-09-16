@@ -14,6 +14,8 @@ class EksternBrukerPolicyImpl(
 	private val strengtFortroligBrukerPolicy: StrengtFortroligBrukerPolicy
 ) : EksternBrukerPolicy {
 
+	override val name = "HarNavAnsattTilgangTilEksternBruker"
+
 	override fun evaluate(input: EksternBrukerPolicy.Input): Decision {
 		val (navIdent, norskIdent) = input
 		val diskresjonskode = diskresjonskodeProvider.hentDiskresjonskode(norskIdent)

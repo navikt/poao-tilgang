@@ -10,6 +10,8 @@ class StrengtFortroligBrukerPolicyImpl(
 	private val adGruppeProvider: AdGruppeProvider
 ) : StrengtFortroligBrukerPolicy {
 
+	override val name = "HarNavAnsattTilgangTilStrengtFortroligBruker"
+
 	companion object {
 		private val denyDecision = Decision.Deny(
 			message = "NAV ansatt mangler tilgang til AD gruppen ${AdGrupper.GOSYS_KODE_6}",

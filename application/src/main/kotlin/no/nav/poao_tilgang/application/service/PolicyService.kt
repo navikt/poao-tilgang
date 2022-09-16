@@ -5,6 +5,7 @@ import no.nav.poao_tilgang.application.domain.PolicyEvaluationResult
 import no.nav.poao_tilgang.application.exception.InvalidPolicyRequestException
 import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.poao_tilgang.core.domain.Decision
+import no.nav.poao_tilgang.core.domain.Policy
 import no.nav.poao_tilgang.core.domain.PolicyInput
 import no.nav.poao_tilgang.core.policy.*
 import org.springframework.stereotype.Service
@@ -39,45 +40,34 @@ class PolicyService(
 		decision: Decision
 	) {
 		val logLine = listOfNotNull(
-			logValueWithDescription("policy", policyName),
-			logValueWithDescription("input", policyInput),
-			logValueWithDescription("decision", decision.type),
-			logValueWithDescription("requestId", requestId),
-			logValueWithDescription("denyMessage", if (decision is Decision.Deny) decision.message else null),
-			logValueWithDescription("denyReason", if (decision is Decision.Deny) decision.reason else null),
+			logLabel("policy", policyName),
+			logLabel("input", policyInput),
+			logLabel("decision", decision.type),
+			logLabel("requestId", requestId),
+			logLabel("denyMessage", if (decision is Decision.Deny) decision.message else null),
+			logLabel("denyReason", if (decision is Decision.Deny) decision.reason else null),
 		).joinToString(" ")
 
 		SecureLog.secureLog.info(logLine)
 	}
 
-	private fun logValueWithDescription(label: String, value: Any?): String? {
+	private fun logLabel(label: String, value: Any?): String? {
 		return value?.let { "$label=$it" }
 	}
 
 	private fun evaluate(input: PolicyInput): PolicyResult {
 		return when(input) {
-			is EksternBrukerPolicy.Input -> PolicyResult(
-				EksternBrukerPolicy.name,
-				eksternBrukerPolicy.evaluate(input)
-			)
-			is FortroligBrukerPolicy.Input -> PolicyResult(
-				FortroligBrukerPolicy.name,
-				fortroligBrukerPolicy.evaluate(input)
-			)
-			is ModiaPolicy.Input -> PolicyResult(
-				ModiaPolicy.name,
-				modiaPolicy.evaluate(input)
-			)
-			is SkjermetPersonPolicy.Input -> PolicyResult(
-				SkjermetPersonPolicy.name,
-				skjermetPersonPolicy.evaluate(input)
-			)
-			is StrengtFortroligBrukerPolicy.Input -> PolicyResult(
-				StrengtFortroligBrukerPolicy.name,
-				strengtFortroligBrukerPolicy.evaluate(input)
-			)
-			else -> throw InvalidPolicyRequestException("Ukjent policy for ${input.javaClass.canonicalName}")
+			is EksternBrukerPolicy.Input -> evaluate(input, eksternBrukerPolicy)
+			is FortroligBrukerPolicy.Input -> evaluate(input, fortroligBrukerPolicy)
+			is ModiaPolicy.Input -> evaluate(input, modiaPolicy)
+			is SkjermetPersonPolicy.Input -> evaluate(input, skjermetPersonPolicy)
+			is StrengtFortroligBrukerPolicy.Input -> evaluate(input, strengtFortroligBrukerPolicy)
+			else -> throw InvalidPolicyRequestException("Ukjent policy ${input.javaClass.canonicalName}")
 		}
+	}
+
+	private fun <I : PolicyInput> evaluate(input: I, policy: Policy<I>): PolicyResult {
+		return PolicyResult(policy.name, policy.evaluate(input))
 	}
 
 	private data class PolicyResult(

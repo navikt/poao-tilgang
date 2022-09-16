@@ -10,6 +10,8 @@ class SkjermetPersonPolicyImpl(
 	private val adGruppeProvider: AdGruppeProvider
 ) : SkjermetPersonPolicy {
 
+	override val name = "HarNavAnsattTilgangTilSkjermetPerson"
+
 	companion object {
 		private val denyDecision = Decision.Deny(
 			message = "NAV ansatt mangler tilgang til AD gruppen ${AdGrupper.SKJERMET_PERSON}",

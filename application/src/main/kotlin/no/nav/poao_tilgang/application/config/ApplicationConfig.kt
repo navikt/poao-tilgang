@@ -1,6 +1,5 @@
 package no.nav.poao_tilgang.application.config
 
-import no.nav.common.abac.*
 import no.nav.common.log.LogFilter
 import no.nav.common.token_client.builder.AzureAdTokenClientBuilder
 import no.nav.common.token_client.client.MachineToMachineTokenClient
@@ -15,6 +14,10 @@ import org.springframework.context.annotation.Profile
 @EnableJwtTokenValidation
 open class ApplicationConfig {
 
+	companion object {
+		const val APPLICATION_NAME = "poao-tilgang"
+	}
+
 	@Profile("default")
 	@Bean
 	open fun machineToMachineTokenClient(): MachineToMachineTokenClient {
@@ -27,31 +30,11 @@ open class ApplicationConfig {
 	open fun logFilterRegistrationBean(): FilterRegistrationBean<LogFilter> {
 		val registration = FilterRegistrationBean<LogFilter>()
 		registration.filter = LogFilter(
-			"poao-tilgang", EnvironmentUtils.isDevelopment().orElse(false)
+			APPLICATION_NAME, EnvironmentUtils.isDevelopment().orElse(false)
 		)
 		registration.order = 1
 		registration.addUrlPatterns("/*")
 		return registration
-	}
-
-	@Bean
-	open fun abacClient(): AbacClient {
-		val client = AbacHttpClient(
-			"",
-			{""}
-		)
-
-		return AbacCachedClient(client)
-	}
-
-	@Bean
-	open fun pep(abacClient: AbacClient): Pep {
-		return VeilarbPep(
-			"poao-tilgang",
-			abacClient,
-			null,
-			null
-		)
 	}
 
 }
