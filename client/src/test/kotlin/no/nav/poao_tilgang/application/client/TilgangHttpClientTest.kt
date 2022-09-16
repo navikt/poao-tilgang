@@ -23,7 +23,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate ModiaPolicy`() {
-		mockAdGrupperResponse(listOf("0000-ga-bd06_modiagenerelltilgang"))
+		mockAdGrupperResponse(navIdent, listOf("0000-ga-bd06_modiagenerelltilgang"))
 
 		val decision = client.evaluatePolicy(ModiaPolicyInput(navIdent))
 
@@ -32,7 +32,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate FortroligBrukerPolicy`() {
-		mockAdGrupperResponse(listOf("0000-GA-GOSYS_KODE7"))
+		mockAdGrupperResponse(navIdent, listOf("0000-GA-GOSYS_KODE7"))
 
 		val decision = client.evaluatePolicy(FortroligBrukerPolicyInput(navIdent))
 
@@ -41,7 +41,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate StrengtFortroligBrukerPolicy`() {
-		mockAdGrupperResponse(listOf("0000-GA-GOSYS_KODE6"))
+		mockAdGrupperResponse(navIdent, listOf("0000-GA-GOSYS_KODE6"))
 
 		val decision = client.evaluatePolicy(StrengtFortroligBrukerPolicyInput(navIdent))
 
@@ -50,19 +50,21 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate SkjermetPersonPolicy`() {
-		mockAdGrupperResponse(listOf("0000-TODO"))
+		mockAdGrupperResponse(navIdent, listOf("0000-ga-TODO"))
 
 		val decision = client.evaluatePolicy(SkjermetPersonPolicyInput(navIdent))
 
 		decision shouldBe Decision.Permit
 	}
 
-	private fun mockAdGrupperResponse(adGrupperNavn: List<String>) {
+	private fun mockAdGrupperResponse(navIdent: String, adGrupperNavn: List<String>) {
 		val adGrupper = adGrupperNavn.map { AdGruppe(UUID.randomUUID(), it) }
 
-		mockMicrosoftGraphHttpServer.mockHentAzureIdForNavAnsattResponse(UUID.randomUUID())
+		val navAnsattId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(adGrupper.map { it.id })
+		mockMicrosoftGraphHttpServer.mockHentAzureIdForNavAnsattResponse(navIdent, navAnsattId)
+
+		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
 
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
 	}

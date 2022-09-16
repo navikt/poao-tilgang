@@ -72,7 +72,7 @@ class AxsysClientImplTest {
 		request.getHeader("Downstream-Authorization") shouldBe "Bearer AXSYS_TOKEN"
 
 		request.getHeader("Nav-Consumer-Id") shouldBe "poao-tilgang"
-		request.getHeader("Nav-Call-Id") shouldMatch "[0-9a-fA-F]{32}"
+		request.getHeader("Nav-Call-Id") shouldMatch "[0-9a-fA-F]{30,32}"
 	}
 
 }

@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.application.client.microsoft_graph
 
+import no.nav.common.rest.client.RestClient.baseClient
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.JsonUtils.toJsonString
 import no.nav.poao_tilgang.application.utils.RestUtils.authorization
@@ -7,12 +8,11 @@ import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.time.Duration
 
 class MicrosoftGraphClientImpl(
 	private val baseUrl: String,
 	private val tokenProvider: () -> String,
-	private val client: OkHttpClient = OkHttpClient.Builder().readTimeout(Duration.ofMinutes(15)).build()
+	private val client: OkHttpClient = baseClient()
 ) : MicrosoftGraphClient {
 
 	override fun hentAdGrupperForNavAnsatt(navAnsattAzureId: AzureObjectId): List<AzureObjectId> {
