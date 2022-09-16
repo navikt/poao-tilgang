@@ -1,12 +1,8 @@
 package no.nav.poao_tilgang.application.config
 
-import no.nav.common.abac.Pep
-import no.nav.poao_tilgang.application.policy.AbacEksternBrukerPolicy
 import no.nav.poao_tilgang.core.policy.*
-import no.nav.poao_tilgang.core.policy.impl.FortroligBrukerPolicyImpl
-import no.nav.poao_tilgang.core.policy.impl.ModiaPolicyImpl
-import no.nav.poao_tilgang.core.policy.impl.SkjermetPersonPolicyImpl
-import no.nav.poao_tilgang.core.policy.impl.StrengtFortroligBrukerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.*
+import no.nav.poao_tilgang.core.provider.AbacProvider
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,8 +11,8 @@ import org.springframework.context.annotation.Configuration
 open class PolicyConfig {
 
 	@Bean
-	open fun eksternBrukerPolicy(pep: Pep): EksternBrukerPolicy {
-		return AbacEksternBrukerPolicy(pep)
+	open fun eksternBrukerPolicy(abacProvider: AbacProvider): EksternBrukerPolicy {
+		return EksternBrukerPolicyImpl(abacProvider)
 	}
 
 	@Bean
