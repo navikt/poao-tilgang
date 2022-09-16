@@ -1,0 +1,1 @@
+Denne packagen utgår når vi har kommet oss vekk fra ABAC og implementert våre egne tilgangsregler
