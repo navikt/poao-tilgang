@@ -11,11 +11,11 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	private val navIdent = "Z1234"
 
-	lateinit var client: TilgangHttpClient
+	lateinit var client: PoaoTilgangHttpClient
 
 	@BeforeEach
 	fun setup() {
-		client = TilgangHttpClient(
+		client = PoaoTilgangHttpClient(
 			serverUrl(),
 			{ oAuthServer.issueAzureAdM2MToken() }
 		)

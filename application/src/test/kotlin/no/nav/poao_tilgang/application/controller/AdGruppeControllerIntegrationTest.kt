@@ -10,7 +10,7 @@ import java.util.*
 class AdGruppeControllerIntegrationTest : IntegrationTest() {
 
 	@Test
-	fun `hentAdGrupperForNavAnsatt - should return 401 when not authenticated`() {
+	fun `hentAlleAdGrupperForBruker - should return 401 when not authenticated`() {
 		val response = sendRequest(
 			method = "POST",
 			path = "/api/v1/ad-gruppe",
@@ -21,7 +21,7 @@ class AdGruppeControllerIntegrationTest : IntegrationTest() {
 	}
 
 	@Test
-	fun `hentAdGrupperForNavAnsatt - should return 403 when not machine-to-machine request`() {
+	fun `hentAlleAdGrupperForBruker - should return 403 when not machine-to-machine request`() {
 		val response = sendRequest(
 			method = "POST",
 			path = "/api/v1/ad-gruppe",
@@ -33,7 +33,7 @@ class AdGruppeControllerIntegrationTest : IntegrationTest() {
 	}
 
 	@Test
-	fun `hentAdGrupperForNavAnsatt - should return 200 with correct response`() {
+	fun `hentAlleAdGrupperForBruker - should return 200 with correct response`() {
 		val adGruppe = AdGruppe(id = UUID.fromString("a0036e11-5658-4d2d-aa6b-7056bdb4e758"), name = "TODO")
 
 		mockMicrosoftGraphHttpClient.enqueueHentAdGrupperForNavAnsatt(

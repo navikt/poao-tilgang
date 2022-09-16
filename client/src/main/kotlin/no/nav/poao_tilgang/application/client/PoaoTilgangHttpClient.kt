@@ -21,9 +21,9 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 
-class TilgangHttpClient(
+class PoaoTilgangHttpClient(
 	private val baseUrl: String,
-	private val authTokenProvider: () -> String,
+	private val tokenProvider: () -> String,
 	private val client: OkHttpClient = RestClient.baseClient()
 ) : TilgangClient {
 
@@ -52,7 +52,7 @@ class TilgangHttpClient(
 		val request = Request.Builder()
 			.url(joinPaths(baseUrl, "/api/v1/policy/evaluate"))
 			.post(requestJson.toRequestBody("application/json".toMediaType()))
-			.header("Authorization", "Bearer ${authTokenProvider()}")
+			.header("Authorization", "Bearer ${tokenProvider()}")
 			.build()
 
 		return client.newCall(request).execute().use { response ->
