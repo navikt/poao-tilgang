@@ -25,7 +25,7 @@ class PoaoTilgangHttpClient(
 	private val baseUrl: String,
 	private val tokenProvider: () -> String,
 	private val client: OkHttpClient = RestClient.baseClient()
-) : TilgangClient {
+) : PoaoTilgangClient {
 
 	override fun evaluatePolicy(input: PolicyInput): Decision {
 		val request = PolicyRequest(

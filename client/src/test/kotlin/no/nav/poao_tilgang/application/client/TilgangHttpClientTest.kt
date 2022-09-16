@@ -17,7 +17,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 	fun setup() {
 		client = PoaoTilgangHttpClient(
 			serverUrl(),
-			{ oAuthServer.issueAzureAdM2MToken() }
+			{ mockOAuthServer.issueAzureAdM2MToken() }
 		)
 	}
 
@@ -60,10 +60,10 @@ class TilgangHttpClientTest : IntegrationTest() {
 	private fun mockAdGrupperResponse(adGrupperNavn: List<String>) {
 		val adGrupper = adGrupperNavn.map { AdGruppe(UUID.randomUUID(), it) }
 
-		mockMicrosoftGraphHttpClient.enqueueHentAzureIdForNavAnsattResponse(UUID.randomUUID())
+		mockMicrosoftGraphHttpServer.mockHentAzureIdForNavAnsattResponse(UUID.randomUUID())
 
-		mockMicrosoftGraphHttpClient.enqueueHentAdGrupperForNavAnsatt(adGrupper.map { it.id })
+		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(adGrupper.map { it.id })
 
-		mockMicrosoftGraphHttpClient.enqueueHentAdGrupperResponse(adGrupper)
+		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
 	}
 }

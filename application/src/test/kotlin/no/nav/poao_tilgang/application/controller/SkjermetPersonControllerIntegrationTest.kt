@@ -24,7 +24,7 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 			method = "POST",
 			path = "/api/v1/skjermet-person",
 			body = """{"norskeIdenter": ["1234354"]}""".toJsonRequestBody(),
-			headers = mapOf("Authorization" to "Bearer ${oAuthServer.issueAzureAdToken()}")
+			headers = mapOf("Authorization" to "Bearer ${mockOAuthServer.issueAzureAdToken()}")
 		)
 
 		response.code shouldBe 403
@@ -35,7 +35,7 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 		val norskIdent1 = "13487453"
 		val norskIdent2 = "54364545"
 
-		mockSkjermetPersonHttpClient.enqueueErSkjermet(mapOf(
+		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(
 			norskIdent1 to true,
 			norskIdent2 to false
 		))
@@ -44,7 +44,7 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 			method = "POST",
 			path = "/api/v1/skjermet-person",
 			body = """{"norskeIdenter": ["$norskIdent1", "$norskIdent2"]}""".toJsonRequestBody(),
-			headers = mapOf("Authorization" to "Bearer ${oAuthServer.issueAzureAdM2MToken()}")
+			headers = mapOf("Authorization" to "Bearer ${mockOAuthServer.issueAzureAdM2MToken()}")
 		)
 
 		val expectedJson = """

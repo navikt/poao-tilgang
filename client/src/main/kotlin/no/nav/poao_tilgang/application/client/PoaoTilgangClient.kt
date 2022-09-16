@@ -2,7 +2,7 @@ package no.nav.poao_tilgang.application.client
 
 import java.util.*
 
-interface TilgangClient {
+interface PoaoTilgangClient {
 
 	fun evaluatePolicy(input: PolicyInput): Decision
 
