@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.application.test_util
 
+import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockAbacHttpServer
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockAxsysHttpServer
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockMicrosoftGraphHttpServer
