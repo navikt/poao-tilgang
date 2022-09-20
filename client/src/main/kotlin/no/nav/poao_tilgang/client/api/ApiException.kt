@@ -6,8 +6,9 @@ sealed class ApiException(
 ) : Exception(message, cause)
 
 class BadHttpStatusApiException(
-	val httpStatus: Int
-) : ApiException("Received bad HTTP status $httpStatus")
+	val httpStatus: Int,
+	val responseBody: String? = null
+) : ApiException("Received response with bad HTTP status. status=$httpStatus response=$responseBody")
 
 class MalformedResponseApiException(
 	message: String

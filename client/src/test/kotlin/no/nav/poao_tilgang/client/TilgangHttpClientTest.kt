@@ -3,6 +3,9 @@ package no.nav.poao_tilgang.client
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.application.client.microsoft_graph.AdGruppe
@@ -116,7 +119,10 @@ class TilgangHttpClientTest : IntegrationTest() {
 	fun `skal returnere BadHttpStatusApiException for feilende status`() {
 		val badClient = PoaoTilgangHttpClient(serverUrl(), {""})
 
-		badClient.erSkjermetPerson("34242").exception shouldBe BadHttpStatusApiException(401)
+		val exception = badClient.erSkjermetPerson("34242").exception
+		exception should beInstanceOf<BadHttpStatusApiException>()
+		(exception as BadHttpStatusApiException).httpStatus shouldBe 401
+		exception.responseBody shouldNotBe null
 	}
 
 	@Test

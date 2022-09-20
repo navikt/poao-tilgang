@@ -98,7 +98,7 @@ class PoaoTilgangHttpClient(
 		return try {
 			client.newCall(request).execute().use { response ->
 				if (!response.isSuccessful) {
-					return@use failure(BadHttpStatusApiException(response.code))
+					return@use failure(BadHttpStatusApiException(response.code, response.body?.string()))
 				}
 
 				response.body?.string()?.let { success(it) }
