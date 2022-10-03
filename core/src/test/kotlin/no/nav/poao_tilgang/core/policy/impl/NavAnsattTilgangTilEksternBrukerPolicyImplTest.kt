@@ -72,6 +72,50 @@ class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 		)
 	}
 
+	@Test
+	internal fun `harTilgang should return DENY if adressebeskyttet is DENY`() {
+		mockDecision(
+			adressebeskyttetBrukerPolicyDecision = deny()
+		)
+
+		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
+
+		decision shouldBe deny()
+	}
+
+	@Test
+	internal fun `harTilgang should return DENY if skjermetPerson is DENY`() {
+		mockDecision(
+			skjermetPersonPolicyDecision = deny()
+		)
+
+		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
+
+		decision shouldBe deny()
+	}
+
+	@Test
+	internal fun `harTilgang should return DENY if eksternBrukerNavEnhet is DENY`() {
+		mockDecision(
+			eksternBrukerNavEnhetPolicyDecision = deny()
+		)
+
+		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
+
+		decision shouldBe deny()
+	}
+
+	@Test
+	internal fun `harTilgang should return DENY if tilgangTilOppfolging is DENY`() {
+		mockDecision(
+			oppfolgingPolicyDecision = deny()
+		)
+
+		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
+
+		decision shouldBe deny()
+	}
+
 	private fun deny(): Decision.Deny {
 		return Decision.Deny(
 			message = "TEST",
