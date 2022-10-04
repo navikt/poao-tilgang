@@ -4,15 +4,25 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClient
 import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNotNull
 import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
+import no.nav.poao_tilgang.core.domain.AdGrupper
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Duration
+import java.util.*
 
 @Component
 class AdGruppeProviderImpl(
-	private val microsoftGraphClient: MicrosoftGraphClient
+	private val microsoftGraphClient: MicrosoftGraphClient,
+	@Value("\${ad-gruppe-id.fortrolig-adresse}") private val adGruppeIdFortroligAdresse: UUID
 ) : AdGruppeProvider {
+
+	private val tilgjengligeAdGrupper = AdGrupper(
+		fortroligAdresse = AdGruppe(adGruppeIdFortroligAdresse, AdGruppeNavn.FORTROLIG_ADRESSE)
+	)
+
 
 	private val navIdentToAzureIdCache = Caffeine.newBuilder()
 		.maximumSize(10_000)
@@ -36,6 +46,10 @@ class AdGruppeProviderImpl(
 
 	override fun hentAdGrupper(azureId: AzureObjectId): List<AdGruppe> {
 		return hentAdGrupperForNavAnsattWithCache(azureId)
+	}
+
+	override fun hentTilgjengeligeAdGrupper(): AdGrupper {
+		return tilgjengligeAdGrupper
 	}
 
 	private fun hentAdGrupperForNavAnsattWithCache(azureId: AzureObjectId): List<AdGruppe> {
@@ -77,7 +91,11 @@ class AdGruppeProviderImpl(
 	}
 
 	private fun hentAzureIdWithCache(navIdent: String): AzureObjectId {
-		return tryCacheFirstNotNull(navIdentToAzureIdCache, navIdent) { microsoftGraphClient.hentAzureIdForNavAnsatt(navIdent) }
+		return tryCacheFirstNotNull(navIdentToAzureIdCache, navIdent) {
+			microsoftGraphClient.hentAzureIdForNavAnsatt(
+				navIdent
+			)
+		}
 	}
 
 }

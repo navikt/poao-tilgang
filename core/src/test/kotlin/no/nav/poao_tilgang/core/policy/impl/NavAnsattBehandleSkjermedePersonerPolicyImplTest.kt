@@ -4,7 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.AdGruppe
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattBehandleSkjermedePersonerPolicy
@@ -25,7 +25,7 @@ class NavAnsattBehandleSkjermedePersonerPolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), AdGrupper.GOSYS_UTVIDET),
+			AdGruppe(UUID.randomUUID(), AdGruppeNavn.GOSYS_UTVIDET),
 			AdGruppe(UUID.randomUUID(), "some-other-group"),
 		)
 
@@ -41,7 +41,7 @@ class NavAnsattBehandleSkjermedePersonerPolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), AdGrupper.PENSJON_UTVIDET),
+			AdGruppe(UUID.randomUUID(), AdGruppeNavn.PENSJON_UTVIDET),
 			AdGruppe(UUID.randomUUID(), "some-other-group"),
 		)
 

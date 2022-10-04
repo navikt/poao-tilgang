@@ -31,8 +31,8 @@ class AdGruppeProviderImplIntegrationTest : IntegrationTest() {
 		val adGrupper = adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 
 		adGrupper.size shouldBe 2
-		adGrupper.any { it.id == adGroupId1 && it.name == "Gruppe1" } shouldBe true
-		adGrupper.any { it.id == adGroupId2 && it.name == "Gruppe2" } shouldBe true
+		adGrupper.any { it.id == adGroupId1 && it.navn == "Gruppe1" } shouldBe true
+		adGrupper.any { it.id == adGroupId2 && it.navn == "Gruppe2" } shouldBe true
 
 		adGruppeProvider.hentAdGrupper(navAnsattAzureId).size shouldBe 2
 

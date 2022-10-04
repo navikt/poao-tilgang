@@ -1,6 +1,6 @@
 package no.nav.poao_tilgang.core.policy.impl
 
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
@@ -14,9 +14,9 @@ class NavAnsattTilgangTilModiaPolicyImpl(
 
 	companion object {
 		private val tilgangTilModiaGrupper = listOf(
-			AdGrupper.MODIA_GENERELL,
-			AdGrupper.MODIA_OPPFOLGING,
-			AdGrupper.SYFO_SENSITIV
+			AdGruppeNavn.MODIA_GENERELL,
+			AdGruppeNavn.MODIA_OPPFOLGING,
+			AdGruppeNavn.SYFO_SENSITIV
 		).map { it.lowercase() }
 
 		private val denyDecision = Decision.Deny(
@@ -28,7 +28,7 @@ class NavAnsattTilgangTilModiaPolicyImpl(
 	override fun evaluate(input: NavAnsattTilgangTilModiaPolicy.Input): Decision {
 		val adGruppper = adGruppeProvider.hentAdGrupper(input.navIdent)
 
-		val harTilgang = adGruppper.any { tilgangTilModiaGrupper.contains(it.name.lowercase()) }
+		val harTilgang = adGruppper.any { tilgangTilModiaGrupper.contains(it.navn.lowercase()) }
 
 		return if (harTilgang) Decision.Permit else denyDecision
 	}

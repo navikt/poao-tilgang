@@ -1,6 +1,6 @@
 package no.nav.poao_tilgang.core.policy.impl
 
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
@@ -23,7 +23,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 
 	override fun evaluate(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
 		val erModiaAdmin = adGruppeProvider.hentAdGrupper(input.navIdent)
-			.any { it.name == AdGrupper.MODIA_ADMIN }
+			.any { it.navn == AdGruppeNavn.MODIA_ADMIN }
 
 		if (erModiaAdmin)
 			return Decision.Permit

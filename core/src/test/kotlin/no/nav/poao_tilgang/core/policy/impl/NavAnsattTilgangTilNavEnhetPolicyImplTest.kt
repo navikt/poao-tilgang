@@ -4,7 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.AdGruppe
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
@@ -30,7 +30,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), AdGrupper.MODIA_ADMIN)
+			AdGruppe(UUID.randomUUID(), AdGruppeNavn.MODIA_ADMIN)
 		)
 
 		val decision = policy.evaluate(NavAnsattTilgangTilNavEnhetPolicy.Input(navIdent, enhetId))

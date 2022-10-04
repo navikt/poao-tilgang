@@ -4,11 +4,13 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.AdGruppe
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattBehandleFortroligBrukerePolicy
+import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 
@@ -18,6 +20,13 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 
 	private val policy = NavAnsattBehandleFortroligBrukerePolicyImpl(adGruppeProvider)
 
+	@BeforeEach
+	internal fun setUp() {
+		every {
+			adGruppeProvider.hentTilgjengeligeAdGrupper()
+		} returns TestAdGrupper.grupper
+	}
+
 	@Test
 	fun `should return "permit" if access to 0000-GA-Fortrolig_Adresse`() {
 		val navIdent = "Z1234"
@@ -25,7 +34,7 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), AdGrupper.FORTROLIG_ADRESSE),
+			TestAdGrupper.grupper.fortroligAdresse,
 			AdGruppe(UUID.randomUUID(), "some-other-group"),
 		)
 
@@ -49,7 +58,7 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 		decision.type shouldBe Decision.Type.DENY
 
 		if (decision is Decision.Deny) {
-			decision.message shouldBe "NAV ansatt mangler tilgang til AD gruppen 0000-GA-Fortrolig_Adresse"
+			decision.message shouldBe "NAV ansatt mangler tilgang til AD gruppen \"0000-GA-Fortrolig_Adresse\""
 			decision.reason shouldBe DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		}
 	}

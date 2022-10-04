@@ -4,7 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.AdGruppe
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattBehandleStrengtFortroligBrukerePolicy
@@ -25,7 +25,7 @@ class NavAnsattBehandleStrengtFortroligBrukerePolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), AdGrupper.STRENGT_FORTROLIG_ADRESSE),
+			AdGruppe(UUID.randomUUID(), AdGruppeNavn.STRENGT_FORTROLIG_ADRESSE),
 			AdGruppe(UUID.randomUUID(), "some-other-group"),
 		)
 

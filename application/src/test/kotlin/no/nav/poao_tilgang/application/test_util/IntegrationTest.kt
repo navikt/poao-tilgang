@@ -2,6 +2,9 @@ package no.nav.poao_tilgang.application.test_util
 
 import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
+import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
+import no.nav.poao_tilgang.core.domain.AdGrupper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -17,6 +20,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.Duration
+import java.util.*
 
 @ActiveProfiles("test")
 @Import(TestConfig::class)
@@ -54,6 +58,8 @@ open class IntegrationTest {
 			mockPdlHttpServer.start()
 			mockNorgHttpServer.start()
 
+			registry.add("ad-gruppe-id.fortrolig-adresse") { "97690ad9-d423-4c1f-9885-b01fb9f9feab" }
+
 			registry.add("no.nav.security.jwt.issuer.azuread.discovery-url", mockOAuthServer::getDiscoveryUrl)
 			registry.add("no.nav.security.jwt.issuer.azuread.accepted-audience") { "test" }
 
@@ -66,7 +72,6 @@ open class IntegrationTest {
 			registry.add("norg.url", mockNorgHttpServer::serverUrl)
 		}
 	}
-
 	@AfterEach
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()

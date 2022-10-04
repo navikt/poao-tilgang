@@ -1,6 +1,6 @@
 package no.nav.poao_tilgang.core.policy.impl
 
-import no.nav.poao_tilgang.core.domain.AdGrupper
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattBehandleSkjermedePersonerPolicy
@@ -14,8 +14,8 @@ class NavAnsattBehandleSkjermedePersonerPolicyImpl(
 
 	companion object {
 		private val behandleSkjermedePersonerGrupper = listOf(
-			AdGrupper.GOSYS_UTVIDET,
-			AdGrupper.PENSJON_UTVIDET
+			AdGruppeNavn.GOSYS_UTVIDET,
+			AdGruppeNavn.PENSJON_UTVIDET
 		).map { it.lowercase() }
 
 		private val denyDecision = Decision.Deny(
@@ -27,7 +27,7 @@ class NavAnsattBehandleSkjermedePersonerPolicyImpl(
 	override fun evaluate(input: NavAnsattBehandleSkjermedePersonerPolicy.Input): Decision {
 		val adGruppper = adGruppeProvider.hentAdGrupper(input.navIdent)
 
-		val harTilgang = adGruppper.any { behandleSkjermedePersonerGrupper.contains(it.name.lowercase()) }
+		val harTilgang = adGruppper.any { behandleSkjermedePersonerGrupper.contains(it.navn.lowercase()) }
 
 		return if (harTilgang) Decision.Permit else denyDecision
 	}
