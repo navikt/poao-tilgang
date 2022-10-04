@@ -8,6 +8,7 @@ import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.*
 import no.nav.poao_tilgang.core.provider.AbacProvider
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 
@@ -74,51 +75,59 @@ class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 
 	@Test
 	internal fun `harTilgang should return DENY if adressebeskyttet is DENY`() {
+		val message = UUID.randomUUID().toString()
+
 		mockDecision(
-			adressebeskyttetBrukerPolicyDecision = deny()
+			adressebeskyttetBrukerPolicyDecision = deny(message)
 		)
 
 		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
 
-		decision shouldBe deny()
+		decision shouldBe deny(message)
 	}
 
 	@Test
 	internal fun `harTilgang should return DENY if skjermetPerson is DENY`() {
+		val message = UUID.randomUUID().toString()
+
 		mockDecision(
-			skjermetPersonPolicyDecision = deny()
+			skjermetPersonPolicyDecision = deny(message)
 		)
 
 		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
 
-		decision shouldBe deny()
+		decision shouldBe deny(message)
 	}
 
 	@Test
 	internal fun `harTilgang should return DENY if eksternBrukerNavEnhet is DENY`() {
+		val message = UUID.randomUUID().toString()
+
 		mockDecision(
-			eksternBrukerNavEnhetPolicyDecision = deny()
+			eksternBrukerNavEnhetPolicyDecision = deny(message)
 		)
 
 		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
 
-		decision shouldBe deny()
+		decision shouldBe deny(message)
 	}
 
 	@Test
 	internal fun `harTilgang should return DENY if tilgangTilOppfolging is DENY`() {
+		val message = UUID.randomUUID().toString()
+
 		mockDecision(
-			oppfolgingPolicyDecision = deny()
+			oppfolgingPolicyDecision = deny(message)
 		)
 
 		val decision = policy.harTilgang(NavAnsattTilgangTilEksternBrukerPolicy.Input(navIdent, norskIdent))
 
-		decision shouldBe deny()
+		decision shouldBe deny(message)
 	}
 
-	private fun deny(): Decision.Deny {
+	private fun deny(message: String = "TEST"): Decision.Deny {
 		return Decision.Deny(
-			message = "TEST",
+			message = message,
 			reason = DecisionDenyReason.POLICY_IKKE_IMPLEMENTERT
 		)
 	}
