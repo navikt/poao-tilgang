@@ -4,7 +4,17 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClient
 import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNotNull
 import no.nav.poao_tilgang.core.domain.AdGruppe
-import no.nav.poao_tilgang.core.domain.AdGruppeNavn
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.FORTROLIG_ADRESSE
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.GOSYS_NASJONAL
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.GOSYS_UTVIDBAR_TIL_NASJONAL
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.GOSYS_UTVIDET
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_ADMIN
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_GENERELL
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_OPPFOLGING
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.PENSJON_UTVIDET
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.SKJERMET_PERSON
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.STRENGT_FORTROLIG_ADRESSE
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.SYFO_SENSITIV
 import no.nav.poao_tilgang.core.domain.AdGrupper
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
@@ -16,11 +26,31 @@ import java.util.*
 @Component
 class AdGruppeProviderImpl(
 	private val microsoftGraphClient: MicrosoftGraphClient,
-	@Value("\${ad-gruppe-id.fortrolig-adresse}") private val adGruppeIdFortroligAdresse: UUID
+	@Value("\${ad-gruppe-id.fortrolig-adresse}") private val adGruppeIdFortroligAdresse: UUID,
+	@Value("\${ad-gruppe-id.strengt-fortrolig-adresse}") private val adGruppeIdStrengtFortroligAdresse: UUID,
+	@Value("\${ad-gruppe-id.modia-admin}") private val adGruppeIdModiaAdmin: UUID,
+	@Value("\${ad-gruppe-id.modia-oppfolging}") private val adGruppeIdModiaOppfolging: UUID,
+	@Value("\${ad-gruppe-id.modia-generell}") private val adGruppeIdModiaGenerell: UUID,
+	@Value("\${ad-gruppe-id.gosys-nasjonal}") private val adGruppeIdGosysNasjonal: UUID,
+	@Value("\${ad-gruppe-id.gosys-utvidbar-til-nasjonal}") private val adGruppeIdGosysUtvidbarTilNasjonal: UUID,
+	@Value("\${ad-gruppe-id.gosys-utvidet}") private val adGruppeIdGosysUtvidet: UUID,
+	@Value("\${ad-gruppe-id.syfo-sensitiv}") private val adGruppeIdSyfoSensitiv: UUID,
+	@Value("\${ad-gruppe-id.skjermet-person}") private val adGruppeIdSkjermetPerson: UUID,
+	@Value("\${ad-gruppe-id.pensjon-utvidet}") private val adGruppeIdPensjonUtvidet: UUID
 ) : AdGruppeProvider {
 
 	private val tilgjengligeAdGrupper = AdGrupper(
-		fortroligAdresse = AdGruppe(adGruppeIdFortroligAdresse, AdGruppeNavn.FORTROLIG_ADRESSE)
+		fortroligAdresse = AdGruppe(adGruppeIdFortroligAdresse, FORTROLIG_ADRESSE),
+		strengtFortroligAdresse = AdGruppe(adGruppeIdStrengtFortroligAdresse, STRENGT_FORTROLIG_ADRESSE),
+		modiaAdmin = AdGruppe(adGruppeIdModiaAdmin, MODIA_ADMIN),
+		modiaOppfolging = AdGruppe(adGruppeIdModiaOppfolging, MODIA_OPPFOLGING),
+		modiaGenerell = AdGruppe(adGruppeIdModiaGenerell, MODIA_GENERELL),
+		gosysNasjonal = AdGruppe(adGruppeIdGosysNasjonal, GOSYS_NASJONAL),
+		gosysUtvidbarTilNasjonal = AdGruppe(adGruppeIdGosysUtvidbarTilNasjonal, GOSYS_UTVIDBAR_TIL_NASJONAL),
+		gosysUtvidet = AdGruppe(adGruppeIdGosysUtvidet, GOSYS_UTVIDET),
+		syfoSensitiv = AdGruppe(adGruppeIdSyfoSensitiv, SYFO_SENSITIV),
+		skjermetPerson = AdGruppe(adGruppeIdSkjermetPerson, SKJERMET_PERSON),
+		pensjonUtvidet = AdGruppe(adGruppeIdPensjonUtvidet, PENSJON_UTVIDET)
 	)
 
 
