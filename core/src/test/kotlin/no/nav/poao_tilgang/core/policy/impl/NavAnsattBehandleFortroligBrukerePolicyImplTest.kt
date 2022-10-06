@@ -8,6 +8,7 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattBehandleFortroligBrukerePolicy
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper
+import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.randomGruppe
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,13 +18,15 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 
-	private val policy = NavAnsattBehandleFortroligBrukerePolicyImpl(adGruppeProvider)
+	private lateinit var policy: NavAnsattBehandleFortroligBrukerePolicy
 
 	@BeforeEach
 	internal fun setUp() {
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
-		} returns TestAdGrupper.grupper
+		} returns TestAdGrupper.testAdGrupper
+
+		policy = NavAnsattBehandleFortroligBrukerePolicyImpl(adGruppeProvider)
 	}
 
 	@Test
@@ -33,8 +36,8 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			TestAdGrupper.grupper.fortroligAdresse,
-			AdGruppe(UUID.randomUUID(), "some-other-group"),
+			TestAdGrupper.testAdGrupper.fortroligAdresse,
+			randomGruppe
 		)
 
 		val decision = policy.evaluate(NavAnsattBehandleFortroligBrukerePolicy.Input(navIdent))
@@ -49,7 +52,7 @@ class NavAnsattBehandleFortroligBrukerePolicyImplTest {
 		every {
 			adGruppeProvider.hentAdGrupper(navIdent)
 		} returns listOf(
-			AdGruppe(UUID.randomUUID(), "some-other-group"),
+			randomGruppe
 		)
 
 		val decision = policy.evaluate(NavAnsattBehandleFortroligBrukerePolicy.Input(navIdent))

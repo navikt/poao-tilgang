@@ -1,8 +1,8 @@
 package no.nav.poao_tilgang.application.provider
 
 import io.kotest.matchers.shouldBe
-import no.nav.poao_tilgang.application.client.microsoft_graph.AdGruppe
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
+import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

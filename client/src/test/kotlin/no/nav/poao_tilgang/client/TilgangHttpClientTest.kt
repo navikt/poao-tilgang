@@ -6,12 +6,14 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
-import no.nav.poao_tilgang.application.client.microsoft_graph.AdGruppe
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
+import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import java.net.UnknownHostException
 import java.time.Duration
 import java.util.*
@@ -27,6 +29,9 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 
 	lateinit var client: PoaoTilgangHttpClient
+
+	@Autowired
+	private lateinit var adGruppeProvider: AdGruppeProvider
 
 	@BeforeEach
 	fun setup() {
@@ -50,7 +55,11 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilModiaPolicy`() {
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf("0000-ga-bd06_modiagenerelltilgang"))
+		mockAdGrupperResponse(
+			navIdent,
+			navAnsattId,
+			listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell)
+		)
 
 		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaPolicyInput(navIdent)).getOrThrow()
 
@@ -59,7 +68,12 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `hentAdGrupper - skal hente ad grupper`() {
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf("0000-ga-123", "0000-ga-456"))
+		mockAdGrupperResponse(
+			navIdent, navAnsattId, listOf(
+				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
+				AdGruppe(UUID.randomUUID(), "0000-ga-456")
+			)
+		)
 
 		val adGrupper = client.hentAdGrupper(navAnsattId).getOrThrow()
 
@@ -70,7 +84,12 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente enkelt skjermet person`() {
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf("0000-ga-123", "0000-ga-456"))
+		mockAdGrupperResponse(
+			navIdent, navAnsattId, listOf(
+				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
+				AdGruppe(UUID.randomUUID(), "0000-ga-456")
+			)
+		)
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(
 			mapOf(
@@ -85,7 +104,12 @@ class TilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente bulk skjermet person`() {
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf("0000-ga-123", "0000-ga-456"))
+		mockAdGrupperResponse(
+			navIdent, navAnsattId, listOf(
+				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
+				AdGruppe(UUID.randomUUID(), "0000-ga-456")
+			)
+		)
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(
 			mapOf(
@@ -120,9 +144,7 @@ class TilgangHttpClientTest : IntegrationTest() {
 		exception?.cause should beInstanceOf<UnknownHostException>()
 	}
 
-	private fun mockAdGrupperResponse(navIdent: String, navAnsattId: UUID, adGrupperNavn: List<String>) {
-		val adGrupper = adGrupperNavn.map { AdGruppe(UUID.randomUUID(), it) }
-
+	private fun mockAdGrupperResponse(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
 		mockMicrosoftGraphHttpServer.mockHentAzureIdForNavAnsattResponse(navIdent, navAnsattId)
 
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
@@ -145,7 +167,11 @@ class TilgangHttpClientTest : IntegrationTest() {
 		)
 
 		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(norskIdent, "1234")
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf("0000-some-group"))
+		mockAdGrupperResponse(
+			navIdent, navAnsattId, listOf(
+				AdGruppe(UUID.randomUUID(), "0000-some-group"),
+			)
+		)
 
 		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf())
 	}

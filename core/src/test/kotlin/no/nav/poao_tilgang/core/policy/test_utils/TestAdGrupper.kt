@@ -3,11 +3,14 @@ package no.nav.poao_tilgang.core.policy.test_utils
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn
 import no.nav.poao_tilgang.core.domain.AdGrupper
+import java.util.*
 import java.util.UUID.fromString
 
 object TestAdGrupper {
 
-	val grupper = AdGrupper(
+	val randomGruppe = AdGruppe(UUID.randomUUID(), "some-other-group")
+
+	val testAdGrupper = AdGrupper(
 		fortroligAdresse = AdGruppe(fromString("97690ad9-d423-4c1f-9885-b01fb9f9feab"), AdGruppeNavn.FORTROLIG_ADRESSE),
 		strengtFortroligAdresse = AdGruppe(fromString("49dfad60-e125-4216-b627-632f93054610"), AdGruppeNavn.STRENGT_FORTROLIG_ADRESSE),
 		modiaAdmin = AdGruppe(fromString("d765c025-d56c-4b15-b824-a8e12d9de60e"), AdGruppeNavn.MODIA_ADMIN),
