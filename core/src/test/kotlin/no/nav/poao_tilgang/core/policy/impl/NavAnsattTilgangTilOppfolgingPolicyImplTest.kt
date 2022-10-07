@@ -33,7 +33,7 @@ class NavAnsattTilgangTilOppfolgingPolicyImplTest {
 
 
 	@Test
-	fun `should return "permit" if access to 0000-ga-modia-oppfolging`() {
+	fun `should return "permit" if access to 0000-GA-Modia-Oppfolging`() {
 		val navIdent = "Z1234"
 
 		every {
@@ -49,7 +49,7 @@ class NavAnsattTilgangTilOppfolgingPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "deny" if not access to 0000-ga-modia-oppfolging`() {
+	fun `should return "deny" if not access to 0000-GA-Modia-Oppfolging`() {
 		val navIdent = "Z1234"
 
 		every {
@@ -63,7 +63,7 @@ class NavAnsattTilgangTilOppfolgingPolicyImplTest {
 		decision.type shouldBe Decision.Type.DENY
 
 		if (decision is Decision.Deny) {
-			decision.message shouldBe "NAV ansatt mangler tilgang til AD gruppen \"0000-ga-modia-oppfolging\""
+			decision.message shouldBe "NAV ansatt mangler tilgang til AD gruppen \"0000-GA-Modia-Oppfolging\""
 			decision.reason shouldBe DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		}
 	}

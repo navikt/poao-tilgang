@@ -32,7 +32,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "permit" if access to 0000-ga-bd06_modiagenerelltilgang`() {
+	fun `should return "permit" if access to 0000-GA-BD06_ModiaGenerellTilgang`() {
 		val navIdent = "Z1234"
 
 		every {
@@ -46,7 +46,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "permit" if access to 0000-ga-modia-oppfolging`() {
+	fun `should return "permit" if access to 0000-GA-Modia-Oppfolging`() {
 		val navIdent = "Z1234"
 
 		every {
@@ -60,7 +60,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "permit" if access to 0000-ga-syfo-sensitiv`() {
+	fun `should return "permit" if access to 0000-GA-SYFO-SENSITIV`() {
 		val navIdent = "Z1234"
 
 		every {
@@ -87,7 +87,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 		decision.type shouldBe Decision.Type.DENY
 
 		if (decision is Decision.Deny) {
-			decision.message shouldBe "NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]"
+			decision.message shouldBe "NAV ansatt mangler tilgang til en av AD gruppene [0000-GA-BD06_ModiaGenerellTilgang, 0000-GA-Modia-Oppfolging, 0000-GA-SYFO-SENSITIV]"
 			decision.reason shouldBe DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		}
 	}

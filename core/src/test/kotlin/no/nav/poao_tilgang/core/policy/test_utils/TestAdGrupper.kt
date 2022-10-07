@@ -20,7 +20,6 @@ object TestAdGrupper {
 		gosysUtvidbarTilNasjonal = AdGruppe(fromString("b57870b5-3580-4e59-99f2-4c8c6083415d"), AdGruppeNavn.GOSYS_UTVIDBAR_TIL_NASJONAL),
 		gosysUtvidet = AdGruppe(fromString("4ccf584e-098e-4625-aed7-97d82b450bcc"), AdGruppeNavn.GOSYS_UTVIDET),
 		syfoSensitiv = AdGruppe(fromString("6681d1b1-e39f-4e34-b688-63584710772f"), AdGruppeNavn.SYFO_SENSITIV),
-		skjermetPerson = AdGruppe(fromString("9c4ad88b-546d-4d2d-b5cb-9ab5edab7535"), AdGruppeNavn.SKJERMET_PERSON),
 		pensjonUtvidet = AdGruppe(fromString("f7b20d6c-cf4b-47e0-b6ff-5383d9b6e57d"), AdGruppeNavn.PENSJON_UTVIDET)
 	)
 

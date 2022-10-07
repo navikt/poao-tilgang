@@ -42,7 +42,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 		expectDeny(
 			response = response,
-			message = "NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]",
+			message = "NAV ansatt mangler tilgang til en av AD gruppene [0000-GA-BD06_ModiaGenerellTilgang, 0000-GA-Modia-Oppfolging, 0000-GA-SYFO-SENSITIV]",
 			reason = DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		)
 	}
@@ -61,7 +61,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 		expectDeny(
 			response = response,
-			message = "NAV ansatt mangler tilgang til en av AD gruppene [0000-ga-bd06_modiagenerelltilgang, 0000-ga-modia-oppfolging, 0000-ga-syfo-sensitiv]",
+			message = "NAV ansatt mangler tilgang til en av AD gruppene [0000-GA-BD06_ModiaGenerellTilgang, 0000-GA-Modia-Oppfolging, 0000-GA-SYFO-SENSITIV]",
 			reason = DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		)
 	}

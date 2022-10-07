@@ -12,7 +12,6 @@ import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_ADMIN
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_GENERELL
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_OPPFOLGING
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.PENSJON_UTVIDET
-import no.nav.poao_tilgang.core.domain.AdGruppeNavn.SKJERMET_PERSON
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.STRENGT_FORTROLIG_ADRESSE
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.SYFO_SENSITIV
 import no.nav.poao_tilgang.core.domain.AdGrupper
@@ -35,7 +34,6 @@ class AdGruppeProviderImpl(
 	@Value("\${ad-gruppe-id.gosys-utvidbar-til-nasjonal}") private val adGruppeIdGosysUtvidbarTilNasjonal: UUID,
 	@Value("\${ad-gruppe-id.gosys-utvidet}") private val adGruppeIdGosysUtvidet: UUID,
 	@Value("\${ad-gruppe-id.syfo-sensitiv}") private val adGruppeIdSyfoSensitiv: UUID,
-	@Value("\${ad-gruppe-id.skjermet-person}") private val adGruppeIdSkjermetPerson: UUID,
 	@Value("\${ad-gruppe-id.pensjon-utvidet}") private val adGruppeIdPensjonUtvidet: UUID
 ) : AdGruppeProvider {
 
@@ -49,7 +47,6 @@ class AdGruppeProviderImpl(
 		gosysUtvidbarTilNasjonal = AdGruppe(adGruppeIdGosysUtvidbarTilNasjonal, GOSYS_UTVIDBAR_TIL_NASJONAL),
 		gosysUtvidet = AdGruppe(adGruppeIdGosysUtvidet, GOSYS_UTVIDET),
 		syfoSensitiv = AdGruppe(adGruppeIdSyfoSensitiv, SYFO_SENSITIV),
-		skjermetPerson = AdGruppe(adGruppeIdSkjermetPerson, SKJERMET_PERSON),
 		pensjonUtvidet = AdGruppe(adGruppeIdPensjonUtvidet, PENSJON_UTVIDET)
 	)
 
