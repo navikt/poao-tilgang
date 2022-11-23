@@ -22,3 +22,24 @@ data class EksternBrukerTilgangTilEksternBrukerPolicyInput(
 	val rekvirentNorskIdent: String, // Den som ber om tilgang
 	val ressursNorskIdent: String // Den som bes tilgang om
 ) : PolicyInput()
+
+data class NavAnsattMedlemAvAdGruppePolicyInput(
+	val navAnsattAzureId: UUID,
+	val adGruppeId: UUID
+) : PolicyInput()
+
+data class NavAnsattBehandleStrengtFortroligUtlandBrukerePolicyInput(
+	val navAnsattAzureId: UUID
+) : PolicyInput()
+
+data class NavAnsattBehandleSkjermedePersonerPolicyInput(
+	val navAnsattAzureId: UUID
+) : PolicyInput()
+
+data class NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
+	val navAnsattAzureId: UUID
+) : PolicyInput()
+
+data class NavAnsattBehandleFortroligBrukerePolicyInput(
+	val navAnsattAzureId: UUID
+) : PolicyInput()
