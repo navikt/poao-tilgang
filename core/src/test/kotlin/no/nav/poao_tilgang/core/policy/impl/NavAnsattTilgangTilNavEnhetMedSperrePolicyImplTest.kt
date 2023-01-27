@@ -109,7 +109,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
-			"Har ikke tilgang til NAV enhet",
+			"Har ikke tilgang til NAV enhet med sperre",
 			DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
 		)
 	}
