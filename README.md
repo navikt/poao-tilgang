@@ -173,6 +173,14 @@ data class NavAnsattBehandleFortroligBrukerePolicyInput(
 ) : PolicyInput()
 
 /* 
+ Sjekker om en NAV ansatt kan behandle skjermede personer (egne ansatte)
+*/
+data class NavAnsattBehandleSkjermedePersonerPolicyInput(
+    val navAnsattAzureId: UUID
+) : PolicyInput()
+
+
+/* 
  Sjekker om en NAV ansatt har tilgang til NAV enhet med sperre. Brukes i forbindelse med KVP.
 */
 data class NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
