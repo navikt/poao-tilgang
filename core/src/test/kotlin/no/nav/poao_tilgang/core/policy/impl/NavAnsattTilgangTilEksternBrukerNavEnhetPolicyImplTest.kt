@@ -14,7 +14,7 @@ import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
 import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
@@ -101,6 +101,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
 		} returns navEnhet
 
+
+		every {
+			geografiskTilknyttetEnhetProvider.hentGeografiskTilknytetEnhet(norskIdent)
+		} returns navEnhet
+
+
 		every {
 			tilgangTilNavEnhetPolicy.evaluate(
 				NavAnsattTilgangTilNavEnhetPolicy.Input(
@@ -120,7 +126,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		decision shouldBe Decision.Permit
 
 		verify(exactly = 0) {
-			geografiskTilknyttetEnhetProvider.hentGeografiskTilknytetEnhet(any())
+			oppfolgingsenhetProvider.hentOppfolgingsenhet(any())
 		}
 	}
 

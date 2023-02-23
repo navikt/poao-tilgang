@@ -33,22 +33,22 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 			.hasAtLeastOne(nasjonalTilgangGrupper)
 			.whenPermit { return it }
 
-		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)?.let { navEnhetId ->
-			return tilgangTilNavEnhetPolicy.evaluate(
+		geografiskTilknyttetEnhetProvider.hentGeografiskTilknytetEnhet(norskIdent)?.let { navEnhetId ->
+			tilgangTilNavEnhetPolicy.evaluate(
 				NavAnsattTilgangTilNavEnhetPolicy.Input(
 					navAnsattAzureId = navAnsattAzureId,
 					navEnhetId = navEnhetId
 				)
-			)
+			).whenPermit { return it }
 		}
 
-		geografiskTilknyttetEnhetProvider.hentGeografiskTilknytetEnhet(norskIdent)?.let { navEnhetId ->
-			return tilgangTilNavEnhetPolicy.evaluate(
+		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)?.let { navEnhetId ->
+			tilgangTilNavEnhetPolicy.evaluate(
 				NavAnsattTilgangTilNavEnhetPolicy.Input(
 					navAnsattAzureId = navAnsattAzureId,
 					navEnhetId = navEnhetId
 				)
-			)
+			).whenPermit { return it }
 		}
 
 		return Decision.Deny(
