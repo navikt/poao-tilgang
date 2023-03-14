@@ -11,7 +11,7 @@ class MyApplicationRunner(private val microsoftClient: MicrosoftGraphClient): Ap
 	override fun run(args: ApplicationArguments?) {
 		try {
 			microsoftClient.hentNavIdentMedAzureId(UUID.randomUUID())
-		} catch (e: RuntimeException) {
+		} catch (e: Exception) {
 			//denn skal kaste exception :)
 		}
 	}
