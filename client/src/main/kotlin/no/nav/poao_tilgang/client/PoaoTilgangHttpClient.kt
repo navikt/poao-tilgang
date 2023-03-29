@@ -149,6 +149,19 @@ class PoaoTilgangHttpClient(
 				policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2
 			)
 
+			is NavAnsattNavIdentTilgangTilEksternBrukerPolicyInput -> PolicyEvaluationRequestDto(
+				requestId = policyRequest.requestId,
+				policyInput = NavAnsattTilgangTilEksternBrukerPolicyInputV3Dto(
+					navAnsattNavIdent = policyRequest.policyInput.navAnsattNavIdent,
+					norskIdent = policyRequest.policyInput.norskIdent,
+					tilgangType = when(policyRequest.policyInput.tilgangType) {
+						TilgangType.LESE -> no.nav.poao_tilgang.api.dto.request.TilgangType.LESE
+						TilgangType.SKRIVE -> no.nav.poao_tilgang.api.dto.request.TilgangType.SKRIVE
+					}
+				),
+				policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V3
+			)
+
 			is NavAnsattTilgangTilModiaPolicyInput -> PolicyEvaluationRequestDto(
 				requestId = policyRequest.requestId,
 				policyInput = NavAnsattTilgangTilModiaPolicyInputV1Dto(

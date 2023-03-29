@@ -77,6 +77,18 @@ class PolicyController(
 					}
 				)
 			}
+			PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V3 -> {
+				val dto = fromJsonNode<NavAnsattTilgangTilEksternBrukerPolicyInputV3Dto>(policyInput)
+
+				NavAnsattTilgangTilEksternBrukerPolicy.Input(
+					navAnsattAzureId = adGruppeProvider.hentAzureIdMedNavIdent(dto.navAnsattNavIdent),
+					norskIdent = dto.norskIdent,
+					tilgangType = when (dto.tilgangType) {
+						no.nav.poao_tilgang.api.dto.request.TilgangType.LESE -> TilgangType.LESE
+						no.nav.poao_tilgang.api.dto.request.TilgangType.SKRIVE -> TilgangType.SKRIVE
+					}
+				)
+			}
 			PolicyId.NAV_ANSATT_TILGANG_TIL_MODIA_V1 -> {
 				val dto =  fromJsonNode<NavAnsattTilgangTilModiaPolicyInputV1Dto>(policyInput)
 				NavAnsattTilgangTilModiaPolicy.Input(dto.navAnsattAzureId)
