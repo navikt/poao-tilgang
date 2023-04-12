@@ -80,7 +80,7 @@ jobs:
           prerelease: false
 
   deploy-dev-fss:
-    name: Deploy application to dev
+    name: Deploy application to dev fss
     needs: test-build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -95,7 +95,7 @@ jobs:
           VAR: version=${{ env.IMAGE_TAG }}
 
   deploy-prod-fss:
-    name: Deploy application to prod
+    name: Deploy application to prod fss
     needs: deploy-dev-fss
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
