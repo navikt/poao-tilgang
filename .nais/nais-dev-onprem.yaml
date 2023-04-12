@@ -72,6 +72,8 @@ spec:
         - host: norg2.dev-fss-pub.nais.io
         - host: graph.microsoft.com
   env:
+    - name: spring_profiles_active
+      value: fss
     - name: MICROSOFT_GRAPH_SCOPE
       value: https://graph.microsoft.com/.default
     - name: MICROSOFT_GRAPH_URL
