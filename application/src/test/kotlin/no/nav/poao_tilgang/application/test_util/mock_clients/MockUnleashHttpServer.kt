@@ -4,31 +4,79 @@ package no.nav.poao_tilgang.application.test_util.mock_clients
 import no.nav.poao_tilgang.application.test_util.MockHttpServer
 import okhttp3.mockwebserver.MockResponse
 class MockUnleashHttpServer: MockHttpServer() {
-	fun mockTilhorendeEnhet() {
+
+	init {
+		mockTogles()
+		mockRegister()
+	}
+	fun mockTogles() {
 		val response = MockResponse()
 			.setBody(
-				"""
-					{
-						"enhetNr": "1"
-					}
-				""".trimIndent()
+				responseBody
 			)
 
 		handleRequest(
-			matchPath = "/norg2/api/v1/enhet/navkontor/2",
+			matchPath = "/api/client/features",
 			matchMethod = "GET",
 			response = response
 		)
 	}
 
-	fun mockIngenTilhorendeEnhet(geografiskTilknytning: String) {
+	fun mockRegister() {
 		val response = MockResponse()
-			.setResponseCode(404)
+			.setBody(responseBody)
 
 		handleRequest(
-			matchPath = "/norg2/api/v1/enhet/navkontor/1",
-			matchMethod = "GET",
+			matchPath = "/api/client/register",
+			matchMethod = "POST",
 			response = response
 		)
 	}
+
+	//language=JSON
+	val  responseBody = """
+					{
+					  "version": 1,
+					  "features": [
+					    {
+					      "name": "Feature.A",
+					      "type": "release",
+					      "enabled": false,
+					      "stale": false,
+					      "strategies": [
+					        {
+					          "name": "default",
+					          "parameters": {}
+					        }
+					      ],
+					      "strategy": "default",
+					      "parameters": {}
+					    },
+					    {
+					      "name": "Feature.B",
+					      "type": "killswitch",
+					      "enabled": true,
+					      "stale": false,
+					      "strategies": [
+					        {
+					          "name": "ActiveForUserWithId",
+					          "parameters": {
+					            "userIdList": "123,221,998"
+					          }
+					        },
+					        {
+					          "name": "GradualRolloutRandom",
+					          "parameters": {
+					            "percentage": "10"
+					          }
+					        }
+					      ],
+					      "strategy": "ActiveForUserWithId",
+					      "parameters": {
+					        "userIdList": "123,221,998"
+					      }
+					    }
+					  ]
+					}
+				""".trimIndent()
 }
