@@ -98,7 +98,7 @@ spec:
     - name: NORG_URL
       value: http://norg2.org.svc.nais.local
     - name: UNLEASH_URL
-      value: https://unleash.nais.io/
+      value: https://unleash.nais.io/api/
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE
       value: 9ec6487d-f37a-4aad-a027-cd221c1ac32b
     - name: AD_GRUPPE_ID_STRENGT_FORTROLIG_ADRESSE
