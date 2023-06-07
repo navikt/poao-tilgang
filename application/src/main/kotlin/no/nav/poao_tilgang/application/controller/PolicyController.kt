@@ -54,7 +54,7 @@ class PolicyController(
 		return PolicyEvaluationResultDto(result.requestId, toDecisionDto(result.decision))
 	}
 
-	private fun mapToPolicyInput(policyId: PolicyId, policyInput: JsonNode): PolicyInput {
+	private fun mapToPolicyInput(policyId: PolicyId<*>, policyInput: JsonNode): PolicyInput {
 		return when (policyId) {
 			PolicyId.NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1 -> {
 				val dto = fromJsonNode<NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInputV1Dto>(policyInput)
