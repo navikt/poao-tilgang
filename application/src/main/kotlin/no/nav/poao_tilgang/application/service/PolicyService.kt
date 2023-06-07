@@ -6,7 +6,7 @@ import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.PolicyInput
 import no.nav.poao_tilgang.core.policy.impl.PolicyResolver
-import no.nav.poao_tilgang.core.policy.impl.PolicyResult
+import no.nav.poao_tilgang.core.domain.PolicyResult
 import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.system.measureTimeMillis
