@@ -89,6 +89,9 @@ spec:
         - application: paw-arbeidssoekerregisteret-api-oppslag
           namespace: paw
           cluster: prod-gcp
+        - application: paw-arbeidssokerregisteret-api-inngang
+          namespace: paw
+          cluster: prod-gcp
     outbound:
       rules:
         - application: skjermede-personer-pip
