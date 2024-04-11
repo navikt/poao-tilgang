@@ -47,6 +47,7 @@ open class IntegrationTest {
 		val mockAbacHttpServer = MockAbacHttpServer()
 		val mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
 		val mockPdlHttpServer = MockPdlHttpServer()
+		val mockPdlPipHttpServer = MockPdlPipHttpServer()
 		val mockNorgHttpServer = MockNorgHttpServer()
 		val mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
 
@@ -98,6 +99,10 @@ open class IntegrationTest {
 			System.setProperty("PDL_URL", mockPdlHttpServer.serverUrl())
 			System.setProperty("PDL_SCOPE", "api://test.pdl.pdl-api/.default")
 
+			mockPdlPipHttpServer.start()
+			System.setProperty("PDLPIP_URL", mockPdlHttpServer.serverUrl())
+			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
+
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
 
@@ -127,6 +132,7 @@ open class IntegrationTest {
 		mockAbacHttpServer.reset()
 		mockVeilarbarenaHttpServer.reset()
 		mockPdlHttpServer.reset()
+		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
 
@@ -138,6 +144,7 @@ open class IntegrationTest {
 		mockAbacHttpServer.close()
 		mockVeilarbarenaHttpServer.close()
 		mockPdlHttpServer.close()
+		mockPdlPipHttpServer.close()
 		mockNorgHttpServer.close()
 	}
 
