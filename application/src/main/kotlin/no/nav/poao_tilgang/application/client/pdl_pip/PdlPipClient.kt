@@ -1,9 +1,7 @@
 package no.nav.poao_tilgang.application.client.pdl_pip
 
 interface PdlPipClient {
-
 	fun hentBrukerInfo(brukerIdent: String): BrukerInfo?
-
 }
 
 data class BrukerInfo(
@@ -28,7 +26,7 @@ data class GeografiskTilknytning(
 )
 
 data class Person(
-	val adressebeskyttelse: List<Adressebeskyttelse>
+	val adressebeskyttelse: List<Adressebeskyttelse>?
 )
 
 enum class GeografiskTilknytningType {
