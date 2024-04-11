@@ -16,6 +16,8 @@ open class PdlPipClientImpl(
 	private val httpClient: OkHttpClient = RestClient.baseClient(),
 ): PdlPipClient {
 
+	private val IDENT_PARAM_NAME: String = "ident"
+
 	@Timed(
 		"pdl_pip_http_client.hent_person",
 		histogram = true,
@@ -30,6 +32,7 @@ open class PdlPipClientImpl(
 			.url("$baseUrl/api/v1/person")
 			.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenProvider.invoke())
+			.header(IDENT_PARAM_NAME, brukerIdent)
 			.build()
 
 		httpClient.newCall(request).execute().use { response ->
