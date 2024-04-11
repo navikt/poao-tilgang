@@ -31,6 +31,9 @@ class PdlPipClientImplTest {
 		val brukerIdent = "43534534"
 
 		mockServer.handleRequest(
+			matchPath = "/api/v1/person",
+			matchMethod = "GET",
+			matchHeaders = mapOf("ident" to brukerIdent),
 			response = MockResponse()
 				.setBody("""
 				{
