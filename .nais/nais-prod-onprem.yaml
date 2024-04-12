@@ -94,10 +94,6 @@ spec:
       value: http://veilarbarena.pto.svc.nais.local/veilarbarena
     - name: VEILARBARENA_SCOPE
       value: api://prod-fss.pto.veilarbarena/.default
-    - name: PDL_SCOPE
-      value: api://prod-fss.pdl.pdl-api/.default
-    - name: PDL_URL
-      value: http://pdl-api.pdl.svc.nais.local
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL

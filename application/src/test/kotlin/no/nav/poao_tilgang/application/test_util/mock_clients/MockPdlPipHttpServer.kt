@@ -21,10 +21,8 @@ class MockPdlPipHttpServer : MockHttpServer() {
 					{
 					  "person": {
 					    "adressebeskyttelse": [
-					      {
-					        "gradering": ${gradering?.let { """"${it.name}"""" }}
-					      }
-					    ],
+						${gradering?.let { """{"gradering":"${it.name}"}""".trimMargin() }?:""}
+						],
 					    "foedsel": [
 					      {
 					        "foedselsdato": "1980-01-01"
@@ -41,7 +39,7 @@ class MockPdlPipHttpServer : MockHttpServer() {
 					  "identer": {
 					    "identer": [
 					      {
-					        "ident": "${norskIdent}" },
+					        "ident": "${norskIdent}",
 					        "historisk": false,
 					        "gruppe": "FOLKEREGISTERIDENT"
 					      },
