@@ -78,7 +78,6 @@ open class IntegrationTest {
 			mockAxsysHttpServer = MockAxsysHttpServer()
 			mockAbacHttpServer = MockAbacHttpServer()
 			mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
-			//mockPdlHttpServer = MockPdlHttpServer()
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
 			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
@@ -104,10 +103,6 @@ open class IntegrationTest {
 			mockVeilarbarenaHttpServer.start()
 			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
 			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
-
-			//mockPdlHttpServer.start()
-			//System.setProperty("PDL_URL", mockPdlHttpServer.serverUrl())
-			//System.setProperty("PDL_SCOPE", "api://test.pdl.pdl-api/.default")
 
 			mockPdlPipHttpServer.start()
 			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
@@ -139,7 +134,6 @@ open class IntegrationTest {
 			mockAxsysHttpServer.close()
 			mockAbacHttpServer.close()
 			mockVeilarbarenaHttpServer.close()
-			//mockPdlHttpServer.close()
 			mockPdlPipHttpServer.close()
 			mockNorgHttpServer.close()
 		}
@@ -152,7 +146,6 @@ open class IntegrationTest {
 		mockAxsysHttpServer.reset()
 		mockAbacHttpServer.reset()
 		mockVeilarbarenaHttpServer.reset()
-		//mockPdlHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
