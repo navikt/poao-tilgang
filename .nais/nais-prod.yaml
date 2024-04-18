@@ -127,7 +127,7 @@ spec:
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL
-      value: http://pdl-pip-api.prod-fss-pub.nais.io
+      value: https://pdl-pip-api.prod-fss-pub.nais.io
     - name: NORG_URL
       value: https://norg2.prod-fss-pub.nais.io
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE
