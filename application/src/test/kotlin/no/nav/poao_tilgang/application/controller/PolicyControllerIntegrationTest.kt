@@ -83,7 +83,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2 policy - deny`(tilgangType: TilgangType) {
-		setupMocks(adGrupper = emptyList())
+		setupMocks(adGrupper = listOf( noAccessGroup))
 		mockAbacHttpServer.mockDeny(tilgangType)
 
 		val requestId = UUID.randomUUID()
@@ -158,6 +158,24 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		response.body?.string() shouldBe denyResponse(
 			requestId, "Rekvirent har ikke samme ident som ressurs", "EKSTERN_BRUKER_HAR_IKKE_TILGANG"
 		)
+	}
+
+	@Test
+	fun `nasjonal tilgang should override enhet tilgang EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 policy - permit`() {
+
+		mockPersonData()
+		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
+		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
+
+		val requestId = UUID.randomUUID()
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"rekvirentNorskIdent": "$norskIdent", "ressursNorskIdent": "$norskIdent"}""",
+			"EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1"
+		)
+
+		response.body?.string() shouldBe permitResponse(requestId)
 	}
 
 	@Test
@@ -386,6 +404,21 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
 
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
+	}
+
+	private fun mockPersonData() {
+		mockPdlPipHttpServer.mockBrukerInfo(
+			norskIdent = norskIdent,
+			gtKommune = brukersKommune
+		)
+
+		mockSkjermetPersonHttpServer.mockErSkjermet(
+			mapOf(
+				norskIdent to false
+			)
+		)
+		mockNorgHttpServer.mockTilhorendeEnhet(brukersKommune, brukersEnhet)
+		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet)
 	}
 
 	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)) {
