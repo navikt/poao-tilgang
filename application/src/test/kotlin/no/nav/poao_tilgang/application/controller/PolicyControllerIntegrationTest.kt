@@ -1,6 +1,8 @@
 package no.nav.poao_tilgang.application.controller
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -18,6 +20,8 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	val navIdent = "Z1235"
 	val norskIdent = "6456532"
 	val navAnsattId = UUID.randomUUID()
+	val brukersEnhet = "1234"
+	val brukersKommune = "5000"
 
 	val noAccessGroup = AdGruppe(UUID.randomUUID(), "0000-some-group")
 
@@ -43,7 +47,8 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `should evaluate NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1 policy - deny`() {
-		setupMocks()
+		setupMocks(adGrupper = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell))
+
 		mockAbacHttpServer.mockDeny(TilgangType.SKRIVE)
 
 		val requestId = UUID.randomUUID()
@@ -54,7 +59,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 			"NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1"
 		)
 
-		response.body?.string() shouldBe denyResponse(requestId, "Deny fra ABAC", "IKKE_TILGANG_FRA_ABAC")
+		response.body?.string() shouldBe denyResponse(requestId, "NAV-ansatt mangler tilgang til AD-gruppen \\\"0000-GA-Modia-Oppfolging\\\"", "MANGLER_TILGANG_TIL_AD_GRUPPE")
 	}
 
 	@ParameterizedTest
@@ -78,7 +83,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2 policy - deny`(tilgangType: TilgangType) {
-		setupMocks()
+		setupMocks(adGrupper = emptyList())
 		mockAbacHttpServer.mockDeny(tilgangType)
 
 		val requestId = UUID.randomUUID()
@@ -89,18 +94,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 			"NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2"
 		)
 
-		response.body?.string() shouldBe denyResponse(requestId, "Deny fra ABAC", "IKKE_TILGANG_FRA_ABAC")
+		response.body?.string() shouldContain "MANGLER_TILGANG_TIL_AD_GRUPPE"
 	}
 
 	@Test
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_MODIA_V1 policy - permit`() {
 		val requestId = UUID.randomUUID()
-
-		mockAdGrupperResponse(
-			navIdent,
-			navAnsattId,
-			listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell)
-		)
+		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell))
 
 		val response = sendPolicyRequest(
 			requestId,
@@ -163,14 +163,15 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	@Test
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_V1 policy - permit`() {
 		val requestId = UUID.randomUUID()
+		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
+		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf(EnhetTilgang(brukersEnhet, "BrukersEnhet", emptyList())))
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 
 		mockAbacHttpServer.mockPermitAll()
 
 		val response = sendPolicyRequest(
 			requestId,
-			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "0123"}""",
+			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "${brukersEnhet}"}""",
 			"NAV_ANSATT_TILGANG_TIL_NAV_ENHET_V1"
 		)
 
@@ -181,7 +182,8 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_V1 policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
+		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
+		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
 
 		mockAbacHttpServer.mockDenyAll()
 
@@ -193,8 +195,8 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		response.body?.string() shouldBe denyResponse(
 			requestId,
-			"Deny fra ABAC",
-			"IKKE_TILGANG_FRA_ABAC"
+			"Har ikke tilgang til NAV enhet",
+			"IKKE_TILGANG_TIL_NAV_ENHET"
 		)
 	}
 
@@ -218,7 +220,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
 
 		val response = sendPolicyRequest(
@@ -238,7 +239,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE policy - permit`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().fortroligAdresse))
 
 		val response = sendPolicyRequest(
@@ -254,7 +254,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
 
 		val response = sendPolicyRequest(
@@ -274,7 +273,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER policy - permit`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().egneAnsatte))
 
 		val response = sendPolicyRequest(
@@ -290,7 +288,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockAdGrupperResponse(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
 
 		val response = sendPolicyRequest(
@@ -310,13 +307,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1 policy - permit`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
+		setupMocks()
 
 		mockAbacHttpServer.mockPermitAll()
 
 		val response = sendPolicyRequest(
 			requestId,
-			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "0123"}""",
+			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "$brukersEnhet"}""",
 			"NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1"
 		)
 
@@ -327,20 +324,20 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1 policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
+		setupMocks()
 
 		mockAbacHttpServer.mockDenyAll()
 
 		val response = sendPolicyRequest(
 			requestId,
-			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "0123"}""",
+			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "9999"}""",
 			"NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1"
 		)
 
 		response.body?.string() shouldBe denyResponse(
 			requestId,
-			"Deny fra ABAC",
-			"IKKE_TILGANG_FRA_ABAC"
+			"Har ikke tilgang til NAV enhet med sperre",
+			"IKKE_TILGANG_TIL_NAV_ENHET"
 		)
 	}
 
@@ -391,10 +388,10 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
 	}
 
-	private fun setupMocks() {
+	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)) {
 		mockPdlPipHttpServer.mockBrukerInfo(
 			norskIdent = norskIdent,
-			gtKommune = "1234"
+			gtKommune = brukersKommune
 		)
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(
@@ -402,12 +399,12 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 				norskIdent to false
 			)
 		)
-
-		mockVeilarbarenaHttpServer.mockOppfolgingsenhet("1234")
-		mockAdGrupperResponse(navIdent, navAnsattId, listOf(noAccessGroup))
-
-		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf())
+		mockNorgHttpServer.mockTilhorendeEnhet(brukersKommune, brukersEnhet)
+		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet)
+		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList())))
+		mockAdGrupperResponse(navIdent, navAnsattId, adGrupper)
 	}
+
 
 
 }
