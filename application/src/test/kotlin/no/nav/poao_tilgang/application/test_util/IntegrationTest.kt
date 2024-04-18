@@ -40,15 +40,16 @@ open class IntegrationTest {
 		.build()
 
 	companion object {
-		val mockOAuthServer = MockOAuthServer()
-		val mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
-		val mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
-		val mockAxsysHttpServer = MockAxsysHttpServer()
-		val mockAbacHttpServer = MockAbacHttpServer()
-		val mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
-		val mockPdlHttpServer = MockPdlHttpServer()
-		val mockNorgHttpServer = MockNorgHttpServer()
-		val mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
+		lateinit var mockOAuthServer : MockOAuthServer
+		lateinit var mockMicrosoftGraphHttpServer : MockMicrosoftGraphHttpServer
+		lateinit var mockSkjermetPersonHttpServer : MockSkjermetPersonHttpServer
+		lateinit var mockAxsysHttpServer : MockAxsysHttpServer
+		lateinit var mockAbacHttpServer : MockAbacHttpServer
+		lateinit var mockVeilarbarenaHttpServer : MockVeilarbarenaHttpServer
+		//lateinit var mockPdlHttpServer : MockPdlHttpServer
+		lateinit var mockPdlPipHttpServer : MockPdlPipHttpServer
+		lateinit var mockNorgHttpServer : MockNorgHttpServer
+		lateinit var mockMachineToMachineHttpServer : MockMachineToMachineHttpServer
 
 		@BeforeAll
 		@JvmStatic
@@ -71,6 +72,15 @@ open class IntegrationTest {
 
 
 		private fun setupClients() {
+			mockOAuthServer = MockOAuthServer()
+			mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
+			mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
+			mockAxsysHttpServer = MockAxsysHttpServer()
+			mockAbacHttpServer = MockAbacHttpServer()
+			mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
+			mockPdlPipHttpServer = MockPdlPipHttpServer()
+			mockNorgHttpServer = MockNorgHttpServer()
+			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
 
 			mockSkjermetPersonHttpServer.start()
 			System.setProperty("SKJERMET_PERSON_URL", mockSkjermetPersonHttpServer.serverUrl())
@@ -94,9 +104,9 @@ open class IntegrationTest {
 			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
 			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
 
-			mockPdlHttpServer.start()
-			System.setProperty("PDL_URL", mockPdlHttpServer.serverUrl())
-			System.setProperty("PDL_SCOPE", "api://test.pdl.pdl-api/.default")
+			mockPdlPipHttpServer.start()
+			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
+			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
 
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
@@ -116,7 +126,17 @@ open class IntegrationTest {
 			System.setProperty("AD_GRUPPE_ID_AKTIVITETSPLAN_KVP", UUID.randomUUID().toString())
 			System.setProperty("NAIS_APP_NAME", "poao-tilgang")
 		}
-
+		@JvmStatic
+		@AfterAll
+		fun close(): Unit {
+			mockMicrosoftGraphHttpServer.close()
+			mockSkjermetPersonHttpServer.close()
+			mockAxsysHttpServer.close()
+			mockAbacHttpServer.close()
+			mockVeilarbarenaHttpServer.close()
+			mockPdlPipHttpServer.close()
+			mockNorgHttpServer.close()
+		}
 	}
 
 	@AfterEach
@@ -126,20 +146,11 @@ open class IntegrationTest {
 		mockAxsysHttpServer.reset()
 		mockAbacHttpServer.reset()
 		mockVeilarbarenaHttpServer.reset()
-		mockPdlHttpServer.reset()
+		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
 
-	@AfterAll
-	fun close() {
-		mockMicrosoftGraphHttpServer.close()
-		mockSkjermetPersonHttpServer.close()
-		mockAxsysHttpServer.close()
-		mockAbacHttpServer.close()
-		mockVeilarbarenaHttpServer.close()
-		mockPdlHttpServer.close()
-		mockNorgHttpServer.close()
-	}
+
 
 	fun serverUrl() = "http://localhost:$port"
 

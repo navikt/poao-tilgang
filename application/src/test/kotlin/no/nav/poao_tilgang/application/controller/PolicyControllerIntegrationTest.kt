@@ -392,7 +392,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	}
 
 	private fun setupMocks() {
-		mockPdlHttpServer.mockBrukerInfo(
+		mockPdlPipHttpServer.mockBrukerInfo(
 			norskIdent = norskIdent,
 			gtKommune = "1234"
 		)
