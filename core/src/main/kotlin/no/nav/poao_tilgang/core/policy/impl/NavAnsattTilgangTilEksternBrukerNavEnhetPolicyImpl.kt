@@ -29,7 +29,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 
 	override val name = "NavAnsattTilgangTilEksternBrukerNavEnhetPolicy"
 
-	val denyDecision = Decision.Deny(
+	val denyDecisionNotAccessToEnhet = Decision.Deny(
+		message = "NavAnsatt har ikke tilgang til Brukers oppfølgingsenhet eller geografisk enhet",
+		reason = DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
+	)
+
+	val denyDecisionEksternbrukerMissingEnhet = Decision.Deny(
 		message = "Brukeren har ikke oppfølgingsenhet eller geografisk enhet",
 		reason = DecisionDenyReason.UKLAR_TILGANG_MANGLENDE_INFORMASJON
 	)
@@ -42,17 +47,17 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 			.hasAtLeastOne(nasjonalTilgangGrupper)
 			.whenPermit { return it }
 
-		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)?.let { navEnhetId ->
+		val gtEnhet = geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)?.let { navEnhetId ->
 			harTilgangTilEnhetForBruker(navAnsattAzureId, navEnhetId, "geografiskEnhet")
 				.whenPermit { return it }
 		}
 
-		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)?.let { navEnhetId ->
+		val oppfolgingsEnhet = oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)?.let { navEnhetId ->
 			harTilgangTilEnhetForBruker(navAnsattAzureId, navEnhetId, "oppfolgingsEnhet")
 				.whenPermit { return it }
 		}
-
-		return denyDecision
+		if (gtEnhet == null && oppfolgingsEnhet == null) return denyDecisionEksternbrukerMissingEnhet
+		else return denyDecisionNotAccessToEnhet
 	}
 
 	fun harTilgangTilEnhetForBruker(
@@ -64,6 +69,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 			.any { navEnhetId == it.enhetId }
 		secureLog.info("$name, harTilgangTilEnhet: $harTilgangTilEnhet, navEnhetForBruker: $navEnhetId, navident: $navIdent, azureId: $navAnsattAzureId, for type Enhet: $typeEnhet")
-		return if (harTilgangTilEnhet) Decision.Permit else denyDecision
+		return if (harTilgangTilEnhet) Decision.Permit else denyDecisionNotAccessToEnhet
 	}
 }
