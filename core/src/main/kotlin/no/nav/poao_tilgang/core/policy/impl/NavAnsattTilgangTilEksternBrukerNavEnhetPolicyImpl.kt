@@ -20,10 +20,11 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 ) : NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 
 	private val secureLog = LoggerFactory.getLogger("SecureLog")
-	private val nasjonalTilgangGrupper = adGruppeProvider.hentTilgjengeligeAdGrupper().let {
+	private val nasjonalTilgangGrupperOgAdmin = adGruppeProvider.hentTilgjengeligeAdGrupper().let {
 		listOf(
 			it.gosysNasjonal,
 			it.gosysUtvidbarTilNasjonal,
+			it.modiaAdmin
 		)
 	}
 
@@ -44,7 +45,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 
 		// Hvis man har nasjonal tilgang så trengs det ikke sjekk på enhet tilgang
 		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
-			.hasAtLeastOne(nasjonalTilgangGrupper)
+			.hasAtLeastOne(nasjonalTilgangGrupperOgAdmin)
 			.whenPermit { return it }
 
 		val gtEnhet = geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)?.let { navEnhetId ->
