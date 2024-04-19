@@ -164,7 +164,25 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `nasjonal tilgang should override enhet tilgang EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 policy - permit`() {
 
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
+		mockRolleTilganger(navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
+		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
+
+		val requestId = UUID.randomUUID()
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"rekvirentNorskIdent": "$norskIdent", "ressursNorskIdent": "$norskIdent"}""",
+			"EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1"
+		)
+
+		response.body?.string() shouldBe permitResponse(requestId)
+	}
+
+	@Test
+	fun `modiaadmin tilgang should override enhet tilgang EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 policy - permit`() {
+
+		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
+		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin))
 		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
 
 		val requestId = UUID.randomUUID()
