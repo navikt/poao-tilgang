@@ -14,6 +14,9 @@ import no.nav.poao_tilgang.core.utils.has
 import org.slf4j.LoggerFactory
 import java.time.Duration
 
+/**
+ * Etter modell av https://confluence.adeo.no/display/ABAC/Tilgang+til+enhet
+ */
 class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	private val navEnhetTilgangProvider: NavEnhetTilgangProvider,
 	private val adGruppeProvider: AdGruppeProvider,
