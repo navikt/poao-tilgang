@@ -2,8 +2,12 @@ package no.nav.poao_tilgang.application.test_util
 
 import no.nav.common.featuretoggle.UnleashClient
 import no.nav.poao_tilgang.application.Application
+import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
+import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.NavEnhetId
+import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -170,5 +174,35 @@ open class IntegrationTest {
 
 		return client.newCall(reqBuilder.build()).execute()
 	}
+
+	fun mockPersonData(norskIdent: NorskIdent, brukersEnhet: NavEnhetId, kommuneNr: String, erSkjermet: Boolean = false) {
+		mockPdlPipHttpServer.mockBrukerInfo(
+			norskIdent = norskIdent,
+			gtKommune = kommuneNr
+		)
+
+		mockSkjermetPersonHttpServer.mockErSkjermet(
+			mapOf(
+				norskIdent to false
+			)
+		)
+		mockNorgHttpServer.mockTilhorendeEnhet(kommuneNr, brukersEnhet)
+		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet)
+	}
+
+	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
+		mockMicrosoftGraphHttpServer.mockHentAzureIdMedNavIdentResponse(navIdent, navAnsattId)
+
+		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
+
+		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
+
+		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
+	}
+
+	fun mockEnhetsTilganger(navIdent: String, enhetsTilganger: List<EnhetTilgang>) {
+		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, enhetsTilganger)
+	}
+
 
 }
