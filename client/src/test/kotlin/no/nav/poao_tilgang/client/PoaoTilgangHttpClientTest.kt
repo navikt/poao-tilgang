@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
+import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
@@ -26,6 +27,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	private val navIdent = "Z1235"
 	private val norskIdent = "6456532"
+	private val brukersEnhet = "0123"
 	private val navAnsattId = UUID.randomUUID()
 
 	private val fnr1 = "124253321"
@@ -54,7 +56,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			TilgangType.SKRIVE -> SKRIVE
 		}
 		mockAbacHttpServer.mockPermit(coreTilgangType)
-		setupMocks()
+		setupMocks(adGrupper = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
 
 		val decision =
 			client.evaluatePolicy(NavAnsattTilgangTilEksternBrukerPolicyInput(navAnsattId, tilgangType, norskIdent)).getOrThrow()
@@ -64,7 +66,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilModiaPolicy`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent,
 			navAnsattId,
 			listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell)
@@ -87,12 +89,10 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetPolicy`() {
-		mockAdGrupperResponse(
-			navIdent, navAnsattId, listOf(
-				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
-				AdGruppe(UUID.randomUUID(), "0000-ga-456")
-			)
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
 		)
+		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("0123", "En enhet", emptyList())))
 
 		mockAbacHttpServer.mockPermitAll()
 
@@ -106,11 +106,8 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetMedSperrePolicy`() {
-		mockAdGrupperResponse(
-			navIdent, navAnsattId, listOf(
-				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
-				AdGruppe(UUID.randomUUID(), "0000-ga-456")
-			)
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp)
 		)
 
 		mockAbacHttpServer.mockPermitAll()
@@ -125,7 +122,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `hentAdGrupper - skal hente AD-grupper`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
 				AdGruppe(UUID.randomUUID(), "0000-ga-456")
@@ -141,7 +138,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente enkelt skjermet person`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
 				AdGruppe(UUID.randomUUID(), "0000-ga-456")
@@ -161,7 +158,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente bulk skjermet person`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
 				AdGruppe(UUID.randomUUID(), "0000-ga-456")
@@ -203,7 +200,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell,
 				adGruppeProvider.hentTilgjengeligeAdGrupper().strengtFortroligAdresse
@@ -219,7 +216,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
 			)
@@ -234,7 +231,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell,
 				adGruppeProvider.hentTilgjengeligeAdGrupper().fortroligAdresse
@@ -250,7 +247,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
 			)
@@ -265,7 +262,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().egneAnsatte,
 			)
@@ -280,7 +277,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER`() {
-		mockAdGrupperResponse(
+		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
 			)
@@ -293,36 +290,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		decision shouldBe Decision.Deny("NAV-ansatt mangler tilgang til en av AD-gruppene [0000-GA-Egne_ansatte]", reason="MANGLER_TILGANG_TIL_AD_GRUPPE")
 	}
 
-	private fun mockAdGrupperResponse(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
-		mockMicrosoftGraphHttpServer.mockHentAzureIdMedNavIdentResponse(navIdent, navAnsattId)
-
-		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
-
-		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
-
-		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
-	}
-
-	private fun setupMocks() {
-		mockPdlPipHttpServer.mockBrukerInfo(
-			norskIdent = norskIdent,
-			gtKommune = "1234"
+	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group")), enhetTilganger: List<EnhetTilgang> = emptyList()) {
+		mockPersonData(norskIdent,brukersEnhet)
+		mockRolleTilganger(
+			navIdent, navAnsattId, adGrupper
 		)
-
-		mockSkjermetPersonHttpServer.mockErSkjermet(
-			mapOf(
-				norskIdent to false
-			)
-		)
-
-		mockVeilarbarenaHttpServer.mockOppfolgingsenhet("1234")
-		mockAdGrupperResponse(
-			navIdent, navAnsattId, listOf(
-				AdGruppe(UUID.randomUUID(), "0000-some-group"),
-			)
-		)
-
-		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, listOf())
+		mockEnhetsTilganger(navIdent, enhetTilganger)
 	}
 
 }

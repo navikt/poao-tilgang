@@ -395,9 +395,9 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		)
 	}
 
-	private fun setupMocksHappyCase(adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)) {
+	private fun setupMocksHappyCase(adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging), enhetTilganger: List<EnhetTilgang> = listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList()))) {
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList())))
+		mockEnhetsTilganger(navIdent, enhetTilganger)
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 	}
 }
