@@ -60,12 +60,9 @@ open class IntegrationTest {
 		fun setupMockServers() {
 			setupClients()
 			setupAdGrupperIder()
-
 			mockOAuthServer.start()
 			System.setProperty("AZURE_APP_WELL_KNOWN_URL", mockOAuthServer.getDiscoveryUrl())
 			System.setProperty("AZURE_APP_CLIENT_ID", "test")
-
-
 			mockMachineToMachineHttpServer.start()
 			System.setProperty("AZURE_APP_JWK", MockMachineToMachineHttpServer.jwk)
 			System.setProperty(
@@ -85,36 +82,26 @@ open class IntegrationTest {
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
 			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
-
 			mockSkjermetPersonHttpServer.start()
 			System.setProperty("SKJERMET_PERSON_URL", mockSkjermetPersonHttpServer.serverUrl())
 			System.setProperty("SKJERMET_PERSON_SCOPE", "api://test.nom.skjermede-personer-pip/.default")
-
 			mockMicrosoftGraphHttpServer.start()
 			System.setProperty("MICROSOFT_GRAPH_URL", mockMicrosoftGraphHttpServer.serverUrl())
 			System.setProperty("MICROSOFT_GRAPH_SCOPE", "https://graph.microsoft.com/.default")
-
-
 			mockAxsysHttpServer.start()
 			System.setProperty("AXSYS_URL", mockAxsysHttpServer.serverUrl())
 			System.setProperty("AXSYS_SCOPE", "api://test.org.axsys/.default")
-
-
 			mockAbacHttpServer.start()
 			System.setProperty("ABAC_URL", mockAbacHttpServer.serverUrl())
 			System.setProperty("ABAC_SCOPE", "api://test.pto.abac-veilarb-proxy/.default")
-
 			mockVeilarbarenaHttpServer.start()
 			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
 			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
-
 			mockPdlPipHttpServer.start()
 			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
-
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
-
 		}
 
 		private fun setupAdGrupperIder() {
@@ -192,11 +179,8 @@ open class IntegrationTest {
 
 	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
 		mockMicrosoftGraphHttpServer.mockHentAzureIdMedNavIdentResponse(navIdent, navAnsattId)
-
 		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
-
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
-
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
 	}
 
