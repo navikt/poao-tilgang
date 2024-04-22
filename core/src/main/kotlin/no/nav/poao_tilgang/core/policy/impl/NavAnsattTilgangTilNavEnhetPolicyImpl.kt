@@ -14,6 +14,9 @@ import no.nav.poao_tilgang.core.utils.has
 import org.slf4j.LoggerFactory
 import java.time.Duration
 
+/**
+ * Etter modell av https://confluence.adeo.no/display/ABAC/Tilgang+til+enhet
+ */
 class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	private val navEnhetTilgangProvider: NavEnhetTilgangProvider,
 	private val adGruppeProvider: AdGruppeProvider,
@@ -67,12 +70,15 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	}
 
 	private fun harTilgangEgen(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
-		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
+		// TODO sjekk av adgruppe modiaoppfølging er egentlig ikke del av sjekken for tilgang til enhet
+		// https://confluence.adeo.no/display/ABAC/Tilgang+til+enhet
+/*		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
 			.has(modiaOppfolging)
-			.whenDeny { return it }
+			.whenDeny { return it } */
 
 		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId).has(modiaAdmin).whenPermit {
 			secureLog.info("Tilgang gitt basert paa 0000-GA-Modia_Admin")
+			// TODO tror denne skal audit-logges
 			return it
 		}
 
