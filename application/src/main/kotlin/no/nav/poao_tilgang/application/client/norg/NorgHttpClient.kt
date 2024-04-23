@@ -4,7 +4,7 @@ import io.micrometer.core.annotation.Timed
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
-import no.nav.poao_tilgang.application.utils.SecureLog
+import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -33,7 +33,7 @@ open class NorgHttpClient(
 		httpClient.newCall(request).execute().use { response ->
 
 			if (response.code == 404) {
-				SecureLog.secureLog.info("Fant ikke NAV-enhet basert på geografisk tilknytning = $geografiskTilknytning i Norg.")
+				secureLog.info("Fant ikke NAV-enhet basert på geografisk tilknytning = $geografiskTilknytning i Norg.")
 				return null
 			}
 
@@ -44,7 +44,7 @@ open class NorgHttpClient(
 			}
 
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
+			secureLog.info("Norg response, hentTilhorendeEnhet for geografiskTilknytning: $geografiskTilknytning, body: $body")
 			val enhetResponse = fromJsonString<EnhetResponse>(body)
 			return enhetResponse.enhetNr
 		}

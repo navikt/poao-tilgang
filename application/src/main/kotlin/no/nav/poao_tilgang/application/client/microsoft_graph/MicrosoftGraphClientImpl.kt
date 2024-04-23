@@ -6,6 +6,7 @@ import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.JsonUtils.toJsonString
 import no.nav.poao_tilgang.application.utils.RestUtils.authorization
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
+import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.core.domain.NavIdent
 import okhttp3.OkHttpClient
@@ -35,6 +36,7 @@ open class MicrosoftGraphClientImpl(
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
 
 			fromJsonString<HentAdGrupperForNavAnsatt.Response>(body).value
+				.also { SecureLog.secureLog.info("Ms graph hentAdGrupper navAnsatt: $navAnsattAzureId result: $it") }
 		}
 	}
 
@@ -59,6 +61,7 @@ open class MicrosoftGraphClientImpl(
 			val responseData = fromJsonString<HentAdGrupper.Response>(body)
 
 			responseData.value.map { AdGruppe(it.id, it.displayName) }
+				.also { SecureLog.secureLog.info("MS Graph hentAdgrupper gruppeIder: $adGruppeAzureIder result: $it") }
 
 
 		}
@@ -83,6 +86,7 @@ open class MicrosoftGraphClientImpl(
 			val responseData = fromJsonString<HentAzureIdMedNavIdent.Response>(body)
 
 			responseData.value.firstOrNull()?.id ?: throw RuntimeException("Fant ikke bruker med navIdent=$navIdent")
+				.also { SecureLog.secureLog.info("MS Graph hentAzureId navIdent: $navIdent result: $it") }
 		}
 	}
 
@@ -104,6 +108,7 @@ open class MicrosoftGraphClientImpl(
 			val responseData = fromJsonString<HentNavIdentMedAzureId.Response>(body)
 
 			responseData.value.firstOrNull()?.onPremisesSamAccountName ?: throw RuntimeException("Fant ikke NAV-ident med Azure Id=$navAnsattAzureId")
+				.also { SecureLog.secureLog.info("MS Graph hentNavIdent azureId: $navAnsattAzureId result: $it") }
 		}
 	}
 

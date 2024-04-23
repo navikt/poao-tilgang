@@ -3,7 +3,6 @@ package no.nav.poao_tilgang.application.client.pdl_pip
 import io.micrometer.core.annotation.Timed
 import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
-import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -42,13 +41,8 @@ open class PdlPipClientImpl(
 			if (!response.isSuccessful) {
 				throw RuntimeException("Klarte ikke å hente personinfo fra pdl-pip. Status: ${response.code}")
 			}
-
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
-			SecureLog.secureLog.info("PdlPip response, hentPerson for fnr: $brukerIdent, body: $body")
-
 			val brukerInfoResponse = fromJsonString<BrukerInfo>(body)
-
 			return brukerInfoResponse
 		}
 	}
