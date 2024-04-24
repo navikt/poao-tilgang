@@ -71,7 +71,7 @@ class AdGruppeProviderImpl(
 
 	override fun hentAdGrupper(navAnsattAzureId: AzureObjectId): List<AdGruppe> {
 		return hentAdGrupperForNavAnsattWithCache(navAnsattAzureId).also {
-			secureLog.info("Ms graph hentAdGrupper navAnsattAzureId: $navAnsattAzureId result: ${it.map { adGruppe -> adGruppe.navn }}")
+			secureLog.info("Ms graph hentAdGrupper navAnsattAzureId: $navAnsattAzureId result: $it")
 		}
 	}
 
