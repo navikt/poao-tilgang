@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.application.provider
 import no.nav.poao_tilgang.application.client.pdl_pip.Adressebeskyttelse
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.client.pdl_pip.PdlPipClient
+import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.Diskresjonskode
 import no.nav.poao_tilgang.core.provider.DiskresjonskodeProvider
 import org.springframework.stereotype.Service
@@ -16,6 +17,9 @@ class DiskresjonskodeProviderImpl(
 		return pdlPipClient.hentBrukerInfo(norskIdent)
 			?.person
 			?.adressebeskyttelse?.firstOrNull()?.let { tilDiskresjonskode(it) }
+			.also {
+				secureLog.info("PdlPip , hentDiskresjonskode for fnr: $norskIdent, result: $it")
+			}
 	}
 
 	private fun tilDiskresjonskode(adressebeskyttelse: Adressebeskyttelse): Diskresjonskode {

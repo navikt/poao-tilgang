@@ -5,6 +5,7 @@ import no.nav.common.types.identer.Fnr
 import no.nav.poao_tilgang.application.client.veilarbarena.PersonRequest
 import no.nav.poao_tilgang.application.client.veilarbarena.VeilarbarenaClient
 import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNullable
+import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
@@ -23,7 +24,9 @@ class OppfolgingsenhetProviderImpl(
 	override fun hentOppfolgingsenhet(norskIdent: NorskIdent): NavEnhetId? {
 		val personRequest = PersonRequest(Fnr.of(norskIdent))
 		return tryCacheFirstNullable(norskIdentToOppfolgingsenhetCache, norskIdent) {
-			return@tryCacheFirstNullable veilarbarenaClient.hentBrukerOppfolgingsenhetId(personRequest)
+			return@tryCacheFirstNullable veilarbarenaClient.hentBrukerOppfolgingsenhetId(personRequest).also {
+				secureLog.info("Veilarbarena , hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, result: $it")
+			}
 		}
 	}
 

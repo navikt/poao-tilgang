@@ -44,7 +44,6 @@ open class NorgHttpClient(
 			}
 
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-			secureLog.info("Norg response, hentTilhorendeEnhet for geografiskTilknytning: $geografiskTilknytning, body: $body")
 			val enhetResponse = fromJsonString<EnhetResponse>(body)
 			return enhetResponse.enhetNr
 		}

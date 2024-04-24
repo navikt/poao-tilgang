@@ -17,7 +17,6 @@ class TilgangService(
 
 	fun harTilgangTilModia(navIdent: NavIdent): Decision {
 		val azureId = adGruppeProvider.hentAzureIdMedNavIdent(navIdent)
-
 		return executePolicy(navAnsattTilgangTilModiaPolicy.name, NavAnsattTilgangTilModiaPolicy.Input(azureId), navAnsattTilgangTilModiaPolicy::evaluate)
 	}
 
