@@ -4,6 +4,7 @@ import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
 import no.nav.poao_tilgang.api.dto.response.ErSkjermetPersonBulkResponse
 import no.nav.poao_tilgang.application.service.AuthService
 import no.nav.poao_tilgang.application.utils.Issuer
+import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.poao_tilgang.core.provider.SkjermetPersonProvider
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +25,9 @@ class SkjermetPersonController(
 		authService.verifyRequestIsMachineToMachine()
 
 		return skjermetPersonProvider.erSkjermetPerson(request.norskeIdenter)
+			.also {
+				SecureLog.secureLog.info("skjermet-person result : $it")
+			}
 	}
 
 	@Deprecated("Bruk heller endepunktet ovenfor")

@@ -38,13 +38,8 @@ open class VeilarbarenaClientImpl(
 			if (!response.isSuccessful) {
 				throw RuntimeException("Klarte ikke å hente status fra veilarbarena. Status: ${response.code}")
 			}
-
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
-			secureLog.info("Veilarbarena response, hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, body: $body")
-
 			val statusDto = fromJsonString<BrukerArenaStatusDto>(body)
-
 			return statusDto.oppfolgingsenhet
 		}
 	}
