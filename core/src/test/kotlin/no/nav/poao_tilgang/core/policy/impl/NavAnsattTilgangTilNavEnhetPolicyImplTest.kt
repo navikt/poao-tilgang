@@ -114,8 +114,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
-			"Har ikke tilgang til NAV enhet",
-			DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
+			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",
+			DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		)
 	}
 
