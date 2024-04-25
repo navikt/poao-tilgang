@@ -376,6 +376,38 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		)
 	}
 
+	@Test
+	fun `should cache Decision`() {
+		val requestId = UUID.randomUUID()
+		setupMocksHappyCase()
+		mockAbacHttpServer.mockDenyAll()
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "9999"}""",
+			"NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1"
+		)
+		response.body?.string() shouldBe denyResponse(
+			requestId,
+			"Har ikke tilgang til NAV enhet med sperre",
+			"IKKE_TILGANG_TIL_NAV_ENHET"
+		)
+		// reset all mocks - evaluation will fail if any external services are called
+		reset()
+		val requestId2 = UUID.randomUUID()
+		val response2 = sendPolicyRequest(
+			requestId2,
+			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "9999"}""",
+			"NAV_ANSATT_TILGANG_TIL_NAV_ENHET_MED_SPERRE_V1"
+		)
+		response2.body?.string() shouldBe denyResponse(
+			requestId2,
+			"Har ikke tilgang til NAV enhet med sperre",
+			"IKKE_TILGANG_TIL_NAV_ENHET"
+		)
+
+	}
+
 	private fun permitResponse(requestId: UUID): String {
 		return """
 			{"results":[{"requestId":"$requestId","decision":{"type":"PERMIT","message":null,"reason":null}}]}
