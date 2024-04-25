@@ -7,9 +7,11 @@ import no.nav.poao_tilgang.application.utils.JsonUtils
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
 
 open class VeilarbarenaClientImpl(
 	private val baseUrl: String,
@@ -22,8 +24,13 @@ open class VeilarbarenaClientImpl(
 	override fun hentBrukerOppfolgingsenhetId(personRequest: PersonRequest): NavEnhetId? {
 		val personRequestJSON = JsonUtils.toJsonString(personRequest)
 		val requestBody = personRequestJSON.toRequestBody(MEDIA_TYPE_JSON)
+
+		val url = "$baseUrl/api/v2/arena/hent-status".toHttpUrl().newBuilder()
+			// force fetch arenastatus from arena rather than cached version in veilarbarena
+			.addQueryParameter("forceSync", "true").build()
+
 		val request = Request.Builder()
-			.url("$baseUrl/api/v2/arena/hent-status")
+			.url(url)
 			.addHeader("Authorization", "Bearer ${tokenProvider()}")
 			.addHeader("Nav-Consumer-Id", consumerId)
 			.post(requestBody)

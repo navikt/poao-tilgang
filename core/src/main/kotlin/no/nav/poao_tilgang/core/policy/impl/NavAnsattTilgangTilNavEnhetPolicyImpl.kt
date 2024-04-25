@@ -52,7 +52,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	private fun harTilgangAbac(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 
-		val startTime = System.currentTimeMillis();
+		val startTime = System.currentTimeMillis()
 
 		val harTilgangAbac = abacProvider.harVeilederTilgangTilNavEnhet(navIdent, input.navEnhetId)
 
@@ -70,6 +70,13 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	}
 
 	private fun harTilgangEgen(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
+
+		val adGrupper = adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
+		adGrupper.has(modiaAdmin).whenPermit {
+			secureLog.info("Tilgang gitt basert paa 0000-GA-Modia_Admin")
+			// TODO tror denne skal audit-logges
+			return it
+		}
 		// Sjekk av adgruppe modiaoppfølging er egentlig ikke del av sjekken for tilgang til enhet
 		// https://confluence.adeo.no/display/ABAC/Tilgang+til+enhet
 		// MEN
@@ -78,15 +85,10 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 
 		// TODO Slutte med denne sjekken hvis fag er enige (bør ikke trenge tilgang til modia_oppfølging for å ha tilgang til enhet)
 
-		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
+		// Skulle kjørt NavAnsattTilgangTilOppfolgingPolicy, men tar en shortcut siden vi allerede har
+		adGrupper
 			.has(modiaOppfolging)
 			.whenDeny { return it }
-
-		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId).has(modiaAdmin).whenPermit {
-			secureLog.info("Tilgang gitt basert paa 0000-GA-Modia_Admin")
-			// TODO tror denne skal audit-logges
-			return it
-		}
 
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 
