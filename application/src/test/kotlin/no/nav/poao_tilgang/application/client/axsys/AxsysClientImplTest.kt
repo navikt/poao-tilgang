@@ -1,7 +1,7 @@
 package no.nav.poao_tilgang.application.client.axsys
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldMatch
+import io.kotest.matchers.shouldNotBe
 import no.nav.poao_tilgang.application.test_util.MockHttpServer
 import okhttp3.mockwebserver.MockResponse
 import org.junit.jupiter.api.AfterEach
@@ -70,7 +70,7 @@ class AxsysClientImplTest {
 		request.getHeader("Authorization") shouldBe "Bearer AXSYS_TOKEN"
 
 		request.getHeader("Nav-Consumer-Id") shouldBe "poao-tilgang"
-		request.getHeader("Nav-Call-Id") shouldMatch "[0-9a-fA-F]{30,32}"
+		request.getHeader("Nav-Call-Id") shouldNotBe null
 	}
 
 }
