@@ -25,20 +25,20 @@ open class VeilarbarenaClientImpl(
 		val personRequestJSON = JsonUtils.toJsonString(personRequest)
 		val requestBody = personRequestJSON.toRequestBody(MEDIA_TYPE_JSON)
 
-		val url = "$baseUrl/api/v2/arena/hent-status".toHttpUrl().newBuilder()
-			// force fetch arenastatus from arena rather than cached version in veilarbarena
-			.addQueryParameter("forceSync", "true").build()
+		val url = "$baseUrl/api/v2/arena/hent-status".toHttpUrl().newBuilder().build()
 
 		val request = Request.Builder()
 			.url(url)
 			.addHeader("Authorization", "Bearer ${tokenProvider()}")
 			.addHeader("Nav-Consumer-Id", consumerId)
+			// force fetch arenastatus from arena rather than cached version in veilarbarena
+			.addHeader("forceSync", "true")
 			.post(requestBody)
 			.build()
 
 		httpClient.newCall(request).execute().use { response ->
 			if (response.code == 404) {
-				secureLog.warn("Fant ikke bruker med fnr=${personRequest.fnr} i veilarbarena")
+				secureLog.info("Fant ikke bruker med fnr=${personRequest.fnr} i veilarbarena")
 				return null
 			}
 

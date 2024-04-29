@@ -23,7 +23,7 @@ class MockVeilarbarenaHttpServer : MockHttpServer() {
 			)
 
 		handleRequest(
-			matchPath = "/api/v2/arena/hent-status?forceSync=true",
+			matchPath = "/api/v2/arena/hent-status",
 			matchMethod = "POST",
 			response = response
 		)
@@ -35,7 +35,7 @@ class MockVeilarbarenaHttpServer : MockHttpServer() {
 			.setResponseCode(404)
 
 		handleRequest(
-			matchPath = "/api/v2/arena/hent-status?forceSync=true",
+			matchPath = "/api/v2/arena/hent-status",
 			matchMethod = "POST",
 			matchBodyContains = personRequestJSON,
 			response = response
