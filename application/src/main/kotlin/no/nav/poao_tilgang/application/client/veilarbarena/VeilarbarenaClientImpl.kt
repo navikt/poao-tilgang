@@ -36,7 +36,6 @@ open class VeilarbarenaClientImpl(
 			.post(requestBody)
 			.build()
 
-		secureLog.debug("Veilarbarena - {}", request)
 		httpClient.newCall(request).execute().use { response ->
 			if (response.code == 404) {
 				secureLog.warn("Fant ikke bruker med fnr=${personRequest.fnr} i veilarbarena")
