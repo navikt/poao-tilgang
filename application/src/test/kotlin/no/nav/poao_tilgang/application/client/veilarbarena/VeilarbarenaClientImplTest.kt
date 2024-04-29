@@ -44,10 +44,11 @@ class VeilarbarenaClientImplTest {
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldBe "/api/v2/arena/hent-status?forceSync=true"
+		request.path shouldBe "/api/v2/arena/hent-status"
 		request.method shouldBe "POST"
 		request.getHeader("Authorization") shouldBe "Bearer TOKEN"
 		request.getHeader("Nav-Consumer-Id") shouldBe "poao-tilgang"
+		request.getHeader("forceSync") shouldBe "true"
 		request.body.readUtf8() shouldBe personRequestJSON
 	}
 
