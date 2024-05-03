@@ -8,6 +8,9 @@ class EksternBrukerTilgangTilEksternBrukerPolicyImpl : EksternBrukerTilgangTilEk
 	override val name = "EksternBrukerTilgangTilEksternBruker"
 
 	override fun evaluate(input: EksternBrukerTilgangTilEksternBrukerPolicy.Input): Decision {
+		// TODO støtte påloggingsnivå?
+		// TODO støtte historiske fnr
+		// TODO støtte representasjon
 		return if (input.rekvirentNorskIdent == input.ressursNorskIdent) {
 			 Decision.Permit
 		} else {
