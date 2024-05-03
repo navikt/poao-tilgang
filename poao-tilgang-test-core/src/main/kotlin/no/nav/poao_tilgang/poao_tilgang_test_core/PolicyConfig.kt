@@ -19,12 +19,16 @@ data class Policies(
 	val navContext: NavContext = NavContext(),
 	val providers: Providers = Providers(navContext),
 	val timer: Timer= TimerService(),
+	val navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicyImpl = NavAnsattTilgangTilOppfolgingPolicyImpl(
+		providers.adGruppeProvider
+	),
 	val navAnsattTilgangTilNavEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		providers.navEnhetTilgangProvider,
 		providers.adGruppeProvider,
 		providers.abacProvider,
 		timer,
 		providers.toggleProvider,
+		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl = NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 		providers.oppfolgingsenhetProvider,
@@ -38,6 +42,7 @@ data class Policies(
 		providers.abacProvider,
 		timer,
 		providers.toggleProvider,
+		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val eksternBrukerTilgangTilEksternBrukerPolicy: EksternBrukerTilgangTilEksternBrukerPolicyImpl = EksternBrukerTilgangTilEksternBrukerPolicyImpl(),
 	val navAnsattBehandleStrengtFortroligUtlandBrukerePolicy: NavAnsattBehandleStrengtFortroligUtlandBrukerePolicyImpl = NavAnsattBehandleStrengtFortroligUtlandBrukerePolicyImpl(
@@ -53,9 +58,6 @@ data class Policies(
 		providers.adGruppeProvider
 	),
 	val navAnsattBehandleStrengtFortroligBrukerePolicy: NavAnsattBehandleStrengtFortroligBrukerePolicyImpl = NavAnsattBehandleStrengtFortroligBrukerePolicyImpl(
-		providers.adGruppeProvider
-	),
-	val navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicyImpl = NavAnsattTilgangTilOppfolgingPolicyImpl(
 		providers.adGruppeProvider
 	),
 	val navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicyImpl = NavAnsattTilgangTilModiaGenerellPolicyImpl(
