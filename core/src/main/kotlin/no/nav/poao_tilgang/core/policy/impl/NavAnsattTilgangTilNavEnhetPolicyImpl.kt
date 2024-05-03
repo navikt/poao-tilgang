@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.core.policy.impl
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
 import no.nav.poao_tilgang.core.provider.AbacProvider
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
@@ -23,10 +24,10 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	private val abacProvider: AbacProvider,
 	private val timer: Timer,
 	private val toggleProvider: ToggleProvider,
+	private val navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 ) : NavAnsattTilgangTilNavEnhetPolicy {
 
 	private val modiaAdmin = adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin
-	private val modiaOppfolging = adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging
 
 	private val denyDecision = Decision.Deny(
 		message = "Har ikke tilgang til NAV enhet",
@@ -85,10 +86,9 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 
 		// TODO Slutte med denne sjekken hvis fag er enige (bør ikke trenge tilgang til modia_oppfølging for å ha tilgang til enhet)
 
-		// Skulle kjørt NavAnsattTilgangTilOppfolgingPolicy, men tar en shortcut siden vi allerede har
-		adGrupper
-			.has(modiaOppfolging)
-			.whenDeny { return it }
+		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId)).whenDeny {
+			return it
+		}
 
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 

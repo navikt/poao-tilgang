@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.core.policy.impl
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
 import no.nav.poao_tilgang.core.provider.AbacProvider
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
@@ -19,6 +20,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 	private val abacProvider: AbacProvider,
 	private val timer: Timer,
 	private val toggleProvider: ToggleProvider,
+	private val navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 ) : NavAnsattTilgangTilNavEnhetMedSperrePolicy {
 
 	private val aktivitetsplanKvp = adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp
@@ -66,6 +68,15 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 			.whenPermit { return it }
 
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
+
+		// Sjekk av adgruppe modiaoppfølging er egentlig ikke del av sjekken for tilgang til enhet
+		// https://confluence.adeo.no/display/ABAC/Tilgang+til+enhet
+		// MEN
+		//  Sjekk av 'tilgang til oppfølging' kicker inn pga resource_type == "no.nav.abac.attributter.resource.felles.enhet"
+		// https://confluence.adeo.no/pages/viewpage.action?pageId=202371312
+		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId)).whenDeny {
+			return it
+		}
 
 		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 			.any { input.navEnhetId == it.enhetId }
