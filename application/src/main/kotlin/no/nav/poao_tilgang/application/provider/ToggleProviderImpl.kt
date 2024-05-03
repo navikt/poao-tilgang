@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Profile("!test")
 class ToggleProviderImpl(/*private val unleashClient: UnleashClient*/) : ToggleProvider {
 	override fun brukAbacDecision(): Boolean {
-		return true
+		return false
 //		return !unleashClient.isEnabled("poao-tilgang.use-poao-tilgang-decision")
 	}
 }
