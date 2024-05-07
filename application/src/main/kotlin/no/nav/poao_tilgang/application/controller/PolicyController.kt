@@ -2,6 +2,8 @@ package no.nav.poao_tilgang.application.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.benmanes.caffeine.cache.Caffeine
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.binder.cache.CaffeineStatsCounter
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.PolicyEvaluationRequestDto
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
@@ -23,17 +25,25 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.Duration
 
+
 @RestController
 @RequestMapping("/api/v1/policy")
 class PolicyController(
 	private val authService: AuthService,
 	private val policyService: PolicyService,
 	private val apiCoreMapper: ApiCoreMapper,
+	private val meterRegistry: MeterRegistry
 ) {
 	// Caching Decisions for 10 seconds, since same Policies are usually evaluated a number of times when veilarbpersonflate loads a new user
 	private val decisionCache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofSeconds(10))
 		.maximumSize(10_000)
+		.recordStats {
+			CaffeineStatsCounter(
+				meterRegistry,
+				"policyDecisions"
+			)
+		}
 		.build<PolicyInput, Decision>()
 
 	@ProtectedWithClaims(issuer = Issuer.AZURE_AD)
