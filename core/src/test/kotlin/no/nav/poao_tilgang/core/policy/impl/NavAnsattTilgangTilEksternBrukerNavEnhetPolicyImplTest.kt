@@ -42,7 +42,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til "0000-GA-GOSYS_NASJONAL"`() {
+	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GOSYS_NASJONAL`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.gosysNasjonal)
@@ -66,7 +66,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til "0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL"`() {
+	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.gosysUtvidbarTilNasjonal)

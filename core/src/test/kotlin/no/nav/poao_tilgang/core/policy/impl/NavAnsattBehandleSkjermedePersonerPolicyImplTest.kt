@@ -32,7 +32,7 @@ class NavAnsattBehandleSkjermedePersonerPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "permit" if access to 0000-GA-Egne_ansatte`() {
+	fun `should return permit if access to 0000-GA-Egne_ansatte`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -47,7 +47,7 @@ class NavAnsattBehandleSkjermedePersonerPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "deny" if not access to correct AD group`() {
+	fun `should return deny if not access to correct AD group`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)

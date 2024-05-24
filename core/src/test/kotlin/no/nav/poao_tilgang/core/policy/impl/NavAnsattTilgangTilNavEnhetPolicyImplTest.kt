@@ -51,7 +51,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere "permit" hvis NAV ansatt har rollen 0000-GA-Modia_Admin`() {
+	fun `skal returnere permit hvis NAV ansatt har rollen 0000-GA-Modia_Admin`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(
@@ -65,7 +65,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere "permit" hvis tilgang til enhet`() {
+	fun `skal returnere permit hvis tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
@@ -82,7 +82,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere "deny" hvis har ikke modia oppfolging`() {
+	fun `skal returnere deny hvis har ikke modia oppfolging`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -100,7 +100,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere "deny" hvis ikke tilgang til enhet`() {
+	fun `skal returnere deny hvis ikke tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
