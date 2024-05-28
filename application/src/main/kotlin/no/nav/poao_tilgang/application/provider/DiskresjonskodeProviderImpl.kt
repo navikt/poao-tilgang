@@ -18,7 +18,7 @@ class DiskresjonskodeProviderImpl(
 			?.person
 			?.adressebeskyttelse?.firstOrNull()?.let { tilDiskresjonskode(it) }
 			.also {
-				secureLog.info("PdlPip , hentDiskresjonskode for fnr: $norskIdent, result: $it")
+//				secureLog.info("PdlPip , hentDiskresjonskode for fnr: $norskIdent, result: $it")
 			}
 	}
 
