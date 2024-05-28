@@ -24,7 +24,7 @@ class GeografiskTilknyttetEnhetProviderImpl(
 			?.let { utledGeografiskTilknytningNr(it) }
 			?.let { norgClient.hentTilhorendeEnhet(it) }
 			.also {
-				secureLog.info("PdlPip , hentGeografiskTilknyttetEnhet for fnr: $norskIdent, result: $it")
+//				secureLog.info("PdlPip , hentGeografiskTilknyttetEnhet for fnr: $norskIdent, result: $it")
 			}
 	}
 
