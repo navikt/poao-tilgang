@@ -25,19 +25,19 @@ class AbacProviderImpl(private val pep: Pep) : AbacProvider {
 		}
 
 		return pep.harVeilederTilgangTilPerson(NavIdent.of(veilederIdent), action, Fnr.of(eksternBrukerId)).also {
-			secureLog.info("Abac harVeilederTilgangTilPerson, navIdent: $veilederIdent, action: $action, fnr: $eksternBrukerId result: $it")
+		//	secureLog.info("Abac harVeilederTilgangTilPerson, navIdent: $veilederIdent, action: $action, fnr: $eksternBrukerId result: $it")
 		}
 	}
 
 	override fun harVeilederTilgangTilNavEnhet(veilederIdent: String, navEnhetId: String): Boolean {
 		return pep.harVeilederTilgangTilEnhet(NavIdent.of(veilederIdent), EnhetId.of(navEnhetId)).also {
-			secureLog.info("Abac harVeilederTilgangTilNavEnhet, navIdent: $veilederIdent, navEnhetId: $navEnhetId result: $it")
+		//	secureLog.info("Abac harVeilederTilgangTilNavEnhet, navIdent: $veilederIdent, navEnhetId: $navEnhetId result: $it")
 		}
 	}
 
 	override fun harVeilederTilgangTilNavEnhetMedSperre(veilederIdent: String, navEnhetId: String): Boolean {
 		return pep.harTilgangTilEnhetMedSperre(NavIdent.of(veilederIdent), EnhetId.of(navEnhetId)).also {
-			secureLog.info("Abac harVeilederTilgangTilNavEnhetMedSperre, navIdent: $veilederIdent, navEnhetId: $navEnhetId result: $it")
+		//	secureLog.info("Abac harVeilederTilgangTilNavEnhetMedSperre, navIdent: $veilederIdent, navEnhetId: $navEnhetId result: $it")
 		}
 	}
 
