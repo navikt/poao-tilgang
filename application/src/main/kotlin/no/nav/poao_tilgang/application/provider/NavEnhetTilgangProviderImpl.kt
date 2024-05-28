@@ -21,7 +21,7 @@ class NavEnhetTilgangProviderImpl(
 					temaer = it.temaer
 				)
 			}.also {
-				secureLog.info("Axsys , hentTilganger for navIdent: $navIdent, result: $it")
+//				secureLog.info("Axsys , hentTilganger for navIdent: $navIdent, result: $it")
 			}
 	}
 

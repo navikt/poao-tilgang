@@ -82,7 +82,7 @@ class AdGruppeProviderImpl(
 			azureIdToNavIdentCache.put(azureId, navIdent)
 			azureId
 		}.also {
-			secureLog.info("MS Graph hentAzureId navIdent: $navIdent result: $it")
+//			secureLog.info("MS Graph hentAzureId navIdent: $navIdent result: $it")
 		}
 	}
 

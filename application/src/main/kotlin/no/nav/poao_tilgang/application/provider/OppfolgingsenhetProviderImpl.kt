@@ -33,7 +33,7 @@ class OppfolgingsenhetProviderImpl(
 		}
 			.getOrNull()
 			.also {
-				secureLog.info("Veilarbarena , hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, result: $it")
+//				secureLog.info("Veilarbarena , hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, result: $it")
 			}
 	}
 
