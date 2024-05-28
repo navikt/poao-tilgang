@@ -22,14 +22,14 @@ class SkjermetPersonProvider(
 				secureLog.warn("Mangler data for skjermet person med fnr=$norskIdent, defaulter til true")
 				return@getOrElse true
 			}.also {
-				secureLog.info("ErSkjermetPerson norskIdent: $norskIdent result: $it")
+			//	secureLog.info("ErSkjermetPerson norskIdent: $norskIdent result: $it")
 			}
 	}
 
 	override fun erSkjermetPerson(norskeIdenter: List<String>): Map<String, Boolean> {
 		return erSkjermetWithCache(norskeIdenter)
 			.also {
-				secureLog.info("ErSkjermetPerson bulk result: $it")
+			//	secureLog.info("ErSkjermetPerson bulk result: $it")
 			}
 	}
 

@@ -26,7 +26,7 @@ class SkjermetPersonController(
 
 		return skjermetPersonProvider.erSkjermetPerson(request.norskeIdenter)
 			.also {
-				SecureLog.secureLog.info("skjermet-person result : $it")
+//				SecureLog.secureLog.info("skjermet-person result : $it")
 			}
 	}
 
