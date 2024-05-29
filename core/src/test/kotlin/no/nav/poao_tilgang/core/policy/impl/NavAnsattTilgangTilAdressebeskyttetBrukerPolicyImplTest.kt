@@ -34,7 +34,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	private val navAnsattAzureId = UUID.randomUUID()
 
 	@Test
-	fun `skal returnere permit hvis bruker ikke har adressebeskyttelse`() {
+	fun `skal returnere "permit" hvis bruker ikke har adressebeskyttelse`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -47,7 +47,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis bruker er fortrolig og nav ansatt kan behandle fortrolig bruker`() {
+	fun `skal returnere "permit" hvis bruker er fortrolig og nav ansatt kan behandle fortrolig bruker`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -66,7 +66,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis bruker er fortrolig og nav ansatt IKKE kan behandle fortrolig bruker`() {
+	fun `skal returnere "deny" hvis bruker er fortrolig og nav ansatt IKKE kan behandle fortrolig bruker`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -85,7 +85,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis bruker er strengt fortrolig og nav ansatt kan behandle strengt fortrolig bruker`() {
+	fun `skal returnere "permit" hvis bruker er strengt fortrolig og nav ansatt kan behandle strengt fortrolig bruker`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -104,7 +104,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis bruker er strengt fortrolig og nav ansatt IKKE kan behandle strengt fortrolig bruker`() {
+	fun `skal returnere "deny" hvis bruker er strengt fortrolig og nav ansatt IKKE kan behandle strengt fortrolig bruker`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -123,7 +123,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis bruker er strengt fortrolig utland og nav ansatt kan behandle strengt fortrolig utland bruker`() {
+	fun `skal returnere "permit" hvis bruker er strengt fortrolig utland og nav ansatt kan behandle strengt fortrolig utland bruker`() {
 		val norskIdent = "1235645644"
 
 		every {
@@ -142,7 +142,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis bruker er strengt fortrolig utland og nav ansatt IKKE kan behandle strengt fortrolig utland bruker`() {
+	fun `skal returnere "deny" hvis bruker er strengt fortrolig utland og nav ansatt IKKE kan behandle strengt fortrolig utland bruker`() {
 		val norskIdent = "1235645644"
 
 		every {

@@ -57,7 +57,7 @@ class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 
 
 	@Test
-	fun `should return permit if ABAC returns permit`() {
+	fun `should return "permit" if ABAC returns "permit"`() {
 		mockAbacDecision(true, LESE)
 		mockDecision()
 
@@ -67,7 +67,7 @@ class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `should return deny if ABAC returns deny`() {
+	fun `should return "deny" if ABAC returns "deny"`() {
 		mockAbacDecision(false, LESE)
 		mockDecision()
 

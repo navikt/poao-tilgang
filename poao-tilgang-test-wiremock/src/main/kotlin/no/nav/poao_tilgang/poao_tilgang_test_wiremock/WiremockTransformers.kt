@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.common.FileSource
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.Parameters
 import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer
 import com.github.tomakehurst.wiremock.http.Request
@@ -16,17 +19,12 @@ import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.HarTilgangTilModiaRequest
 import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
-import no.nav.poao_tilgang.api.dto.response.AdGruppeDto
-import no.nav.poao_tilgang.api.dto.response.DecisionDto
-import no.nav.poao_tilgang.api.dto.response.DecisionType
-import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
-import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
-import no.nav.poao_tilgang.api.dto.response.PolicyEvaluationResultDto
-import no.nav.poao_tilgang.api.dto.response.TilgangResponse
+import no.nav.poao_tilgang.api.dto.response.*
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
+import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 import kotlin.reflect.KFunction1
 

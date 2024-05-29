@@ -24,7 +24,7 @@ class NavAnsattTilgangTilSkjermetPersonPolicyImplTest {
 	private val navAnsattAzureId = UUID.randomUUID()
 
 	@Test
-	fun `skal returnere permit hvis bruker ikke er skjermet`() {
+	fun `skal returnere "permit" hvis bruker ikke er skjermet`() {
 
 		every {
 			skjermetPersonProvider.erSkjermetPerson(norskIdent)
@@ -36,7 +36,7 @@ class NavAnsattTilgangTilSkjermetPersonPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis bruker er skjermet og NAV ansatt kan behandle skjermede personer`() {
+	fun `skal returnere "permit" hvis bruker er skjermet og NAV ansatt kan behandle skjermede personer`() {
 
 		every {
 			skjermetPersonProvider.erSkjermetPerson(norskIdent)
@@ -52,7 +52,7 @@ class NavAnsattTilgangTilSkjermetPersonPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis bruker er skjermet og NAV ansatt IKKE kan behandle skjermede personer`() {
+	fun `skal returnere "deny" hvis bruker er skjermet og NAV ansatt IKKE kan behandle skjermede personer`() {
 
 		every {
 			skjermetPersonProvider.erSkjermetPerson(norskIdent)

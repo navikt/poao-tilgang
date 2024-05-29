@@ -31,7 +31,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return permit if access to 0000-GA-BD06_ModiaGenerellTilgang`() {
+	fun `should return "permit" if access to 0000-GA-BD06_ModiaGenerellTilgang`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -44,7 +44,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return permit if access to 0000-GA-Modia-Oppfolging`() {
+	fun `should return "permit" if access to 0000-GA-Modia-Oppfolging`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -57,7 +57,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 	}
 
 	@Test
-	fun `should return permit if access to 0000-GA-SYFO-SENSITIV`() {
+	fun `should return "permit" if access to 0000-GA-SYFO-SENSITIV`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -69,7 +69,7 @@ class NavAnsattTilgangTilModiaPolicyImplTest {
 		policy.evaluate(NavAnsattTilgangTilModiaPolicy.Input(navAnsattAzureId)) shouldBe Decision.Permit
 	}
 	@Test
-	fun `should return deny if missing access to ad groups`() {
+	fun `should return "deny" if missing access to ad groups`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)

@@ -11,7 +11,7 @@ class EksternBrukerTilgangTilEksternBrukerPolicyImplTest {
 	private val policy = EksternBrukerTilgangTilEksternBrukerPolicyImpl()
 
 	@Test
-	fun `skal returnere permit hvis rekvirent og ressurs er lik`() {
+	fun `skal returnere "permit" hvis rekvirent og ressurs er lik`() {
 
 
 		val decision = policy.evaluate(
@@ -25,7 +25,7 @@ class EksternBrukerTilgangTilEksternBrukerPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis rekvirent og ressurs er ulik`() {
+	fun `skal returnere "deny" hvis rekvirent og ressurs er ulik`() {
 
 
 		val decision = policy.evaluate(
