@@ -92,6 +92,8 @@ spec:
         - application: paw-arbeidssokerregisteret-api-inngang
           namespace: paw
           cluster: prod-gcp
+        - application: tiltak-refusjon-api
+          namespace: arbeidsgiver
     outbound:
       rules:
         - application: skjermede-personer-pip

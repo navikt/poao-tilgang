@@ -96,6 +96,8 @@ spec:
         - application: please
           namespace: dab
           cluster: dev-gcp
+        - application: tiltak-refusjon-api
+          namespace: arbeidsgiver
     outbound:
       rules:
         - application: skjermede-personer-pip
