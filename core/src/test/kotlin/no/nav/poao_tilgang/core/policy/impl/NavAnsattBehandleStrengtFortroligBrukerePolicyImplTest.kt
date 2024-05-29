@@ -33,7 +33,7 @@ class NavAnsattBehandleStrengtFortroligBrukerePolicyImplTest {
 
 
 	@Test
-	fun `should return permit if access to 0000-GA-Strengt_Fortrolig_Adresse`() {
+	fun `should return "permit" if access to 0000-GA-Strengt_Fortrolig_Adresse`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -48,7 +48,7 @@ class NavAnsattBehandleStrengtFortroligBrukerePolicyImplTest {
 	}
 
 	@Test
-	fun `should return deny if not access to 0000-GA-Strengt_Fortrolig_Adresse`() {
+	fun `should return "deny" if not access to 0000-GA-Strengt_Fortrolig_Adresse`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)

@@ -52,7 +52,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis NAV ansatt har rollen 0000-GA-aktivitesplan_kvp`() {
+	fun `skal returnere "permit" hvis NAV ansatt har rollen 0000-GA-aktivitesplan_kvp`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(
@@ -65,7 +65,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere permit hvis tilgang til enhet`() {
+	fun `skal returnere "permit" hvis tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
@@ -82,7 +82,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis ikke tilgang til enhet`() {
+	fun `skal returnere "deny" hvis ikke tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
@@ -100,7 +100,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere deny hvis ikke tilgang til modia oppfølging`() {
+	fun `skal returnere "deny" hvis ikke tilgang til modia oppfølging`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
