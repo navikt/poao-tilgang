@@ -50,7 +50,6 @@ open class IntegrationTest {
 		lateinit var mockAxsysHttpServer : MockAxsysHttpServer
 		lateinit var mockAbacHttpServer : MockAbacHttpServer
 		lateinit var mockVeilarbarenaHttpServer : MockVeilarbarenaHttpServer
-		//lateinit var mockPdlHttpServer : MockPdlHttpServer
 		lateinit var mockPdlPipHttpServer : MockPdlPipHttpServer
 		lateinit var mockNorgHttpServer : MockNorgHttpServer
 		lateinit var mockMachineToMachineHttpServer : MockMachineToMachineHttpServer

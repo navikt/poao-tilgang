@@ -15,10 +15,9 @@ class RequesterLogFilter(
 
 	override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
 		val azpName: String? = tokenValidationContextHolder
-			.tokenValidationContext
+			.getTokenValidationContext()
 			.anyValidClaims
-			.map { claims -> claims.getStringClaim("azp_name") }
-			.orElse(null)
+			?.getStringClaim("azp_name")
 
 		try {
 			if (azpName == null) {
