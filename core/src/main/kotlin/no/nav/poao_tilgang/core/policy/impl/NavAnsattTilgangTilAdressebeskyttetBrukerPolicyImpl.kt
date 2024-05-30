@@ -31,6 +31,7 @@ class NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImpl(
 			Diskresjonskode.STRENGT_FORTROLIG_UTLAND -> navAnsattBehandleStrengtFortroligUtlandBrukerePolicy.evaluate(
 				NavAnsattBehandleStrengtFortroligUtlandBrukerePolicy.Input(input.navAnsattAzureId)
 			)
+			Diskresjonskode.UGRADERT -> Decision.Permit
 		}
 	}
 
