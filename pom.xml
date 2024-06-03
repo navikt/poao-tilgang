@@ -42,7 +42,7 @@
 
         <mock-oauth-server.version>2.1.2</mock-oauth-server.version>
         <token-validaiton.version>3.1.1</token-validaiton.version>
-        <mockk.version>1.13.10</mockk.version>
+        <mockk.version>1.13.11</mockk.version>
         <kotest.version>5.6.1</kotest.version>
         <common.version>3.2024.02.21_11.18-8f9b43befae1</common.version>
     </properties>
