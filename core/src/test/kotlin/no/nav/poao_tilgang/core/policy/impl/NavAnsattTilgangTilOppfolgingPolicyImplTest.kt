@@ -33,7 +33,7 @@ class NavAnsattTilgangTilOppfolgingPolicyImplTest {
 
 
 	@Test
-	fun `should return "permit" if access to 0000-GA-Modia-Oppfolging`() {
+	fun `should return permit if access to 0000-GA-Modia-Oppfolging`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
@@ -48,7 +48,7 @@ class NavAnsattTilgangTilOppfolgingPolicyImplTest {
 	}
 
 	@Test
-	fun `should return "deny" if not access to 0000-GA-Modia-Oppfolging`() {
+	fun `should return deny if not access to 0000-GA-Modia-Oppfolging`() {
 
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)

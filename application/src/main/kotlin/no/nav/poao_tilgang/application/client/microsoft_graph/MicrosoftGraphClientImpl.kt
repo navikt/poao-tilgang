@@ -29,7 +29,7 @@ open class MicrosoftGraphClientImpl(
 
 		return client.newCall(request).execute().use { response ->
 			if (!response.isSuccessful) {
-				throw RuntimeException("Klarte ikke å hente Azure Id")
+				throw RuntimeException("Klarte ikke å hente AdGrupper for navAnsatt")
 			}
 
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
@@ -51,16 +51,11 @@ open class MicrosoftGraphClientImpl(
 
 		return client.newCall(request).execute().use { response ->
 			if (!response.isSuccessful) {
-				throw RuntimeException("Klarte ikke å hente Azure Id")
+				throw RuntimeException("Klarte ikke å hente adGrupper")
 			}
-
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
 			val responseData = fromJsonString<HentAdGrupper.Response>(body)
-
 			responseData.value.map { AdGruppe(it.id, it.displayName) }
-
-
 		}
 	}
 

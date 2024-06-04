@@ -96,6 +96,8 @@ spec:
         - application: please
           namespace: dab
           cluster: dev-gcp
+        - application: tiltak-refusjon-api
+          namespace: arbeidsgiver
     outbound:
       rules:
         - application: skjermede-personer-pip
@@ -128,10 +130,10 @@ spec:
       value: https://veilarbarena.dev-fss-pub.nais.io/veilarbarena
     - name: VEILARBARENA_SCOPE
       value: api://dev-fss.pto.veilarbarena/.default
-    - name: PDL_SCOPE
-      value: api://dev-fss.pdl.pdl-api/.default
-    - name: PDL_URL
-      value: https://pdl-api.dev-fss-pub.nais.io
+    - name: PDLPIP_SCOPE
+      value: api://dev-fss.pdl.pdl-pip-api/.default
+    - name: PDLPIP_URL
+      value: https://pdl-pip-api.dev-fss-pub.nais.io
     - name: NORG_URL
       value: https://norg2.dev-fss-pub.nais.io
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE

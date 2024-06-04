@@ -11,11 +11,9 @@ class NavAnsattBehandleSkjermedePersonerPolicyImpl(
 
 	override val name = "NavAnsattBehandleSkjermedePersoner"
 
-	private val behandleSkjermedePersonerGrupper = adGruppeProvider.hentTilgjengeligeAdGrupper().let {
-		listOf(
-			it.egneAnsatte
-		)
-	}
+	private val behandleSkjermedePersonerGrupper = listOf(
+		adGruppeProvider.hentTilgjengeligeAdGrupper().egneAnsatte
+	)
 
 	override fun evaluate(input: NavAnsattBehandleSkjermedePersonerPolicy.Input): Decision {
 		return adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)

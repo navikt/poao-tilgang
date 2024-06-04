@@ -30,7 +30,7 @@ internal open class AxsysClientImpl(
 
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
 
-			secureLog.info("Axsys response, hentTilganger for navIdent: $navIdent, body: $body")
+//			secureLog.info("Axsys response, hentTilganger for navIdent: $navIdent, body: $body")
 
 			val tilgangResponse = fromJsonString<TilgangResponse>(body)
 

@@ -21,7 +21,9 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 
 	private val abacProvider = mockk<AbacProvider>()
 
-	private lateinit var policy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl
+	private lateinit var navEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl
+
+	private lateinit var oppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicyImpl
 
 	private val navAnsattAzureId = UUID.randomUUID()
 
@@ -35,7 +37,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 
 	@BeforeEach
 	internal fun setUp() {
-		every { toggleProvider.brukAbacDecision() } returns true
+		every { toggleProvider.brukAbacDecision() } returns false
 
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
@@ -45,46 +47,60 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
 		} returns navIdent
 
-		policy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider)
+		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
+		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
 	}
 
 	@Test
-	fun `should return "permit" if ABAC returns "permit"`() {
-		every {
-			abacProvider.harVeilederTilgangTilNavEnhetMedSperre(navIdent, navEnhetId)
-		} returns true
-
-		val decision = policy.evaluate(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
-
-		decision shouldBe Decision.Permit
-	}
-
-	@Test
-	fun `should return "deny" if ABAC returns "deny"`() {
-		every {
-			abacProvider.harVeilederTilgangTilNavEnhetMedSperre(navIdent, navEnhetId)
-		} returns false
-
-		val decision = policy.evaluate(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
-
-		decision shouldBe Decision.Deny("Deny fra ABAC", DecisionDenyReason.IKKE_TILGANG_FRA_ABAC)
-	}
-
-	@Test
-	fun `skal returnere "permit" hvis NAV ansatt har rollen 0000-GA-aktivitesplan_kvp`() {
+	fun `skal returnere permit hvis NAV ansatt har rollen 0000-GA-aktivitesplan_kvp`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(
 			testAdGrupper.aktivitetsplanKvp
 		)
 
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Permit
 	}
 
 	@Test
-	fun `skal returnere "permit" hvis tilgang til enhet`() {
+	fun `skal returnere permit hvis tilgang til enhet`() {
+		every {
+			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
+		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
+
+		every {
+			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
+		} returns listOf(
+			NavEnhetTilgang(navEnhetId, "test", emptyList())
+		)
+
+		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+
+		decision shouldBe Decision.Permit
+	}
+
+	@Test
+	fun `skal returnere deny hvis ikke tilgang til enhet`() {
+		every {
+			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
+		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
+
+		every {
+			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
+		} returns emptyList()
+
+		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+
+		decision shouldBe Decision.Deny(
+			"Har ikke tilgang til NAV enhet med sperre",
+			DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
+		)
+	}
+
+	@Test
+	fun `skal returnere deny hvis ikke tilgang til modia oppfølging`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -94,27 +110,11 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns listOf(
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
-
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
-
-		decision shouldBe Decision.Permit
-	}
-
-	@Test
-	fun `skal returnere "deny" hvis ikke tilgang til enhet`() {
-		every {
-			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
-		} returns emptyList()
-
-		every {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns emptyList()
-
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
-			"Har ikke tilgang til NAV enhet med sperre",
-			DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
+			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",
+			DecisionDenyReason.MANGLER_TILGANG_TIL_AD_GRUPPE
 		)
 	}
 

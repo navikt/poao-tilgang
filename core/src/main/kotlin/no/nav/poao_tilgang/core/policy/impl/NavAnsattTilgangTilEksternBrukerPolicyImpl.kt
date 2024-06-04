@@ -11,6 +11,9 @@ import no.nav.poao_tilgang.core.utils.AbacDecisionDiff.toAbacDecision
 import no.nav.poao_tilgang.core.utils.Timer
 import java.time.Duration
 
+/**
+ * Etter modell av ABAC https://confluence.adeo.no/pages/viewpage.action?pageId=202371160
+ */
 class NavAnsattTilgangTilEksternBrukerPolicyImpl(
 	private val abacProvider: AbacProvider,
 	private val navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
@@ -65,14 +68,14 @@ class NavAnsattTilgangTilEksternBrukerPolicyImpl(
 
 	private fun harTilgangEgen(input: NavAnsattTilgangTilEksternBrukerPolicy.Input): Decision {
 		val (navAnsattAzureId, tilgangType, norskIdent) = input
-
+		// FP-Adressebeskyttelse
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy.evaluate(
 			NavAnsattTilgangTilAdressebeskyttetBrukerPolicy.Input(
 				navAnsattAzureId = navAnsattAzureId,
 				norskIdent = norskIdent
 			)
 		).whenDeny { return it }
-
+		// FP-Skjermede NAV ansatte
 		navAnsattTilgangTilSkjermetPersonPolicy.evaluate(
 			NavAnsattTilgangTilSkjermetPersonPolicy.Input(
 				navAnsattAzureId = navAnsattAzureId,
@@ -80,6 +83,9 @@ class NavAnsattTilgangTilEksternBrukerPolicyImpl(
 			)
 		).whenDeny { return it }
 
+		// Sjekker ikke Kontorsperre når vi ber om tilgang til bruker
+
+		// organisatorisk og geografisk tilgang + tilgang enhet
 		navAnsattTilgangTilEksternBrukerNavEnhetPolicy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
 				navAnsattAzureId = navAnsattAzureId,
@@ -87,6 +93,7 @@ class NavAnsattTilgangTilEksternBrukerPolicyImpl(
 			)
 		).whenDeny { return it }
 
+		// tilgang oppfølging
 		when (tilgangType) {
 			TilgangType.LESE ->
 				navAnsattTilgangTilModiaGenerellPolicy.evaluate(

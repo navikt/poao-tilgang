@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.application.provider
 import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClient
 import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNotNull
+import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.AKTIVITETSPLAN_KVP
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.EGNE_ANSATTE
@@ -59,7 +60,6 @@ class AdGruppeProviderImpl(
 		.maximumSize(10_000)
 		.build<AzureObjectId, NavIdent>()
 
-	// TODO: Bruk heller List<UUID> for å redusere minnebruk
 	private val navAnsattAzureIdToAdGroupsCache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofMinutes(15))
 		.maximumSize(10_000)
@@ -70,28 +70,30 @@ class AdGruppeProviderImpl(
 		.build<AzureObjectId, AdGruppe>()
 
 	override fun hentAdGrupper(navAnsattAzureId: AzureObjectId): List<AdGruppe> {
-		return hentAdGrupperForNavAnsattWithCache(navAnsattAzureId)
+		return hentAdGrupperForNavAnsattWithCache(navAnsattAzureId).also {
+		//	secureLog.info("Ms graph hentAdGrupper navAnsattAzureId: $navAnsattAzureId result: $it")
+		}
 	}
 
 	override fun hentAzureIdMedNavIdent(navIdent: NavIdent): AzureObjectId {
 		return tryCacheFirstNotNull(navIdentToAzureIdCache, navIdent) {
 			val azureId = microsoftGraphClient.hentAzureIdMedNavIdent(navIdent)
-
 			// Oppdaterer også motsatt cache
 			azureIdToNavIdentCache.put(azureId, navIdent)
-
 			azureId
+		}.also {
+//			secureLog.info("MS Graph hentAzureId navIdent: $navIdent result: $it")
 		}
 	}
 
 	override fun hentNavIdentMedAzureId(navAnsattAzureId: AzureObjectId): NavIdent {
 		return tryCacheFirstNotNull(azureIdToNavIdentCache, navAnsattAzureId) {
 			val navIdent = microsoftGraphClient.hentNavIdentMedAzureId(navAnsattAzureId)
-
 			// Oppdaterer også motsatt cache
 			navIdentToAzureIdCache.put(navIdent, navAnsattAzureId)
-
 			navIdent
+		}.also {
+		//	secureLog.info("MS Graph hentNavIdent navAnsattAzureId: $navAnsattAzureId result: $it")
 		}
 	}
 
@@ -102,7 +104,6 @@ class AdGruppeProviderImpl(
 	private fun hentAdGrupperForNavAnsattWithCache(azureId: AzureObjectId): List<AdGruppe> {
 		return tryCacheFirstNotNull(navAnsattAzureIdToAdGroupsCache, azureId) {
 			val gruppeIder = microsoftGraphClient.hentAdGrupperForNavAnsatt(azureId)
-
 			hentAdGrupperWithCache(gruppeIder)
 		}
 	}
@@ -110,7 +111,6 @@ class AdGruppeProviderImpl(
 	private fun hentAdGrupperWithCache(adGruppeIder: List<AzureObjectId>): List<AdGruppe> {
 		val cachedGroups = mutableListOf<AdGruppe>()
 		val missingGroups = mutableListOf<AzureObjectId>()
-
 		adGruppeIder.forEach {
 			val gruppe = adGruppeIdToAdGruppeCache.getIfPresent(it)
 
@@ -120,20 +120,16 @@ class AdGruppeProviderImpl(
 				missingGroups.add(it)
 			}
 		}
-
 		if (missingGroups.isEmpty()) {
 			return cachedGroups
 		}
-
 		val adGrupper = microsoftGraphClient.hentAdGrupper(missingGroups)
-
 		adGrupper.forEach {
 			val gruppe = AdGruppe(it.id, it.name)
 
 			adGruppeIdToAdGruppeCache.put(it.id, gruppe)
 			cachedGroups.add(gruppe)
 		}
-
 		return cachedGroups
 	}
 

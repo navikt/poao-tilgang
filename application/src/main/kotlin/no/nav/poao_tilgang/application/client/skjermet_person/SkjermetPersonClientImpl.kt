@@ -29,9 +29,7 @@ open class SkjermetPersonClientImpl(
 			if (!response.isSuccessful) {
 				throw RuntimeException("Klarte ikke å hente skjermet person bolk")
 			}
-
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
 			fromJsonString(body)
 		}
 	}

@@ -32,10 +32,10 @@ object AbacDecisionDiff {
 				if (abacDecision.type != poaoTilgangDecision.type) {
 					secureLog.warn("Decision diff for policy $policyName - ulikt svar: ABAC=($abacDecision) POAO-tilgang=($poaoTilgangDecision) Input=$input")
 				} else {
-					secureLog.debug("Decision diff for policy $policyName - likt svar: ABAC=($abacDecision) POAO-tilgang=($poaoTilgangDecision) Input=$input")
+				//	secureLog.debug("Decision diff for policy $policyName - likt svar: ABAC=($abacDecision) POAO-tilgang=($poaoTilgangDecision) Input=$input")
 				}
 			} catch (e: Throwable) {
-				log.error("Feil i POAO-tilgang implementasjon", e)
+				log.error("Teknisk feil under sammenligning med ABAC. Ignorerer", e)
 			}
 		}
 	}

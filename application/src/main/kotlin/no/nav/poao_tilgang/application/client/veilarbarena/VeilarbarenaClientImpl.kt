@@ -7,9 +7,11 @@ import no.nav.poao_tilgang.application.utils.JsonUtils
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
 
 open class VeilarbarenaClientImpl(
 	private val baseUrl: String,
@@ -22,29 +24,29 @@ open class VeilarbarenaClientImpl(
 	override fun hentBrukerOppfolgingsenhetId(personRequest: PersonRequest): NavEnhetId? {
 		val personRequestJSON = JsonUtils.toJsonString(personRequest)
 		val requestBody = personRequestJSON.toRequestBody(MEDIA_TYPE_JSON)
+
+		val url = "$baseUrl/api/v2/arena/hent-status".toHttpUrl().newBuilder().build()
+
 		val request = Request.Builder()
-			.url("$baseUrl/api/v2/arena/hent-status")
+			.url(url)
 			.addHeader("Authorization", "Bearer ${tokenProvider()}")
 			.addHeader("Nav-Consumer-Id", consumerId)
+			// force fetch arenastatus from arena rather than cached version in veilarbarena
+			.addHeader("forceSync", "true")
 			.post(requestBody)
 			.build()
 
 		httpClient.newCall(request).execute().use { response ->
 			if (response.code == 404) {
-				secureLog.warn("Fant ikke bruker med fnr=${personRequest.fnr} i veilarbarena")
+				secureLog.info("Fant ikke bruker med fnr=${personRequest.fnr} i veilarbarena")
 				return null
 			}
 
 			if (!response.isSuccessful) {
 				throw RuntimeException("Klarte ikke å hente status fra veilarbarena. Status: ${response.code}")
 			}
-
 			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
-
-			secureLog.info("Veilarbarena response, hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, body: $body")
-
 			val statusDto = fromJsonString<BrukerArenaStatusDto>(body)
-
 			return statusDto.oppfolgingsenhet
 		}
 	}

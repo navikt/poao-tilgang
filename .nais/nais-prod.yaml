@@ -92,6 +92,8 @@ spec:
         - application: paw-arbeidssokerregisteret-api-inngang
           namespace: paw
           cluster: prod-gcp
+        - application: tiltak-refusjon-api
+          namespace: arbeidsgiver
     outbound:
       rules:
         - application: skjermede-personer-pip
@@ -124,10 +126,10 @@ spec:
       value: https://veilarbarena.prod-fss-pub.nais.io/veilarbarena
     - name: VEILARBARENA_SCOPE
       value: api://prod-fss.pto.veilarbarena/.default
-    - name: PDL_SCOPE
-      value: api://prod-fss.pdl.pdl-api/.default
-    - name: PDL_URL
-      value: https://pdl-api.prod-fss-pub.nais.io
+    - name: PDLPIP_SCOPE
+      value: api://prod-fss.pdl.pdl-pip-api/.default
+    - name: PDLPIP_URL
+      value: https://pdl-pip-api.prod-fss-pub.nais.io
     - name: NORG_URL
       value: https://norg2.prod-fss-pub.nais.io
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE

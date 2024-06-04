@@ -21,7 +21,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 
 	private val abacProvider = mockk<AbacProvider>()
 
-	private lateinit var policy: NavAnsattTilgangTilNavEnhetPolicyImpl
+	private lateinit var tilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl
+	private lateinit var oppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicyImpl
 
 	private val navAnsattAzureId = UUID.randomUUID()
 
@@ -35,7 +36,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 
 	@BeforeEach
 	internal fun setUp() {
-		every { toggleProvider.brukAbacDecision() } returns true
+		every { toggleProvider.brukAbacDecision() } returns false
 
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
@@ -45,33 +46,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
 		} returns navIdent
 
-		policy = NavAnsattTilgangTilNavEnhetPolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider)
+		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
+		tilgangTilNavEnhetPolicy = NavAnsattTilgangTilNavEnhetPolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
 	}
 
 	@Test
-	fun `should return "permit" if ABAC returns "permit"`() {
-		every {
-			abacProvider.harVeilederTilgangTilNavEnhet(navIdent, navEnhetId)
-		} returns true
-
-		val decision = policy.evaluate(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
-
-		decision shouldBe Decision.Permit
-	}
-
-	@Test
-	fun `should return "deny" if ABAC returns "deny"`() {
-		every {
-			abacProvider.harVeilederTilgangTilNavEnhet(navIdent, navEnhetId)
-		} returns false
-
-		val decision = policy.evaluate(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
-
-		decision shouldBe Decision.Deny("Deny fra ABAC", DecisionDenyReason.IKKE_TILGANG_FRA_ABAC)
-	}
-
-	@Test
-	fun `skal returnere "permit" hvis NAV ansatt har rollen 0000-GA-Modia_Admin`() {
+	fun `skal returnere permit hvis NAV ansatt har rollen 0000-GA-Modia_Admin`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(
@@ -79,13 +59,13 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			testAdGrupper.modiaAdmin
 		)
 
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Permit
 	}
 
 	@Test
-	fun `skal returnere "permit" hvis tilgang til enhet`() {
+	fun `skal returnere permit hvis tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
@@ -96,13 +76,13 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
 
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Permit
 	}
 
 	@Test
-	fun `skal returnere "deny" hvis har ikke modia oppfolging`() {
+	fun `skal returnere deny hvis har ikke modia oppfolging`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -111,7 +91,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
 			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",
@@ -120,7 +100,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	fun `skal returnere "deny" hvis ikke tilgang til enhet`() {
+	fun `skal returnere deny hvis ikke tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
@@ -129,7 +109,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = policy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
 			"Har ikke tilgang til NAV enhet",

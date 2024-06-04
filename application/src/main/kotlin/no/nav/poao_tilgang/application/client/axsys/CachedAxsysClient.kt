@@ -15,7 +15,8 @@ class CachedAxsysClient(
 			axsysClient.hentTilganger(navIdent)
 		}
 
-	override fun hentTilganger(navIdent: String) =
-		cache.get(navIdent) ?: throw IllegalStateException("Fant ikke brukerident")
+	override fun hentTilganger(navIdent: String) : List<EnhetTilgang> {
+		return cache.get(navIdent) ?: throw IllegalStateException("Fant ikke brukerident")
+	}
 
 }

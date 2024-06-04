@@ -57,13 +57,15 @@ open class PolicyConfig {
 		abacProvider: AbacProvider,
 		timerService: TimerService,
 		toggleProvider: ToggleProvider,
+		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 		): NavAnsattTilgangTilNavEnhetMedSperrePolicy {
 		return NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 			navEnhetTilgangProvider,
 			adGruppeProvider,
 			abacProvider,
 			timerService,
-			toggleProvider
+			toggleProvider,
+			navAnsattTilgangTilOppfolgingPolicy,
 		)
 	}
 
@@ -99,10 +101,12 @@ open class PolicyConfig {
 		abacProvider: AbacProvider,
 		timerService: TimerService,
 		toggleProvider: ToggleProvider,
+		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 		): NavAnsattTilgangTilNavEnhetPolicy {
 		return NavAnsattTilgangTilNavEnhetPolicyImpl(
 			navEnhetTilgangProvider, adGruppeProvider, abacProvider,timerService,
-			toggleProvider
+			toggleProvider,
+			navAnsattTilgangTilOppfolgingPolicy
 		)
 	}
 

@@ -17,6 +17,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 	private val norskIdent = "63546454"
 	private val navAnsattAzureId = UUID.randomUUID()
+	private val navIdent = "Z999999"
 	private val navEnhet = "1234"
 
 	private val oppfolgingsenhetProvider = mockk<OppfolgingsenhetProvider>()
@@ -41,7 +42,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til "0000-GA-GOSYS_NASJONAL"`() {
+	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GOSYS_NASJONAL`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.gosysNasjonal)
@@ -65,7 +66,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til "0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL"`() {
+	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.gosysUtvidbarTilNasjonal)
@@ -176,7 +177,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 		every {
 			adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
-		} returns ""
+		} returns navIdent
 
 		every {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
@@ -186,7 +187,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
+		every { navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent) } returns listOf(
 			NavEnhetTilgang(
 				navEnhet,
 				"",
@@ -241,12 +242,20 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		} returns emptyList()
 
 		every {
+			adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
+		} returns navIdent
+
+		every {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
-		} returns null
+		} returns navEnhet
 
 		every {
 			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
 		} returns null
+
+		every {
+			navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent)
+		} returns emptyList()
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
