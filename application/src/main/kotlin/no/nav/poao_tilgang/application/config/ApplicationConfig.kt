@@ -1,8 +1,8 @@
 package no.nav.poao_tilgang.application.config
 
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.common.abac.*
 import no.nav.common.abac.audit.*
 import no.nav.common.rest.filter.LogRequestFilter
