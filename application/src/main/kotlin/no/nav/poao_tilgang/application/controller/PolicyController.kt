@@ -19,7 +19,6 @@ import no.nav.poao_tilgang.application.utils.Issuer
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.PolicyInput
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -35,8 +34,6 @@ class PolicyController(
 	private val apiCoreMapper: ApiCoreMapper,
 	private val meterRegistry: MeterRegistry
 ) {
-	private val log = LoggerFactory.getLogger(javaClass)
-
 	// Caching Decisions for 10 seconds, since same Policies are usually evaluated a number of times when veilarbpersonflate loads a new user
 	private val decisionCache = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofSeconds(10))
@@ -53,7 +50,6 @@ class PolicyController(
 	@PostMapping("/evaluate")
 	fun evaluatePolicies(@RequestBody evaluatePoliciesRequest: EvaluatePoliciesRequest<JsonNode>): EvaluatePoliciesResponse {
 		authService.verifyRequestIsMachineToMachine()
-		log.info("Proxy: ${System.getProperty("https.proxyHost")}, ${System.getProperty("http.proxyHost")}")
 
 		val evaluations = evaluatePoliciesRequest.requests
 			.map { evaluateRequest(it) }
