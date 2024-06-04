@@ -120,6 +120,8 @@ spec:
       value: e750ceb5-b70b-4d94-b4fa-9d22467b786b
     - name: AD_GRUPPE_ID_AKTIVITETSPLAN_KVP
       value: f743db0b-bf8e-4a10-b5be-08a9170346fb
+    - name: JDK_JAVA_OPTIONS
+      value: "-Dhttp.proxyHost=webproxy.nais -Dhttps.proxyHost=webproxy.nais -Dhttp.proxyPort=8088 -Dhttps.proxyPort=8088 -Dhttp.nonProxyHosts=localhost|127.0.0.1|10.254.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*.nais.io|*.aivencloud.com|*.intern.dev.nav.no"
   vault:
     enabled: true
     paths:
