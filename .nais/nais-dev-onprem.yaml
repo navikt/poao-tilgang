@@ -51,6 +51,7 @@ spec:
           namespace: pto
         - application: veilarbfilter
           namespace: pto
+          cluster: dev-gcp
         - application: veilarbarena
           namespace: pto
         - application: veilarbperson
