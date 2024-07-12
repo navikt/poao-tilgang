@@ -94,6 +94,8 @@ spec:
           cluster: prod-gcp
         - application: tiltak-refusjon-api
           namespace: arbeidsgiver
+        - application: veilarbaktivitet
+          namespace: dab
     outbound:
       rules:
         - application: skjermede-personer-pip
