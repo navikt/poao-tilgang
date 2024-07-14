@@ -63,8 +63,7 @@ spec:
           namespace: pto
           cluster: prod-fss
         - application: veilarbfilter
-          namespace: pto
-          cluster: prod-fss
+          namespace: obo
         - application: veilarbarena
           namespace: pto
           cluster: prod-fss
