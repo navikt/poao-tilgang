@@ -230,6 +230,37 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	}
 
 	@Test
+	fun `evaluatePolicy - should permit NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1`() {
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin,
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging
+			)
+		)
+
+		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaAdminPolicyInput(
+			navAnsattAzureId = navAnsattId
+		)).getOrThrow()
+
+		decision shouldBe Decision.Permit
+	}
+
+	@Test
+	fun `evaluatePolicy - should deny NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1`() {
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
+			)
+		)
+
+		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaAdminPolicyInput(
+			navAnsattAzureId = navAnsattId
+		)).getOrThrow()
+
+		decision shouldBe Decision.Deny("Har ikke tilgang til rollen 0000-GA-Modia_Admin","MANGLER_TILGANG_TIL_AD_GRUPPE")
+	}
+
+	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE`() {
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(

@@ -70,8 +70,7 @@ spec:
           namespace: obo
           cluster: dev-gcp
         - application: veilarbveileder
-          namespace: pto
-          cluster: dev-fss
+          namespace: obo
         - application: veilarbvedtaksstotte
           namespace: pto
           cluster: dev-fss

@@ -22,6 +22,7 @@ open class PolicyResolverConfig {
 		navAnsattBehandleFortroligBrukerePolicy: NavAnsattBehandleFortroligBrukerePolicy,
 		navAnsattTiltangTilEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicy,
 		navAnsattBehandleSkjermedePersonerPolicy: NavAnsattBehandleSkjermedePersonerPolicy,
+		navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicy,
 		timer: Timer,
 		toggleProvider: ToggleProvider
 	): PolicyResolver {
@@ -34,6 +35,7 @@ open class PolicyResolverConfig {
 				navAnsattBehandleFortroligBrukerePolicy,
 				navAnsattTiltangTilEnhetMedSperrePolicy,
 				navAnsattBehandleSkjermedePersonerPolicy,
+				navAnsattTilgangTilModiaAdminPolicy,
 				timer,
 			toggleProvider
 		)

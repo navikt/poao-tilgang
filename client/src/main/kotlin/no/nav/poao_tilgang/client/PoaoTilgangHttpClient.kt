@@ -261,5 +261,13 @@ fun toRequestDto(policyRequest: PolicyRequest): PolicyEvaluationRequestDto<Any> 
 			),
 			policyId = PolicyId.NAV_ANSATT_NAV_IDENT_BEHANDLE_SKJERMEDE_PERSONER_V1
 		)
+
+		is NavAnsattTilgangTilModiaAdminPolicyInput -> PolicyEvaluationRequestDto(
+			requestId = policyRequest.requestId,
+			policyInput = NavAnsattTilgangTilModiaAdminPolicyInputV1Dto(
+				navAnsattAzureId = policyRequest.policyInput.navAnsattAzureId
+			),
+			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1
+		)
 	}
 }
