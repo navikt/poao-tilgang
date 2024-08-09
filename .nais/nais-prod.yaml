@@ -54,8 +54,7 @@ spec:
           namespace: pto
           cluster: prod-fss
         - application: veilarbveileder
-          namespace: pto
-          cluster: prod-fss
+          namespace: obo
         - application: veilarbvedtaksstotte
           namespace: pto
           cluster: prod-fss

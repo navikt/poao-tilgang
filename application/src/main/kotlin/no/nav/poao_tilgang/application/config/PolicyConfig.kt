@@ -151,4 +151,9 @@ open class PolicyConfig {
 	open fun navAnsattTilgangTilModiaGenerellPolicy(adGruppeProvider: AdGruppeProvider): NavAnsattTilgangTilModiaGenerellPolicy {
 		return NavAnsattTilgangTilModiaGenerellPolicyImpl(adGruppeProvider)
 	}
+
+	@Bean
+	open fun navAnsattTilgangTilModiaAdminPolicy(adGruppeProvider: AdGruppeProvider): NavAnsattTilgangTilModiaAdminPolicy {
+		return NavAnsattTilgangTilModiaAdminPolicyImpl(adGruppeProvider)
+	}
 }
