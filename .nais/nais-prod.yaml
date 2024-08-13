@@ -73,6 +73,8 @@ spec:
         - application: veilarboppgave
           namespace: pto
           cluster: prod-fss
+        - application: veilarboppgave
+          namespace: obo
         - application: veilarboppfolging
           namespace: pto
           cluster: prod-fss
