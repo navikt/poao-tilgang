@@ -67,6 +67,11 @@ class ApiCoreMapper(private val adGruppeProvider: AdGruppeProvider) {
 				NavAnsattTilgangTilModiaPolicy.Input(dto.navAnsattAzureId)
 			}
 
+			PolicyId.NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1 -> {
+				val dto = fromJsonNode<NavAnsattTilgangTilModiaAdminPolicyInputV1Dto>(policyInput)
+				NavAnsattTilgangTilModiaAdminPolicy.Input(dto.navAnsattAzureId)
+			}
+
 			PolicyId.EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 -> {
 				val dto = fromJsonNode<EksternBrukerTilgangTilEksternBrukerPolicyInputV1Dto>(policyInput)
 				EksternBrukerTilgangTilEksternBrukerPolicy.Input(

@@ -63,6 +63,9 @@ data class Policies(
 	val navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicyImpl = NavAnsattTilgangTilModiaGenerellPolicyImpl(
 		providers.adGruppeProvider
 	),
+	val navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicyImpl = NavAnsattTilgangTilModiaAdminPolicyImpl(
+		providers.adGruppeProvider
+	),
 	val navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicyImpl = NavAnsattTilgangTilSkjermetPersonPolicyImpl(
 		providers.skjermetPersonProvider,
 		navAnsattBehandleSkjermedePersonerPolicy
@@ -93,6 +96,7 @@ data class Policies(
 			navAnsattBehandleFortroligBrukerePolicy,
 			navAnsattTilgangTilNavEnhetMedSperrePolicy,
 			navAnsattBehandleSkjermedePersonerPolicy,
+			navAnsattTilgangTilModiaAdminPolicy,
 			timer,
 			providers.toggleProvider,
 	)
