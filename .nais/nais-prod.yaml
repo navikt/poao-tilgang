@@ -53,6 +53,8 @@ spec:
         - application: veilarbportefolje
           namespace: pto
           cluster: prod-fss
+        - application: veilarbportefolje
+          namespace: obo
         - application: veilarbveileder
           namespace: pto
           cluster: prod-fss
