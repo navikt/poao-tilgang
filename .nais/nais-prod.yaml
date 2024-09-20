@@ -53,12 +53,20 @@ spec:
         - application: veilarbportefolje
           namespace: pto
           cluster: prod-fss
+        - application: veilarbportefolje
+          namespace: obo
         - application: veilarbveileder
           namespace: pto
           cluster: prod-fss
+        - application: veilarbveileder
+          namespace: obo
+          cluster: prod-gcp
         - application: veilarbvedtaksstotte
           namespace: pto
           cluster: prod-fss
+        - application: veilarbvedtaksstotte
+          namespace: obo
+          cluster: prod-gcp
         - application: pto-admin
           namespace: pto
           cluster: prod-fss
@@ -70,6 +78,9 @@ spec:
         - application: veilarbperson
           namespace: pto
           cluster: prod-fss
+        - application: veilarbperson
+          namespace: obo
+          cluster: prod-gcp
         - application: veilarboppgave
           namespace: pto
           cluster: prod-fss
@@ -97,6 +108,8 @@ spec:
         - application: tiltak-refusjon-api
           namespace: arbeidsgiver
         - application: veilarbaktivitet
+          namespace: dab
+        - application: veilarbdialog
           namespace: dab
     outbound:
       rules:
