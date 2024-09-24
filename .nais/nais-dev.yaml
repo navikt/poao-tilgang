@@ -53,6 +53,9 @@ spec:
         - application: paw-arbeidssokerregisteret-api-inngang
           namespace: paw
           cluster: dev-gcp
+        - application: paw-arbeidssoekerregisteret-api-bekreftelse
+          namespace: paw
+          cluster: dev-gcp
         - application: amt-tiltak
           namespace: amt
         - application: amt-person-service
