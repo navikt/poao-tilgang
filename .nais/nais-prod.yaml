@@ -90,6 +90,9 @@ spec:
         - application: veilarboppfolging
           namespace: pto
           cluster: prod-fss
+        - application: veilarboppfolging
+          namespace: poao
+          cluster: prod-gcp
         - application: veilarbvedtakinfo
           namespace: pto
           cluster: prod-fss
