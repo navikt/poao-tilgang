@@ -113,6 +113,8 @@ spec:
           namespace: dab
         - application: veilarbdialog
           namespace: dab
+        - application: tiltakspenger-vedtak
+          namespace: tpts
     outbound:
       rules:
         - application: skjermede-personer-pip
