@@ -116,6 +116,10 @@ spec:
           namespace: dab
         - application: tiltakspenger-vedtak
           namespace: tpts
+        - application: amt-deltaker-bff
+          namespace: amt
+        - application: amt-deltaker
+          namespace: amt
     outbound:
       rules:
         - application: skjermede-personer-pip
