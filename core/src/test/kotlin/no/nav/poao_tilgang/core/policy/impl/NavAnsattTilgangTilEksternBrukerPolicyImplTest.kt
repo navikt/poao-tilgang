@@ -52,6 +52,7 @@ class NavAnsattTilgangTilEksternBrukerPolicyImplTest {
 	@BeforeEach
 	internal fun setupMocks() {
 		every { toggleProvider.brukAbacDecision() } returns true
+		every { toggleProvider.logAbacDecisionDiff() } returns true
 	}
 
 
