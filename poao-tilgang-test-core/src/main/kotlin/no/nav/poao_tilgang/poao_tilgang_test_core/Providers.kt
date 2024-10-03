@@ -20,6 +20,10 @@ class ToggleProviderImpl : ToggleProvider {
 	override fun brukAbacDecision(): Boolean {
 		return false
 	}
+
+	override fun logAbacDecisionDiff(): Boolean {
+		return true
+	}
 }
 
 class SkjermetPersonProviderImpl(private  val navContext: NavContext) : SkjermetPersonProvider {

@@ -31,12 +31,16 @@ class NavAnsattTilgangTilEksternBrukerPolicyImpl(
 	override fun evaluate(input: NavAnsattTilgangTilEksternBrukerPolicy.Input): Decision {
 		return if (toggleProvider.brukAbacDecision()) {
 			val harTilgangAbac = harTilgangAbac(input)
-			asyncLogDecisionDiff(name, input, ::harTilgang, { _ -> harTilgangAbac })
+			if (toggleProvider.logAbacDecisionDiff()) {
+				asyncLogDecisionDiff(name, input, ::harTilgang, { _ -> harTilgangAbac })
+			}
 
 			harTilgangAbac
 		} else {
 			val result = harTilgang(input)
-			asyncLogDecisionDiff(name, input, { _ -> result }, ::harTilgangAbac)
+			if (toggleProvider.logAbacDecisionDiff()) {
+				asyncLogDecisionDiff(name, input, { _ -> result }, ::harTilgangAbac)
+			}
 
 			result
 		}

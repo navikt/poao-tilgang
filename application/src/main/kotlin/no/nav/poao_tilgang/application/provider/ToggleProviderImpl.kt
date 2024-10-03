@@ -11,4 +11,8 @@ class ToggleProviderImpl(/*private val unleashClient: UnleashClient*/) : ToggleP
 		return false
 //		return !unleashClient.isEnabled("poao-tilgang.use-poao-tilgang-decision")
 	}
+
+	override fun logAbacDecisionDiff(): Boolean {
+		return false
+	}
 }

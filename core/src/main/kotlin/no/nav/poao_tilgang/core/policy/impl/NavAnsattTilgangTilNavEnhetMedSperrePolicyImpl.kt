@@ -36,14 +36,16 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 
 		return if (toggleProvider.brukAbacDecision()) {
 			val harTilgangAbac = harTilgangAbac(input)
-
-			asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbac })
+			if (toggleProvider.logAbacDecisionDiff()) {
+				asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbac })
+			}
 
 			harTilgangAbac
 		} else {
 			val resultat = harTilgang(input)
-
-			asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
+			if (toggleProvider.logAbacDecisionDiff()) {
+ 				asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
+			}
 			resultat
 		}
 	}
@@ -51,7 +53,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 	private fun harTilgangAbac(input: NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input): Decision {
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 
-		val startTime=System.currentTimeMillis();
+		val startTime=System.currentTimeMillis()
 
 		val harTilgangAbac = abacProvider.harVeilederTilgangTilNavEnhetMedSperre(navIdent, input.navEnhetId)
 
