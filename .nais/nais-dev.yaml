@@ -87,9 +87,6 @@ spec:
           namespace: pto
           cluster: dev-fss
         - application: veilarbperson
-          namespace: pto
-          cluster: dev-fss
-        - application: veilarbperson
           namespace: obo
           cluster: dev-gcp
         - application: veilarboppgave

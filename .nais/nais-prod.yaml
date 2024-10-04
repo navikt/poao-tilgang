@@ -76,9 +76,6 @@ spec:
           namespace: pto
           cluster: prod-fss
         - application: veilarbperson
-          namespace: pto
-          cluster: prod-fss
-        - application: veilarbperson
           namespace: obo
           cluster: prod-gcp
         - application: veilarboppgave
