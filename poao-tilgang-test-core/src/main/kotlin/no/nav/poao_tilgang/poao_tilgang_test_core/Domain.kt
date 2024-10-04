@@ -1,16 +1,13 @@
 package no.nav.poao_tilgang.poao_tilgang_test_core
 
-import net.datafaker.Faker
 import no.nav.poao_tilgang.core.domain.*
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgang
 import no.nav.poao_tilgang.poao_tilgang_test_core.fnr_generator.FoedselsnummerGenerator
 import java.util.*
 
-internal val faker = Faker()
 internal val fnrGenerator = FoedselsnummerGenerator()
 class PrivatBruker(
 	val norskIdent: NorskIdent = fnrGenerator.foedselsnummer().asString,
-	val name: String = faker.name().fullName(), //for å gjøre det enklere å se hva som fieler. letter å se på en en lang rekke nummer.
 	var erSkjermet: Boolean = false,
 	var oppfolgingsenhet: NavEnhetId? = nyNavEnhet(),
 	var diskresjonskode: Diskresjonskode? = null
@@ -19,7 +16,6 @@ class PrivatBruker(
 class NavAnsatt(
 	val navIdent: NavIdent = nyNavIdent(),
 	val azureObjectId: AzureObjectId = UUID.randomUUID(),
-	val name: String = faker.name().fullName(),  //for å gjøre det enklere å se hva som fieler. letter å se på en en lang rekke nummer.
 ) {
 	val enheter: MutableSet<NavEnhetTilgang> = mutableSetOf()
 	val adGrupper: MutableSet<AdGruppe> = mutableSetOf()
@@ -54,6 +50,12 @@ class PrivatBrukere {
 	}
 
 	fun ny(): PrivatBruker {
+		val privatBruker = PrivatBruker()
+		add(privatBruker)
+		return privatBruker
+	}
+
+	fun ny(norskIdent: NorskIdent, ): PrivatBruker {
 		val privatBruker = PrivatBruker()
 		add(privatBruker)
 		return privatBruker
