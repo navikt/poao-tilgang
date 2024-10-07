@@ -28,6 +28,22 @@ class NavContextTest {
 	}
 
 	@Test
+	fun `veileder skal ha tilgang til bruker når bruker opprettes med fnr`() {
+		val nyEksternBruker = navContext.privatBrukere.ny("10048835000")
+		val veileder = navContext.navAnsatt.nyFor(nyEksternBruker)
+
+		val input = NavAnsattTilgangTilEksternBrukerPolicy.Input(
+			navAnsattAzureId = veileder.azureObjectId,
+			tilgangType = TilgangType.SKRIVE,
+			norskIdent = nyEksternBruker.norskIdent
+		)
+
+		val result = polecyResolver.evaluate(input)
+
+		result.decision shouldBe Decision.Permit
+	}
+
+	@Test
 	fun `nks skal ha tilgang til bruker`() {
 		val nyEksternBruker = navContext.privatBrukere.ny()
 		val nks = navContext.navAnsatt.nyNksAnsatt()
