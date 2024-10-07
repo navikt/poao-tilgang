@@ -41,11 +41,15 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	override fun evaluate(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
 		return if (toggleProvider.brukAbacDecision()) {
 			val harTilgangAbacDesicion = harTilgangAbac(input)
-			asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbacDesicion })
+			if (toggleProvider.logAbacDecisionDiff()) {
+				asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbacDesicion })
+			}
 			harTilgangAbacDesicion
 		} else {
 			val resultat = harTilgang(input)
-			asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
+			if (toggleProvider.logAbacDecisionDiff()) {
+				asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
+			}
 			resultat
 		}
 	}

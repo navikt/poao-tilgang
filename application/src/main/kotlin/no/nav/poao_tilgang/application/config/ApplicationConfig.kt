@@ -118,8 +118,8 @@ open class ApplicationConfig {
 	}
 
 	@Bean
-	open fun healthChecks(abacClient: AbacClient) : HealthChecksPoaoTilgang {
-		return HealthChecksPoaoTilgang(abacClient)
+	open fun healthChecks() : HealthChecksPoaoTilgang {
+		return HealthChecksPoaoTilgang()
 	}
 
 	@Bean
