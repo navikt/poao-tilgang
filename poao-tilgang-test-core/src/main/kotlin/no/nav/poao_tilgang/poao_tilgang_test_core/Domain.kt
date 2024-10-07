@@ -56,7 +56,7 @@ class PrivatBrukere {
 	}
 
 	fun ny(norskIdent: NorskIdent, ): PrivatBruker {
-		val privatBruker = PrivatBruker()
+		val privatBruker = PrivatBruker(norskIdent = norskIdent)
 		add(privatBruker)
 		return privatBruker
 	}
