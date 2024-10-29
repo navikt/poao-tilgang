@@ -44,7 +44,7 @@
         <token-validaiton.version>4.1.8</token-validaiton.version>
         <mockk.version>1.13.11</mockk.version>
         <kotest.version>5.9.1</kotest.version>
-        <common.version>3.2024.05.23_05.46-2b29fa343e8e</common.version>
+        <common.version>3.2024.10.25_13.44-9db48a0dbe67</common.version>
     </properties>
 
     <distributionManagement>
