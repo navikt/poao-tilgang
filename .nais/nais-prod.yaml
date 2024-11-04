@@ -111,7 +111,7 @@ spec:
           namespace: dab
         - application: veilarbdialog
           namespace: dab
-        - application: tiltakspenger-vedtak
+        - application: tiltakspenger-saksbehandling-api
           namespace: tpts
         - application: amt-deltaker-bff
           namespace: amt
