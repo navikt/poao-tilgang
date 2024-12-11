@@ -40,6 +40,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: paw-tilgangskontroll
+          namespace: paw
+          cluster: dev-gcp
         - application: paw-arbeidssoker-besvarelse
           namespace: paw
           cluster: dev-gcp
