@@ -83,7 +83,6 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 		val erSkjermetPerson = false
 
 		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(enhet)
-
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 
