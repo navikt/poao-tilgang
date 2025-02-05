@@ -5,7 +5,10 @@ import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.domain.Diskresjonskode
 import no.nav.poao_tilgang.core.domain.NavEnhetId
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -22,10 +25,12 @@ open class NorgHttpClient(
 	)
 	override fun hentTilhorendeEnhet(
 		geografiskTilknytning: String,
+		skjermet: Boolean?,
+		diskresjonskode: Diskresjonskode?
 	): NavEnhetId? {
 
 		val requestBuilder = Request.Builder()
-			.url(joinPaths(baseUrl, "/norg2/api/v1/enhet/navkontor/", geografiskTilknytning))
+			.url(norgUrl(geografiskTilknytning, skjermet, diskresjonskode))
 			.get()
 
 		val request = requestBuilder.build()
@@ -47,6 +52,13 @@ open class NorgHttpClient(
 			val enhetResponse = fromJsonString<EnhetResponse>(body)
 			return enhetResponse.enhetNr
 		}
+	}
+
+	private fun norgUrl(geografiskTilknytning: String, skjermet: Boolean?, diskresjonsKode: Diskresjonskode?): HttpUrl {
+		return joinPaths(baseUrl, "/norg2/api/v1/enhet/navkontor/", geografiskTilknytning).toHttpUrl().newBuilder()
+			.addQueryParameter("skjermet", skjermet.toString())
+			.addQueryParameter("disk", if (diskresjonsKode == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else "")
+			.build()
 	}
 
 	private data class EnhetResponse(val enhetNr: String)

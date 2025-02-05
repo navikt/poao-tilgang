@@ -28,11 +28,11 @@ class TilgangsattributtController(
 	@PostMapping
 	fun tilgangsattributter(@RequestBody norskIdent: NorskIdent): TilgangsattributterResponse {
 		authService.verifyRequestIsMachineToMachine()
-		val geografiskTilknyttetEnhet = geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
-		val diskresjonskode = diskresjonskodeProvider.hentDiskresjonskode(norskIdent)?.toApiDto()?: Diskresjonskode.UGRADERT
 		val erSkjermetPerson = skjermetPersonProvider.erSkjermetPerson(norskIdent)
+		val geografiskTilknyttetEnhet = geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent, erSkjermetPerson)
+		val diskresjonskode = diskresjonskodeProvider.hentDiskresjonskode(norskIdent)?.toApiDto()?: Diskresjonskode.UGRADERT
 		return TilgangsattributterResponse(
-			geografiskTilknytning = geografiskTilknyttetEnhet,
+			standardEnhet = geografiskTilknyttetEnhet,
 			skjermet = erSkjermetPerson,
 			diskresjonskode = diskresjonskode
 		)

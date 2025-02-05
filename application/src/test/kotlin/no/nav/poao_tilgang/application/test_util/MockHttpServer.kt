@@ -46,10 +46,18 @@ open class MockHttpServer : Closeable {
 		matchMethod: String? = null,
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
+		matchQueryParam: Map<String, String>? = null,
 		response: MockResponse
 	) {
 		val requestMatcher = matcher@{ req: RecordedRequest ->
-			if (matchPath != null && req.path != matchPath)
+			if (matchQueryParam != null) {
+				val allParamsMatches = matchQueryParam.all { matchEntry ->
+					req.requestUrl!!.queryParameterValues(matchEntry.key).contains(matchEntry.value) == true
+				}
+				if (!allParamsMatches) return@matcher false
+			}
+
+			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
 				return@matcher false
 
 			if (matchMethod != null && req.method != matchMethod)
@@ -79,7 +87,7 @@ open class MockHttpServer : Closeable {
 		return object : Dispatcher() {
 			override fun dispatch(request: RecordedRequest): MockResponse {
 				val response = responseHandlers.entries.find { it.key.invoke(request) }?.value
-					?: throw IllegalStateException("No handler for $request")
+					?: throw IllegalStateException("No handler for $request ${request.headers}")
 
 				log.info("Responding [${request.path}]: $response")
 

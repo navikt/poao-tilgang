@@ -4,7 +4,6 @@ import no.nav.poao_tilgang.application.client.norg.NorgClient
 import no.nav.poao_tilgang.application.client.pdl_pip.GeografiskTilknytning
 import no.nav.poao_tilgang.application.client.pdl_pip.GeografiskTilknytningType
 import no.nav.poao_tilgang.application.client.pdl_pip.PdlPipClient
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.domain.NorskIdent
@@ -19,13 +18,20 @@ class GeografiskTilknyttetEnhetProviderImpl(
 
 	override fun hentGeografiskTilknyttetEnhet(norskIdent: NorskIdent): NavEnhetId? {
 		val brukerInfo = pdlpipClient.hentBrukerInfo(norskIdent)
-
 		return brukerInfo?.geografiskTilknytning
 			?.let { utledGeografiskTilknytningNr(it) }
 			?.let { norgClient.hentTilhorendeEnhet(it) }
-			.also {
-//				secureLog.info("PdlPip , hentGeografiskTilknyttetEnhet for fnr: $norskIdent, result: $it")
-			}
+	}
+
+	override fun hentGeografiskTilknyttetEnhet(norskIdent: NorskIdent, skjermet: Boolean): NavEnhetId? {
+		val brukerInfo = pdlpipClient.hentBrukerInfo(norskIdent)
+
+		return brukerInfo?.let { bruker ->
+			val adressebeskyttelse = bruker.person.adressebeskyttelse?.firstOrNull()?.tilDiskresjonskode()
+			bruker.geografiskTilknytning
+				?.let { utledGeografiskTilknytningNr(it) }
+				?.let { norgClient.hentTilhorendeEnhet(it, skjermet, adressebeskyttelse) }
+		}
 	}
 
 	private fun utledGeografiskTilknytningNr(geografiskTilknytning: GeografiskTilknytning): String? {

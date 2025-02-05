@@ -52,6 +52,13 @@ class GeografiskTilknyttetEnhetProviderImpl(private val navContext: NavContext):
 	override fun hentGeografiskTilknyttetEnhet(norskIdent: NorskIdent): NavEnhetId? {
 		return navContext.privatBrukere.get(norskIdent)?.oppfolgingsenhet //for enklere oppset
 	}
+
+	override fun hentGeografiskTilknyttetEnhet(
+		norskIdent: NorskIdent,
+		skjermet: Boolean
+	): NavEnhetId? {
+		return navContext.privatBrukere.get(norskIdent)?.oppfolgingsenhet
+	}
 }
 
 class DiskresjonskodeProviderImpl(private val  navContext: NavContext): DiskresjonskodeProvider {

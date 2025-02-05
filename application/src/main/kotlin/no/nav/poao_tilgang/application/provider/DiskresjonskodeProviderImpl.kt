@@ -15,19 +15,18 @@ class DiskresjonskodeProviderImpl(
 	override fun hentDiskresjonskode(norskIdent: String): Diskresjonskode? {
 		return pdlPipClient.hentBrukerInfo(norskIdent)
 			?.person
-			?.adressebeskyttelse?.firstOrNull()?.let { tilDiskresjonskode(it) }
+			?.adressebeskyttelse?.firstOrNull()?.let { it.tilDiskresjonskode() }
 			.also {
 //				secureLog.info("PdlPip , hentDiskresjonskode for fnr: $norskIdent, result: $it")
 			}
 	}
+}
 
-	private fun tilDiskresjonskode(adressebeskyttelse: Adressebeskyttelse): Diskresjonskode {
-		return when(adressebeskyttelse.gradering) {
-			Gradering.FORTROLIG -> Diskresjonskode.FORTROLIG
-			Gradering.STRENGT_FORTROLIG -> Diskresjonskode.STRENGT_FORTROLIG
-			Gradering.STRENGT_FORTROLIG_UTLAND -> Diskresjonskode.STRENGT_FORTROLIG_UTLAND
-			Gradering.UGRADERT -> Diskresjonskode.UGRADERT
-		}
+fun Adressebeskyttelse.tilDiskresjonskode(): Diskresjonskode {
+	return when(this.gradering) {
+		Gradering.FORTROLIG -> Diskresjonskode.FORTROLIG
+		Gradering.STRENGT_FORTROLIG -> Diskresjonskode.STRENGT_FORTROLIG
+		Gradering.STRENGT_FORTROLIG_UTLAND -> Diskresjonskode.STRENGT_FORTROLIG_UTLAND
+		Gradering.UGRADERT -> Diskresjonskode.UGRADERT
 	}
-
 }
