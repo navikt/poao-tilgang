@@ -50,13 +50,13 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4331", skjermet = true)
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
 
-		tilhorendeEnhet shouldBe "1024"
+		tilhorendeEnhet shouldBe navVikaFossen
 
 		val request = mockServer.latestRequest()
 
@@ -70,9 +70,9 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
 
@@ -90,9 +90,9 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
 
@@ -110,9 +110,9 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
 
@@ -130,9 +130,9 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
 
