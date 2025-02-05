@@ -87,7 +87,7 @@ open class MockHttpServer : Closeable {
 		return object : Dispatcher() {
 			override fun dispatch(request: RecordedRequest): MockResponse {
 				val response = responseHandlers.entries.find { it.key.invoke(request) }?.value
-					?: throw IllegalStateException("No handler for $request ${request.headers}")
+					?: throw IllegalStateException("No handler for $request")
 
 				log.info("Responding [${request.path}]: $response")
 

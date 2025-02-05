@@ -21,10 +21,10 @@ class MockNorgHttpServer : MockHttpServer() {
 			matchPath = "/norg2/api/v1/enhet/navkontor/$geografiskTilknytning",
 			matchMethod = "GET",
 			response = response,
-			matchQueryParam = mapOf(
+			matchQueryParam = if(skjermet != null && gradering != null) mapOf(
 				"skjermet" to skjermet.toString(),
 				"disk" to if (gradering == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else ""
-			)
+			) else null
 		)
 	}
 

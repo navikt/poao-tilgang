@@ -55,10 +55,10 @@ open class NorgHttpClient(
 	}
 
 	private fun norgUrl(geografiskTilknytning: String, skjermet: Boolean?, diskresjonsKode: Diskresjonskode?): HttpUrl {
-		return joinPaths(baseUrl, "/norg2/api/v1/enhet/navkontor/", geografiskTilknytning).toHttpUrl().newBuilder()
-			.addQueryParameter("skjermet", skjermet.toString())
-			.addQueryParameter("disk", if (diskresjonsKode == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else "")
-			.build()
+		val builder = joinPaths(baseUrl, "/norg2/api/v1/enhet/navkontor/", geografiskTilknytning).toHttpUrl().newBuilder()
+		skjermet?.let { builder.addQueryParameter("skjermet", it.toString()) }
+		diskresjonsKode?.let { builder.addQueryParameter("disk", if (it == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else "") }
+		return builder.build()
 	}
 
 	private data class EnhetResponse(val enhetNr: String)
