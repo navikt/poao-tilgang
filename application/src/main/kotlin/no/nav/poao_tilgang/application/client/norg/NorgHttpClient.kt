@@ -57,7 +57,7 @@ open class NorgHttpClient(
 	private fun norgUrl(geografiskTilknytning: String, skjermet: Boolean?, diskresjonsKode: Diskresjonskode?): HttpUrl {
 		val builder = joinPaths(baseUrl, "/norg2/api/v1/enhet/navkontor/", geografiskTilknytning).toHttpUrl().newBuilder()
 		skjermet?.let { builder.addQueryParameter("skjermet", it.toString()) }
-		diskresjonsKode?.let { builder.addQueryParameter("disk", if (it == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else "") }
+		diskresjonsKode?.let { if (it == Diskresjonskode.STRENGT_FORTROLIG||it == Diskresjonskode.STRENGT_FORTROLIG_UTLAND) builder.addQueryParameter("disk", "SPSF") }
 		return builder.build()
 	}
 

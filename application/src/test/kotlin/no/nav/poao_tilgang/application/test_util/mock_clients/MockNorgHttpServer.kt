@@ -7,7 +7,7 @@ import okhttp3.mockwebserver.MockResponse
 
 class MockNorgHttpServer : MockHttpServer() {
 
-	fun mockTilhorendeEnhet(geografiskTilknytning: String, tilhorendeEnhet: NavEnhetId, skjermet: Boolean? = false, gradering: Diskresjonskode? = null) {
+	fun mockTilhorendeEnhet(geografiskTilknytning: String, tilhorendeEnhet: NavEnhetId, skjermet: Boolean? = null, gradering: Diskresjonskode? = null) {
 		val response = MockResponse()
 			.setBody(
 				"""
@@ -21,10 +21,14 @@ class MockNorgHttpServer : MockHttpServer() {
 			matchPath = "/norg2/api/v1/enhet/navkontor/$geografiskTilknytning",
 			matchMethod = "GET",
 			response = response,
-			matchQueryParam = if(skjermet != null && gradering != null) mapOf(
-				"skjermet" to skjermet.toString(),
-				"disk" to if (gradering == Diskresjonskode.STRENGT_FORTROLIG) "SPSF" else ""
-			) else null
+			matchQueryParam = mutableMapOf<String, String>().apply {
+				skjermet?.let { put("skjermet", it.toString()) }
+				gradering?.let {
+					if (it == Diskresjonskode.STRENGT_FORTROLIG || it == Diskresjonskode.STRENGT_FORTROLIG_UTLAND) {
+						put("disk", "SPSF")
+					}
+				}
+			}.takeIf { it.isNotEmpty() }
 		)
 	}
 

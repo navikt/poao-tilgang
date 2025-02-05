@@ -50,15 +50,17 @@ open class MockHttpServer : Closeable {
 		response: MockResponse
 	) {
 		val requestMatcher = matcher@{ req: RecordedRequest ->
+			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
+				return@matcher false
+
 			if (matchQueryParam != null) {
 				val allParamsMatches = matchQueryParam.all { matchEntry ->
 					req.requestUrl!!.queryParameterValues(matchEntry.key).contains(matchEntry.value) == true
 				}
 				if (!allParamsMatches) return@matcher false
-			}
-
-			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
+			} else if (req.requestUrl!!.querySize > 0) {
 				return@matcher false
+			}
 
 			if (matchMethod != null && req.method != matchMethod)
 				return@matcher false
