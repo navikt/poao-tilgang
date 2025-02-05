@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import no.nav.poao_tilgang.api_core_mapper.toApiDto
+import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
 
 @RestController
 @RequestMapping("/api/v1/tilgangsattributter")
@@ -21,7 +22,8 @@ class TilgangsattributtController(
 	private val authService: AuthService,
 	private val skjermetPersonProvider: SkjermetPersonProvider,
 	private val geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider,
-	private val diskresjonskodeProvider: DiskresjonskodeProvider
+	private val diskresjonskodeProvider: DiskresjonskodeProvider,
+	private val oppfolgingsenhetProvider: OppfolgingsenhetProvider
 ) {
 
 	@ProtectedWithClaims(issuer = Issuer.AZURE_AD)
@@ -29,10 +31,12 @@ class TilgangsattributtController(
 	fun tilgangsattributter(@RequestBody norskIdent: NorskIdent): TilgangsattributterResponse {
 		authService.verifyRequestIsMachineToMachine()
 		val erSkjermetPerson = skjermetPersonProvider.erSkjermetPerson(norskIdent)
-		val geografiskTilknyttetEnhet = geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent, erSkjermetPerson)
+		val kontor = oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)?:
+			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent, erSkjermetPerson)
+
 		val diskresjonskode = diskresjonskodeProvider.hentDiskresjonskode(norskIdent)?.toApiDto()?: Diskresjonskode.UGRADERT
 		return TilgangsattributterResponse(
-			standardEnhet = geografiskTilknyttetEnhet,
+			kontor = kontor,
 			skjermet = erSkjermetPerson,
 			diskresjonskode = diskresjonskode
 		)
