@@ -20,6 +20,8 @@ class NorgHttpClientTest {
 		}
 	}
 
+	private val navVikaFossen = "2103"
+
 	@AfterEach
 	fun reset() {
 		mockServer.reset()
@@ -50,7 +52,7 @@ class NorgHttpClientTest {
 
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4331", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
 
@@ -90,11 +92,51 @@ class NorgHttpClientTest {
 
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
 		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.STRENGT_FORTROLIG)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG)
 
 		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
 
-		tilhorendeEnhet shouldBe "1024"
+		tilhorendeEnhet shouldBe navVikaFossen
+
+		val request = mockServer.latestRequest()
+
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.method shouldBe "GET"
+	}
+
+	@Test
+	fun `hentTilhorendeEnhet skal gi egen-ansatt-enhet hvis personen er egen ansatt`() {
+		val client = NorgHttpClient(
+			baseUrl = mockServer.serverUrl()
+		)
+
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
+
+		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
+
+		tilhorendeEnhet shouldBe "5321"
+
+		val request = mockServer.latestRequest()
+
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.method shouldBe "GET"
+	}
+
+	@Test
+	fun `hentTilhorendeEnhet skal gi vikafossen hvis personen har diskresjonskode, selv om GT er null`() {
+		val client = NorgHttpClient(
+			baseUrl = mockServer.serverUrl()
+		)
+
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
+
+		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
+
+		tilhorendeEnhet shouldBe "5321"
 
 		val request = mockServer.latestRequest()
 
