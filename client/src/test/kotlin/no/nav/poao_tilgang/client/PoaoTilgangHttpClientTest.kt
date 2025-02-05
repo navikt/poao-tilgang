@@ -6,7 +6,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
+import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
+import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
+import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
@@ -319,6 +322,27 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		)).getOrThrow()
 
 		decision shouldBe Decision.Deny("NAV-ansatt mangler tilgang til en av AD-gruppene [0000-GA-Egne_ansatte]", reason="MANGLER_TILGANG_TIL_AD_GRUPPE")
+	}
+
+	@Test
+	fun `tilgangsAttributter - skal hente tilgangsattributter`() {
+		val norskIdent = "12345678910"
+		val geografiskTilknytning = "434576"
+		val kontorEnhet = "9999"
+		val gradering = Gradering.STRENGT_FORTROLIG_UTLAND
+		val erSkjermetPerson = false
+
+		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
+		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(kontorEnhet)
+		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
+
+		val tilgansAttributter = client.hentTilgangsAttributter(norskIdent).getOrThrow()
+
+		tilgansAttributter shouldBe TilgangsattributterResponse(
+			diskresjonskode = Diskresjonskode.STRENGT_FORTROLIG_UTLAND,
+			skjermet = erSkjermetPerson,
+			kontor = kontorEnhet
+		)
 	}
 
 	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group")), enhetTilganger: List<EnhetTilgang> = emptyList()) {

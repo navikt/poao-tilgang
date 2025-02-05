@@ -72,6 +72,13 @@ class PoaoTilgangHttpClient(
 		)
 	}
 
+	override fun hentTilgangsAttributter(norskIdent: NorskIdent): ApiResult<TilgangsattributterResponse> {
+		return sendRequest(
+			path = "/api/v1/tilgangsattributter",
+			body = norskIdent
+		)
+	}
+
 	private fun sendPolicyRequests(requests: List<PolicyRequest>): ApiResult<List<PolicyEvaluationResultDto>> {
 		val requestDtos = requests.map { toRequestDto(it) }
 		val requestJson = objectMapper.writeValueAsString(EvaluatePoliciesRequest(requestDtos))

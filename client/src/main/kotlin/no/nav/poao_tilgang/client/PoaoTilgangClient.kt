@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.client
 
+import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.client.api.ApiResult
 import java.util.*
 
@@ -30,6 +31,13 @@ interface PoaoTilgangClient {
 	 */
 	fun erSkjermetPerson(norskeIdenter: List<NorskIdent>): ApiResult<Map<NorskIdent, Boolean>>
 
+	/**
+	 * Henter diskresjonskode, skjerming og enhet som tilgang sjekkes mot
+	 *
+	 * @param norskIdent Norsk identifikasjonsnummer for personen
+	 * @return ApiResult som inneholder TilgangsattributterResponse
+	 */
+	fun hentTilgangsAttributter(norskIdent: NorskIdent): ApiResult<TilgangsattributterResponse>
 }
 
 typealias NorskIdent = String
