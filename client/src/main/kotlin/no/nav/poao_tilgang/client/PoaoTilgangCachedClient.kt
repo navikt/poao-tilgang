@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.client
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.client.api.ApiResult
 import no.nav.poao_tilgang.client.utils.CacheUtils.tryCacheFirstNotNull
 import java.time.Duration
@@ -16,6 +17,9 @@ class PoaoTilgangCachedClient(
 		.expireAfterWrite(Duration.ofMinutes(30))
 		.build(),
 	private val norskIdentToErSkjermetCache: Cache<NorskIdent, Boolean> = Caffeine.newBuilder()
+		.expireAfterWrite(Duration.ofMinutes(30))
+		.build(),
+	private val tilgangsAttributterCache: Cache<NorskIdent, TilgangsattributterResponse> = Caffeine.newBuilder()
 		.expireAfterWrite(Duration.ofMinutes(30))
 		.build()
 ) : PoaoTilgangClient {
@@ -109,6 +113,15 @@ class PoaoTilgangCachedClient(
 		}
 
 		return ApiResult.success(cachedResults.plus(erSkjermetPersonMap))
+	}
+
+	override fun hentTilgangsAttributter(norskIdent: NorskIdent): ApiResult<TilgangsattributterResponse> {
+		val tilgangsAttributter = tryCacheFirstNotNull(tilgangsAttributterCache, norskIdent) {
+			val resultat = client.hentTilgangsAttributter(norskIdent)
+			if (resultat.isFailure) return resultat
+			return@tryCacheFirstNotNull resultat.get()!!
+		}
+		return ApiResult.success(tilgangsAttributter)
 	}
 
 }

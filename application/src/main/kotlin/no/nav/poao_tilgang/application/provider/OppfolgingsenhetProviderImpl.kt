@@ -17,7 +17,7 @@ class OppfolgingsenhetProviderImpl(
 ) : OppfolgingsenhetProvider {
 
 	private val norskIdentToOppfolgingsenhetCache = Caffeine.newBuilder()
-		.expireAfterWrite(Duration.ofHours(4))
+		.expireAfterWrite(Duration.ofMinutes(30))
 		.build<NorskIdent, NavEnhetId>()
 
 	override fun hentOppfolgingsenhet(norskIdent: NorskIdent): NavEnhetId? {

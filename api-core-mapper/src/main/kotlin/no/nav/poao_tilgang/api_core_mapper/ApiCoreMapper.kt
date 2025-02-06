@@ -147,5 +147,12 @@ class ApiCoreMapper(private val adGruppeProvider: AdGruppeProvider) {
 			}
 		}
 	}
-
+}
+fun no.nav.poao_tilgang.core.domain.Diskresjonskode.toApiDto(): no.nav.poao_tilgang.api.dto.response.Diskresjonskode {
+	return when (this) {
+		no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND -> no.nav.poao_tilgang.api.dto.response.Diskresjonskode.STRENGT_FORTROLIG_UTLAND
+		no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG -> no.nav.poao_tilgang.api.dto.response.Diskresjonskode.STRENGT_FORTROLIG
+		no.nav.poao_tilgang.core.domain.Diskresjonskode.FORTROLIG -> no.nav.poao_tilgang.api.dto.response.Diskresjonskode.FORTROLIG
+		no.nav.poao_tilgang.core.domain.Diskresjonskode.UGRADERT -> no.nav.poao_tilgang.api.dto.response.Diskresjonskode.UGRADERT
+	}
 }

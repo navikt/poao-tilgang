@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
+import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
 import no.nav.poao_tilgang.client.api.ApiResult
 import no.nav.poao_tilgang.client.api.ResponseDataApiException
@@ -74,5 +76,13 @@ class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilg
 	override fun erSkjermetPerson(norskeIdenter: List<NorskIdent>): ApiResult<Map<NorskIdent, Boolean>> {
 		val toMap = navContext.erSkjermetPerson(norskeIdenter)
 		return ApiResult.success(toMap)
+	}
+
+	override fun hentTilgangsAttributter(norskIdent: NorskIdent): ApiResult<TilgangsattributterResponse> {
+		return ApiResult.success(TilgangsattributterResponse(
+			diskresjonskode = Diskresjonskode.STRENGT_FORTROLIG_UTLAND,
+			skjermet = navContext.erSkjermetPerson(listOf(norskIdent))[norskIdent]!!,
+			kontor = "1234"
+		))
 	}
 }

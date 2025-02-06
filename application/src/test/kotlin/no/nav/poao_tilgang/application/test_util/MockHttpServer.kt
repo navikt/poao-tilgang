@@ -41,16 +41,33 @@ open class MockHttpServer : Closeable {
 		responseHandlers[requestMatcher] = response
 	}
 
+	/**
+	 * Matches a request on a best effort basis. The matching is loose, so if you are mocking several requests, make sure
+	 * you put the most specific matchers first.
+	 *
+	 * For example, if you have a request which matches on a path, and another request which matches on the same path and a query parameter,
+	 * Put the query parameter matcher first.
+	 */
 	fun handleRequest(
 		matchPath: String? = null,
 		matchMethod: String? = null,
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
+		matchQueryParam: Map<String, String>? = null,
 		response: MockResponse
 	) {
 		val requestMatcher = matcher@{ req: RecordedRequest ->
-			if (matchPath != null && req.path != matchPath)
+			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
 				return@matcher false
+
+			if (matchQueryParam != null) {
+				val allParamsMatches = matchQueryParam.all { matchEntry ->
+					req.requestUrl!!.queryParameterValues(matchEntry.key).contains(matchEntry.value) == true
+				}
+				if (!allParamsMatches) return@matcher false
+			} else if (req.requestUrl!!.querySize > 0) {
+				log.warn("Request has query parameters, but no matchQueryParam was provided. This may cause unexpected behavior.")
+			}
 
 			if (matchMethod != null && req.method != matchMethod)
 				return@matcher false

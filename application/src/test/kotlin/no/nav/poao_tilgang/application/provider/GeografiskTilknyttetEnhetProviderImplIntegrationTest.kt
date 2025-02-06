@@ -1,7 +1,10 @@
 package no.nav.poao_tilgang.application.provider
 
 import io.kotest.matchers.shouldBe
+import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.application.client.pdl_pip.GeografiskTilknytningType
+import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
+import no.nav.poao_tilgang.application.provider.GeografiskTilknyttetEnhetProviderImpl.Companion.DEFAULT_GT_IF_NO_GT_FOUND
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
 import org.junit.jupiter.api.Test
@@ -11,6 +14,8 @@ class GeografiskTilknyttetEnhetProviderImplIntegrationTest : IntegrationTest() {
 
 	@Autowired
 	lateinit var geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider
+
+	private val navVikaFossen = "2103"
 
 	@Test
 	fun `henter tilhørende enhet basert på geografisk tilknyting kommune`() {
@@ -39,6 +44,19 @@ class GeografiskTilknyttetEnhetProviderImplIntegrationTest : IntegrationTest() {
 		)
 
 		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet("989") shouldBe null
+	}
+
+	@Test
+	fun `hvis geografisk tilknyting utland skal likevel få vikafossen dersom diskreskjonskode STRENGT_FORTROLIG_UTLAND`() {
+		mockPdlPipHttpServer.mockBrukerInfo(
+			gradering = Gradering.STRENGT_FORTROLIG_UTLAND,
+			norskIdent = "989", gtType = GeografiskTilknytningType.UTLAND
+		)
+
+		mockNorgHttpServer.mockTilhorendeEnhet(DEFAULT_GT_IF_NO_GT_FOUND, tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+
+		// NB denne logikken fungerer kun på metoden som tar inn skjermet parameteret
+		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet("989", skjermet = false) shouldBe navVikaFossen
 	}
 
 	@Test
