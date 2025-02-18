@@ -141,6 +141,22 @@ data class NavAnsattTilgangTilEksternBrukerPolicyInput(
 	val norskIdent: String
 ) : PolicyInput()
 
+/*
+ Sjekker om en NAV ansatt har skrivetilgang til en ekstern bruker.
+ */
+data class NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInput(
+    val navIdent: String,
+    val norskIdent: String
+) : PolicyInput()
+
+/*
+ Sjekker om en NAV ansatt har lese til en ekstern bruker.
+ */
+data class NavAnsattNavIdentLesetilgangTilEksternBrukerPolicyInput(
+    val navIdent: String,
+    val norskIdent: String
+) : PolicyInput()
+
 /* 
  Sjekker om en NAV ansatt har tilgang til å bruke Modia-flaten
 */
@@ -164,10 +180,26 @@ data class NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
 ) : PolicyInput()
 
 /* 
+ Sjekker om en NAV ansatt kan behandle **strengt** fortrolig brukere (kode 6).
+ Tar nav ident som input
+*/
+data class NavAnsattNavIdentBehandleStrengtFortroligBrukerePolicyInput(
+    val navIdent: String,
+) : PolicyInput()
+
+/* 
  Sjekker om en NAV ansatt kan behandle fortrolig brukere (kode 7)
 */
 data class NavAnsattBehandleFortroligBrukerePolicyInput(
     val navAnsattAzureId: UUID
+) : PolicyInput()
+
+/* 
+ Sjekker om en NAV ansatt kan behandle fortrolig brukere (kode 7)
+ Tar navident som input
+*/
+data class NavAnsattNavIdentBehandleFortroligBrukerePolicyInput(
+    val navIdent: String,
 ) : PolicyInput()
 
 /* 
@@ -177,12 +209,44 @@ data class NavAnsattBehandleSkjermedePersonerPolicyInput(
     val navAnsattAzureId: UUID
 ) : PolicyInput()
 
+/* 
+ Sjekker om en NAV ansatt kan behandle skjermede personer (egne ansatte).
+ Tar navident som input
+*/
+data class NavAnsattNavIdentBehandleSkjermedePersonerPolicyInput(
+    val navIdent: String,
+) : PolicyInput()
 
 /* 
  Sjekker om en NAV ansatt har tilgang til NAV enhet med sperre. Brukes i forbindelse med KVP.
 */
 data class NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
     val navAnsattAzureId: UUID,
+    val navEnhetId: String
+) : PolicyInput()
+
+/*
+Sjekker om Nav ansatt har Modia Admin rolle
+ */
+data class NavAnsattTilgangTilModiaAdminPolicyInput(
+    val navAnsattAzureId: UUID
+) : PolicyInput()
+
+/*
+Sjekker om en ekstern bruker har tilgang til en annen ekstern bruker.
+Foreløpig sjekker denne kun om identene er like. Implementasjonen har ikke støtte for å sjekke historiske fnr mot gjeldende fnr.
+Den har heller ikke støtte for representasjon av en bruker.
+ */
+data class EksternBrukerTilgangTilEksternBrukerPolicyInput(
+    val rekvirentNorskIdent: String, // Den som ber om tilgang
+    val ressursNorskIdent: String // Den som bes tilgang om
+) : PolicyInput()
+
+/*
+Sjekker om en Nav-ansatt har tilgang til en enhet
+ */
+data class NavAnsattNavIdentTilgangTilNavEnhetPolicyInput(
+    val navIdent: String,
     val navEnhetId: String
 ) : PolicyInput()
 ```
