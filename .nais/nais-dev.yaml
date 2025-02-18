@@ -114,6 +114,8 @@ spec:
           namespace: dab
         - application: tiltakspenger-saksbehandling-api
           namespace: tpts
+        - application: pam-cv-api-gcp
+          namespace: teampam
     outbound:
       rules:
         - application: skjermede-personer-pip

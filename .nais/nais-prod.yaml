@@ -124,6 +124,8 @@ spec:
           namespace: amt
         - application: amt-deltaker
           namespace: amt
+        - application: pam-cv-api-gcp
+          namespace: teampam
     outbound:
       rules:
         - application: skjermede-personer-pip
