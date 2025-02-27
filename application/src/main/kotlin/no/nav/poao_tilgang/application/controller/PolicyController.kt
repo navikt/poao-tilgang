@@ -100,7 +100,7 @@ class PolicyController(
 
 	private fun byttTilGjeldendeIdent(input: PolicyInputWithNorskIdent): PolicyInputWithNorskIdent {
 		val norskIdent = this.gjeldendeIdentService(input.norskIdent)
-		return input.byttIdent(norskIdent)
+		return input.withIdent(norskIdent)
 	}
 
 }

@@ -4,5 +4,6 @@ interface PolicyInput
 
 interface PolicyInputWithNorskIdent : PolicyInput {
 	val norskIdent: NorskIdent
-	fun byttIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent
+	/* Copy fra kotlin sin data class er ikke tilgjengelig via interfaces, så lager den eksplisitt */
+	fun withIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent
 }

@@ -11,7 +11,7 @@ interface NavAnsattTilgangTilAdressebeskyttetBrukerPolicy : Policy<NavAnsattTilg
 		val navAnsattAzureId: AzureObjectId,
 		override val norskIdent: NorskIdent
 	) : PolicyInputWithNorskIdent {
-		override fun byttIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent {
+		override fun withIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent {
 			return this.copy(norskIdent = norskIdent)
 		}
 	}
