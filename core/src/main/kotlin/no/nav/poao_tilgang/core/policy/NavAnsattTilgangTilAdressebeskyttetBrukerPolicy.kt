@@ -9,7 +9,11 @@ interface NavAnsattTilgangTilAdressebeskyttetBrukerPolicy : Policy<NavAnsattTilg
 
 	data class Input (
 		val navAnsattAzureId: AzureObjectId,
-		val norskIdent: NorskIdent
-	) : PolicyInput
+		override val norskIdent: NorskIdent
+	) : PolicyInputWithNorskIdent {
+		override fun withIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent {
+			return this.copy(norskIdent = norskIdent)
+		}
+	}
 
 }
