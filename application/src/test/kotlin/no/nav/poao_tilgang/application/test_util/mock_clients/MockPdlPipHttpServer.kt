@@ -39,6 +39,11 @@ class MockPdlPipHttpServer : MockHttpServer() {
 					  },
 					  "identer": {
 					    "identer": [
+						   {
+					        "ident": "9876543210987",
+					        "historisk": false,
+					        "gruppe": "AKTORID"
+					      },
 					      {
 					        "ident": "${norskIdent}",
 					        "historisk": false,
@@ -48,11 +53,6 @@ class MockPdlPipHttpServer : MockHttpServer() {
 					        "ident": "${gammelIdent ?: 9876543210987}",
 					        "historisk": true,
 					        "gruppe": "FOLKEREGISTERIDENT"
-					      },
-					      {
-					        "ident": "9876543210987",
-					        "historisk": false,
-					        "gruppe": "AKTORID"
 					      }
 					    ]
 					  },

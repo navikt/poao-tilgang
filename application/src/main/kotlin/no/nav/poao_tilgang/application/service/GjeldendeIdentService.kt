@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.application.service
 
+import no.nav.poao_tilgang.application.client.pdl_pip.IdentGruppe
 import no.nav.poao_tilgang.application.client.pdl_pip.PdlPipClient
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class GjeldendeIdentService(
 		if (brukerInfo == null) return ident
 
 		return brukerInfo.identer.identer
-			.singleOrNull { it.historisk == false }?.ident ?: ident
+			.singleOrNull { it.historisk == false && it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident ?: ident
 	}
 
 }
