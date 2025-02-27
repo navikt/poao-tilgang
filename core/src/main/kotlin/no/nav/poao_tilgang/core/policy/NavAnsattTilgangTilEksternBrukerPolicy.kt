@@ -10,7 +10,11 @@ interface NavAnsattTilgangTilEksternBrukerPolicy : Policy<NavAnsattTilgangTilEks
 	data class Input(
 		val navAnsattAzureId: AzureObjectId,
 		val tilgangType: TilgangType,
-		val norskIdent: NorskIdent
-	) : PolicyInput
+		override val norskIdent: NorskIdent
+	) : PolicyInputWithNorskIdent {
+		override fun byttIdent(norskIdent: NorskIdent): PolicyInputWithNorskIdent {
+			return this.copy(norskIdent = norskIdent)
+		}
+	}
 
 }
