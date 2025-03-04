@@ -4,8 +4,25 @@ interface PdlPipClient {
 	fun hentBrukerInfo(brukerIdent: String): BrukerInfo?
 }
 
+enum class IdentGruppe {
+	AKTORID,
+	NPID,
+	FOLKEREGISTERIDENT,
+}
+
+data class Ident(
+	val ident: String,
+	val historisk: Boolean,
+	val gruppe: IdentGruppe
+)
+
+data class Identer(
+	val identer: List<Ident>
+)
+
 data class BrukerInfo(
 	val person: Person,
+	val identer: Identer,
 	val geografiskTilknytning: GeografiskTilknytning?
 )
 

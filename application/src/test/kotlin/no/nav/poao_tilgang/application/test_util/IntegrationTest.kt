@@ -161,10 +161,17 @@ open class IntegrationTest {
 		return client.newCall(reqBuilder.build()).execute()
 	}
 
-	fun mockPersonData(norskIdent: NorskIdent, brukersEnhet: NavEnhetId, kommuneNr: String = "5000", erSkjermet: Boolean = false) {
+	fun mockPersonData(
+		norskIdent: NorskIdent,
+		brukersEnhet: NavEnhetId,
+		kommuneNr: String = "5000",
+		erSkjermet: Boolean = false,
+		gammelIdent: NorskIdent? = null
+	) {
 		mockPdlPipHttpServer.mockBrukerInfo(
 			norskIdent = norskIdent,
-			gtKommune = kommuneNr
+			gtKommune = kommuneNr,
+			gammelIdent = gammelIdent
 		)
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(
