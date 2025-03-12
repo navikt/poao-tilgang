@@ -145,6 +145,14 @@ class ApiCoreMapper(private val adGruppeProvider: AdGruppeProvider) {
 					navAnsattAzureId = adGruppeProvider.hentAzureIdMedNavIdent(dto.navIdent)
 				)
 			}
+
+			PolicyId.NAV_ANSATT_UTEN_MODIAROLLE_TILGANG_TIL_EKSTERN_BRUKER_V1 -> {
+				val dto = fromJsonNode<NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInputV1Dto>(policyInput)
+				NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy.Input(
+					navAnsattAzureId = dto.navIdent,
+					norskIdent = dto.norskIdent
+				)
+			}
 		}
 	}
 }

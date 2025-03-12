@@ -23,6 +23,7 @@ open class PolicyResolverConfig {
 		navAnsattTiltangTilEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicy,
 		navAnsattBehandleSkjermedePersonerPolicy: NavAnsattBehandleSkjermedePersonerPolicy,
 		navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicy,
+		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
 		timer: Timer,
 		toggleProvider: ToggleProvider
 	): PolicyResolver {
@@ -36,6 +37,7 @@ open class PolicyResolverConfig {
 				navAnsattTiltangTilEnhetMedSperrePolicy,
 				navAnsattBehandleSkjermedePersonerPolicy,
 				navAnsattTilgangTilModiaAdminPolicy,
+				navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
 				timer,
 			toggleProvider
 		)

@@ -156,4 +156,17 @@ open class PolicyConfig {
 	open fun navAnsattTilgangTilModiaAdminPolicy(adGruppeProvider: AdGruppeProvider): NavAnsattTilgangTilModiaAdminPolicy {
 		return NavAnsattTilgangTilModiaAdminPolicyImpl(adGruppeProvider)
 	}
+
+	@Bean
+	open fun navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy(
+		navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
+		navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicy,
+		navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
+	): NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy {
+		return NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
+			navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
+			navAnsattTilgangTilSkjermetPersonPolicy,
+			navAnsattTilgangTilEksternBrukerNavEnhetPolicy
+		)
+	}
 }

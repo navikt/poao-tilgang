@@ -87,6 +87,11 @@ data class Policies(
 		timer,
 		providers.toggleProvider,
 		),
+	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl (
+		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
+		navAnsattTilgangTilSkjermetPersonPolicy,
+		navAnsattTilgangTilEksternBrukerNavEnhetPolicy
+	),
 	val policyResolver: PolicyResolver = PolicyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy,
 			navAnsattTilgangTilModiaPolicy,
@@ -97,6 +102,7 @@ data class Policies(
 			navAnsattTilgangTilNavEnhetMedSperrePolicy,
 			navAnsattBehandleSkjermedePersonerPolicy,
 			navAnsattTilgangTilModiaAdminPolicy,
+			navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
 			timer,
 			providers.toggleProvider,
 	)
