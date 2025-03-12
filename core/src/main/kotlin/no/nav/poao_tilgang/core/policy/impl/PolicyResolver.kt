@@ -15,6 +15,7 @@ class PolicyResolver(
 	private val navAnsattTiltangTilEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicy,
 	private val navAnsattBehandleSkjermedePersonerPolicy: NavAnsattBehandleSkjermedePersonerPolicy,
 	private val navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicy,
+	private val navAnsattUtenModiarolleTilgangTilEksternBruker: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
 	private val timer: Timer,
 	private val toggleProvider: ToggleProvider,
 ) {
@@ -29,6 +30,7 @@ class PolicyResolver(
 			is NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input -> evaluateWithName(input, navAnsattTiltangTilEnhetMedSperrePolicy)
 			is NavAnsattBehandleSkjermedePersonerPolicy.Input -> evaluateWithName(input, navAnsattBehandleSkjermedePersonerPolicy)
 			is NavAnsattTilgangTilModiaAdminPolicy.Input -> evaluateWithName(input, navAnsattTilgangTilModiaAdminPolicy)
+			is NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy.Input -> evaluateWithName(input, navAnsattUtenModiarolleTilgangTilEksternBruker)
 			else -> throw PolicyNotImplementedException("Håndtering av policy ${input.javaClass.canonicalName} er ikke implementert")
 		}
 	}

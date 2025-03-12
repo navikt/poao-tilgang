@@ -68,6 +68,14 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	}
 
 	@Test
+	fun `evaluatePolicy - should evaluate NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy`() {
+		setupMocks(adGrupper = listOf(),  listOf(EnhetTilgang("0123", "En enhet", emptyList())))
+		val decision = client.evaluatePolicy(NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(navAnsattId, norskIdent)).getOrThrow()
+
+		decision shouldBe Decision.Permit
+	}
+
+	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilModiaPolicy`() {
 		mockRolleTilganger(
 			navIdent,

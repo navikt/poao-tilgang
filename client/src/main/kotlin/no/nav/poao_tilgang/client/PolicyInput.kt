@@ -75,3 +75,8 @@ data class NavAnsattBehandleSkjermedePersonerPolicyInput(
 data class NavAnsattNavIdentBehandleSkjermedePersonerPolicyInput(
 	val navIdent: String,
 ) : PolicyInput()
+
+data class NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput (
+	val navIdent: UUID,
+	val norskIdent: String
+) : PolicyInput()
