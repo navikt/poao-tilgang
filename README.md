@@ -7,7 +7,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=navikt_poao-tilgang&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=navikt_poao-tilgang)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=navikt_poao-tilgang&metric=security_rating)](https://sonarcloud.io/dashboard?id=navikt_poao-tilgang)
 
-API for tilgangskontroll med regler som er felles for Produktområde Arbeidsoppfølging.
+API for tilgangskontroll med regler som er felles for Produktområde Arbeidsoppfølging. 
 Har også en HTTP-klient som kan trekkes inn som en avhengighet i applikasjoner for å kalle API'et.
 
 ## Bruk av HTTP-klient
