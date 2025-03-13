@@ -8,8 +8,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_TAG: ${{ github.sha }}
-  IMAGE: ghcr.io/${{ github.repository }}/poao-tilgang
   PRINT_PAYLOAD: true
 
 jobs:
@@ -18,6 +16,9 @@ jobs:
     permissions:
       packages: write
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,13 +30,11 @@ jobs:
           cache: 'maven'
       - name: Build maven artifacts
         run: mvn -B package
-      - name: Build and push Docker image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_REPOSITORY} --password-stdin
-          docker build -t ${IMAGE}:${IMAGE_TAG} .
-          docker push ${IMAGE}:${IMAGE_TAG}
+      - name: Push docker image to GAR
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: poao
 
   deploy-dev:
     name: Deploy application to dev gcp
@@ -51,7 +50,8 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais-dev.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}
 
   deploy-dev-fss:
     name: Deploy application to dev fss
@@ -67,4 +67,5 @@ jobs:
         env:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais-dev-onprem.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}

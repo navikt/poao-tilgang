@@ -8,7 +8,7 @@ metadata:
   annotations:
     config.linkerd.io/proxy-outbound-connect-timeout: "2000ms"
 spec:
-  image: ghcr.io/navikt/poao-tilgang/poao-tilgang:{{version}}
+  image: {{image}}
   port: 8080
   ingresses:
     - https://poao-tilgang.intern.nav.no

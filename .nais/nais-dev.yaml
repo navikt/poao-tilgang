@@ -6,7 +6,7 @@ metadata:
   labels:
     team: poao
 spec:
-  image: ghcr.io/navikt/poao-tilgang/poao-tilgang:{{version}}
+  image: {{image}}
   port: 8080
   ingresses:
     - https://poao-tilgang.intern.dev.nav.no
