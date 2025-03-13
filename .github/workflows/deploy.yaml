@@ -57,11 +57,11 @@ jobs:
 
   deploy-prod:
     name: Deploy application to prod gcp and create release
+    needs: [test-build-and-push, deploy-dev]
     permissions:
       contents: write
       packages: write
       id-token: write
-    needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -112,7 +112,7 @@ jobs:
 
   deploy-prod-fss:
     name: Deploy application to prod fss
-    needs: deploy-dev-fss
+    needs: [test-build-and-push,deploy-dev-fss]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
