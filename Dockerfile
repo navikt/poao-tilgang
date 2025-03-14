@@ -1,2 +1,11 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM busybox:uclibc as busybox
+FROM gcr.io/distroless/java21-debian12:nonroot
+
+COPY --from=busybox /bin/sh /bin/sh
+COPY --from=busybox /bin/printenv /bin/printenv
+
+WORKDIR /app
 COPY /application/target/poao-tilgang-app.jar app.jar
+ENV TZ="Europe/Oslo"
+EXPOSE 8080
+CMD java $JAVA_PROXY_OPTIONS -jar app.jar
