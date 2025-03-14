@@ -93,9 +93,26 @@ jobs:
           tag_name: ${{ env.VERSION }}
           prerelease: false
 
+  deploy-dev-fss:
+    name: Deploy application to dev fss
+    needs: test-build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy application
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-fss
+          RESOURCE: .nais/nais-dev-onprem.yaml
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
+          TELEMETRY: ${{ needs.test-build-and-push.outputs.telemetry }}
+
   deploy-prod-fss:
     name: Deploy application to prod fss
-    needs: [test-build-and-push]
+    needs: [test-build-and-push,deploy-dev-fss]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
