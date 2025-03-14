@@ -8,4 +8,4 @@ WORKDIR /app
 COPY /application/target/poao-tilgang-app.jar app.jar
 ENV TZ="Europe/Oslo"
 EXPOSE 8080
-CMD java $JAVA_PROXY_OPTIONS -jar /app.jar
+ENTRYPOINT ["/bin/sh", "-c", "java $JAVA_PROXY_OPTIONS -jar app.jar"]
