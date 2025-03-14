@@ -40,31 +40,17 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: veilarbportefolje
-          namespace: pto
-        - application: veilarbveileder
-          namespace: pto
-        - application: veilarbvedtaksstotte
-          namespace: pto
         - application: pto-admin
-          namespace: pto
-        - application: veilarbfilter
           namespace: pto
           cluster: dev-gcp
         - application: veilarbarena
           namespace: pto
         - application: veilarbperson
           namespace: pto
-        - application: veilarboppgave
-          namespace: pto
-        - application: veilarboppfolging
-          namespace: pto
         - application: veilarbvedtakinfo
           namespace: pto
         - application: tiltaksgjennomforing-api
           namespace: arbeidsgiver
-        - application: veilarbaktivitet
-          namespace: pto
         - application: veilarbdialog
           namespace: pto
     outbound:
