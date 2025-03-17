@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # This workflow can be triggered manually from: https://github.com/navikt/poao-tilgang/actions/workflows/deploy-feature-dev.yaml
 
 concurrency:
-  group: deploy
+  group: deploy-feature-branch
   cancel-in-progress: true
 
 env:
