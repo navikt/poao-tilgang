@@ -46,6 +46,28 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	}
 
 	@Test
+	fun `should evaluate NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1 against newest ident policy - permit`() {
+		val gammelIdent = "012345678901"
+		val nyIdent = norskIdent
+
+		mockPersonData(nyIdent, brukersEnhet, brukersKommune, gammelIdent = gammelIdent)
+		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList())))
+		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
+
+		val requestId = UUID.randomUUID()
+
+		mockAbacHttpServer.mockPermit(TilgangType.SKRIVE)
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"navIdent": "$navIdent", "norskIdent": "$gammelIdent"}""",
+			"NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1"
+		)
+
+		response.body?.string() shouldBe permitResponse(requestId)
+	}
+
+	@Test
 	fun `should evaluate NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1 policy - deny`() {
 		setupMocksHappyCase(adGrupper = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell))
 
@@ -445,7 +467,10 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		)
 	}
 
-	private fun setupMocksHappyCase(adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging), enhetTilganger: List<EnhetTilgang> = listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList()))) {
+	private fun setupMocksHappyCase(
+		adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging),
+		enhetTilganger: List<EnhetTilgang> = listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList()))
+	) {
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
 		mockEnhetsTilganger(navIdent, enhetTilganger)
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)

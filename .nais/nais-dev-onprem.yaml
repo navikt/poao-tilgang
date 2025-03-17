@@ -6,7 +6,7 @@ metadata:
   labels:
     team: poao
 spec:
-  image: ghcr.io/navikt/poao-tilgang/poao-tilgang:{{version}}
+  image: {{image}}
   port: 8080
   prometheus:
     enabled: true
@@ -40,31 +40,17 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: veilarbportefolje
-          namespace: pto
-        - application: veilarbveileder
-          namespace: pto
-        - application: veilarbvedtaksstotte
-          namespace: pto
         - application: pto-admin
-          namespace: pto
-        - application: veilarbfilter
           namespace: pto
           cluster: dev-gcp
         - application: veilarbarena
           namespace: pto
         - application: veilarbperson
           namespace: pto
-        - application: veilarboppgave
-          namespace: pto
-        - application: veilarboppfolging
-          namespace: pto
         - application: veilarbvedtakinfo
           namespace: pto
         - application: tiltaksgjennomforing-api
           namespace: arbeidsgiver
-        - application: veilarbaktivitet
-          namespace: pto
         - application: veilarbdialog
           namespace: pto
     outbound:

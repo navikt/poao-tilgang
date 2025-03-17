@@ -6,7 +6,7 @@ metadata:
   labels:
     team: poao
 spec:
-  image: ghcr.io/navikt/poao-tilgang/poao-tilgang:{{version}}
+  image: {{image}}
   port: 8080
   ingresses:
     - https://poao-tilgang.intern.dev.nav.no
@@ -35,6 +35,10 @@ spec:
       claims:
         extra:
           - azp_name
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   secureLogs:
     enabled: true
   accessPolicy:
@@ -82,6 +86,9 @@ spec:
         - application: pto-admin
           namespace: pto
           cluster: dev-fss
+        - application: poao-admin
+          namespace: poao
+          cluster: dev-gcp
         - application: veilarbfilter
           namespace: obo
           cluster: dev-gcp

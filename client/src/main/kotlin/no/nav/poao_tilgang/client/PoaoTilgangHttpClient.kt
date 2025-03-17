@@ -276,5 +276,14 @@ fun toRequestDto(policyRequest: PolicyRequest): PolicyEvaluationRequestDto<Any> 
 			),
 			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1
 		)
+
+		is NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput -> PolicyEvaluationRequestDto(
+			requestId = policyRequest.requestId,
+			policyInput = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInputV1Dto(
+				navIdent = policyRequest.policyInput.navIdent,
+				norskIdent = policyRequest.policyInput.norskIdent
+			),
+			policyId = PolicyId.NAV_ANSATT_UTEN_MODIAROLLE_TILGANG_TIL_EKSTERN_BRUKER_V1
+		)
 	}
 }

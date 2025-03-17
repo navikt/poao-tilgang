@@ -14,10 +14,12 @@ import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
 import no.nav.poao_tilgang.application.domain.PolicyEvaluationRequest
 import no.nav.poao_tilgang.application.domain.PolicyEvaluationResult
 import no.nav.poao_tilgang.application.service.AuthService
+import no.nav.poao_tilgang.application.service.GjeldendeIdentService
 import no.nav.poao_tilgang.application.service.PolicyService
 import no.nav.poao_tilgang.application.utils.Issuer
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.PolicyInput
+import no.nav.poao_tilgang.core.domain.PolicyInputWithNorskIdent
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,6 +33,7 @@ import java.time.Duration
 class PolicyController(
 	private val authService: AuthService,
 	private val policyService: PolicyService,
+	private val gjeldendeIdentService: GjeldendeIdentService,
 	private val apiCoreMapper: ApiCoreMapper,
 	private val meterRegistry: MeterRegistry
 ) {
@@ -57,8 +60,17 @@ class PolicyController(
 		return EvaluatePoliciesResponse(evaluations)
 	}
 
+
 	private fun evaluateRequest(request: PolicyEvaluationRequestDto<JsonNode>): PolicyEvaluationResultDto {
-		val policyInput = apiCoreMapper.mapToPolicyInput(request.policyId, request.policyInput)
+		val policyInput = apiCoreMapper
+			.mapToPolicyInput(request.policyId, request.policyInput)
+			.let {
+				when (it) {
+					is PolicyInputWithNorskIdent -> byttTilGjeldendeIdent(it)
+					else -> it
+				}
+			}
+
 		val cachedDecision = decisionCache.getIfPresent(policyInput)
 		val result = if (cachedDecision == null) {
 			val evaluation = policyService.evaluatePolicyRequest(PolicyEvaluationRequest(request.requestId, policyInput))
@@ -84,6 +96,11 @@ class PolicyController(
 				reason = decision.reason.name
 			)
 		}
+	}
+
+	private fun byttTilGjeldendeIdent(input: PolicyInputWithNorskIdent): PolicyInputWithNorskIdent {
+		val norskIdent = this.gjeldendeIdentService(input.norskIdent)
+		return input.withIdent(norskIdent)
 	}
 
 }

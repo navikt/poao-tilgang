@@ -13,7 +13,8 @@ class MockPdlPipHttpServer : MockHttpServer() {
 		gradering: Gradering? = null,
 		gtType: GeografiskTilknytningType = GeografiskTilknytningType.KOMMUNE,
 		gtKommune: String? = null,
-		gtBydel: String? = null
+		gtBydel: String? = null,
+		gammelIdent: String? = null
 	) {
 		val response = MockResponse()
 			.setBody(
@@ -38,15 +39,20 @@ class MockPdlPipHttpServer : MockHttpServer() {
 					  },
 					  "identer": {
 					    "identer": [
+						   {
+					        "ident": "9876543210987",
+					        "historisk": false,
+					        "gruppe": "AKTORID"
+					      },
 					      {
 					        "ident": "${norskIdent}",
 					        "historisk": false,
 					        "gruppe": "FOLKEREGISTERIDENT"
 					      },
-					      {
-					        "ident": "9876543210987",
-					        "historisk": false,
-					        "gruppe": "AKTORID"
+						  {
+					        "ident": "${gammelIdent ?: 9876543210987}",
+					        "historisk": true,
+					        "gruppe": "FOLKEREGISTERIDENT"
 					      }
 					    ]
 					  },
@@ -64,7 +70,7 @@ class MockPdlPipHttpServer : MockHttpServer() {
 		handleRequest(
 			matchPath = "/api/v1/person",
 			matchMethod = "GET",
-			matchHeaders = mapOf("ident" to norskIdent),
+			matchHeaders = mapOf("ident" to (gammelIdent ?: norskIdent)),
 			response = response
 		)
 	}

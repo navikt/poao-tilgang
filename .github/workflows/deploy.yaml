@@ -1,6 +1,5 @@
 name: Deploy application
 on:
-  workflow_dispatch: # This workflow can be triggered manually from: https://github.com/navikt/poao-tilgang/actions/workflows/deploy.yaml
   push:
     branches:
       - main
@@ -10,16 +9,18 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_TAG: ${{ github.sha }}
-  IMAGE: ghcr.io/${{ github.repository }}/poao-tilgang
   PRINT_PAYLOAD: true
 
 jobs:
   test-build-and-push:
     name: Test, build and push
     permissions:
-      packages: write
+      contents: write
+      id-token: write
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,13 +32,11 @@ jobs:
           cache: 'maven'
       - name: Build maven artifacts
         run: mvn -B package
-      - name: Build and push Docker image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_REPOSITORY} --password-stdin
-          docker build -t ${IMAGE}:${IMAGE_TAG} .
-          docker push ${IMAGE}:${IMAGE_TAG}
+      - name: Push docker image to GAR
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: poao
 
   deploy-dev:
     name: Deploy application to dev gcp
@@ -53,15 +52,16 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais-dev.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
+          TELEMETRY: ${{ needs.test-build-and-push.outputs.telemetry }}
 
   deploy-prod:
     name: Deploy application to prod gcp and create release
+    needs: [test-build-and-push, deploy-dev]
     permissions:
       contents: write
       packages: write
       id-token: write
-    needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -72,7 +72,8 @@ jobs:
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais-prod.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
+          TELEMETRY: ${{ needs.test-build-and-push.outputs.telemetry }}
       - name: Create Version
         run: echo "VERSION=$(TZ=\"Europe/Oslo\" date +%Y.%m.%d_%H.%M)-$(git rev-parse --short=12 HEAD)" >> $GITHUB_ENV
       - name: Set up JDK 21
@@ -106,11 +107,12 @@ jobs:
         env:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais-dev-onprem.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
+          TELEMETRY: ${{ needs.test-build-and-push.outputs.telemetry }}
 
   deploy-prod-fss:
     name: Deploy application to prod fss
-    needs: deploy-dev-fss
+    needs: [test-build-and-push,deploy-dev-fss]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -122,4 +124,5 @@ jobs:
         env:
           CLUSTER: prod-fss
           RESOURCE: .nais/nais-prod-onprem.yaml
-          VAR: version=${{ env.IMAGE_TAG }}
+          VAR: image=${{ needs.test-build-and-push.outputs.image }}
+          TELEMETRY: ${{ needs.test-build-and-push.outputs.telemetry }}
