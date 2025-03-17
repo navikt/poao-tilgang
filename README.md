@@ -266,4 +266,19 @@ Modulene er som følger:
 * **application** - kjører opp applikasjonen, definerer endepunkter, etc. Tar i bruk _core-modulen_ for å eksponere tilgangskontrollregler med et REST API
 * **client** - brukes ikke direkte av poao-tilgang, men av andre konsumerende applikasjoner som ønsker en ferdig testet klient for å gjøre requests mot poao-tilgang
 * **core** - inneholder implementasjon og definisjon av alle de ulike tilgangskontrollreglene til poao-tilgang
+
+## Poao-tilgang spesielle privilegier
+
+Poao-tilgang sin azure app-registrering  har spesielle privilegier i form av API permissions mot Microsoft Graph.
+Dersom det er behov for å endre disse så må det gjøres i Azure portalen.
+
+| API/Permission name  | Beskrivelse                         |
+|----------------------|-------------------------------------| 
+| GroupMember.Read.All | Les medlemskap i alle grupper       |
+| Group.Read.All       | Les grupper                         |
+| openid               | Sign in and read user profile       |
+| User.Read            | Les brukerprofiler                  |
+| User.Read.All        | Les brukerprofiler i organisasjonen |
+ 
+
   
