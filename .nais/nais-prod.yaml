@@ -121,6 +121,8 @@ spec:
           namespace: amt
         - application: pam-cv-api-gcp
           namespace: teampam
+        - application: ao-oppfolgingskontor
+          namespace: dab
     outbound:
       rules:
         - application: skjermede-personer-pip
