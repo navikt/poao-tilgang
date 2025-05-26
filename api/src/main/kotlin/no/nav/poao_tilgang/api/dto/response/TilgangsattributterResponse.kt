@@ -6,7 +6,7 @@ data class TilgangsattributterResponse(
 	val kontor: String?,
 	val skjermet: Boolean,
 	val diskresjonskode: Diskresjonskode?,
-)
+): Response
 
 enum class Diskresjonskode {
 	STRENGT_FORTROLIG_UTLAND, // kode 19

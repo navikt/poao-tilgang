@@ -4,4 +4,4 @@ import java.util.*
 
 data class HentAdGrupperForBrukerRequest(
 	val navAnsattAzureId: UUID
-)
+): Request

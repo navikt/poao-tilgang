@@ -1,7 +1,13 @@
-package no.nav.poao_tilgang.client
+package no.nav.poao_tilgang.client_core
 
+import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
+import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
+import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
+import no.nav.poao_tilgang.api.dto.request.Request
+import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
+import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
-import no.nav.poao_tilgang.client.api.ApiResult
+import no.nav.poao_tilgang.client_core.api.ApiResult
 import java.util.*
 
 interface PoaoTilgangClient {
@@ -38,6 +44,24 @@ interface PoaoTilgangClient {
 	 * @return ApiResult som inneholder TilgangsattributterResponse
 	 */
 	fun hentTilgangsAttributter(norskIdent: NorskIdent): ApiResult<TilgangsattributterResponse>
+
+	interface BodyParser {
+		fun parsePolicyRequestsBody(body: String): ApiResult<EvaluatePoliciesResponse>
+		fun parseHentTilgangsAttributterBody(body: String): ApiResult<TilgangsattributterResponse>
+		fun parseErSkjermetPersonBody(body: String): ApiResult<Map<NorskIdent, Boolean>>
+		fun parseHentAdGrupper(body: String): ApiResult<HentAdGrupperForBrukerResponse>
+	}
+	interface Serializer {
+		fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String
+		fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String
+		fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String
+	}
+}
+
+fun serializerFrom(serialize: (body: Request) -> String): PoaoTilgangClient.Serializer = object: PoaoTilgangClient.Serializer {
+	override fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String = serialize(body)
+	override fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String = serialize(body)
+	override fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String = serialize(body)
 }
 
 typealias NorskIdent = String

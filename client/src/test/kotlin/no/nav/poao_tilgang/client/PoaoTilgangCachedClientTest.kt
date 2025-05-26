@@ -4,7 +4,13 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.poao_tilgang.client.api.ApiResult
+import no.nav.poao_tilgang.client_core.AdGruppe
+import no.nav.poao_tilgang.client_core.Decision
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilEksternBrukerPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilModiaPolicyInput
+import no.nav.poao_tilgang.client_core.PoaoTilgangClient
+import no.nav.poao_tilgang.client_core.TilgangType
+import no.nav.poao_tilgang.client_core.api.ApiResult
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -54,7 +60,7 @@ class PoaoTilgangCachedClientTest {
 		val ansattId1 = UUID.randomUUID()
 		val ansattId2 = UUID.randomUUID()
 
-		val grupper1 = listOf(AdGruppe(UUID.randomUUID(),"grp1"))
+		val grupper1 = listOf(AdGruppe(UUID.randomUUID(), "grp1"))
 		val grupper2 = listOf(AdGruppe(UUID.randomUUID(),"grp2"))
 
 		every { client.hentAdGrupper(ansattId1) } returns ApiResult.success(grupper1)

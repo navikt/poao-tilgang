@@ -6,4 +6,4 @@ data class PolicyEvaluationRequestDto<I>(
     val requestId: UUID,
     val policyInput: I,
     val policyId: PolicyId
-)
+): Request
