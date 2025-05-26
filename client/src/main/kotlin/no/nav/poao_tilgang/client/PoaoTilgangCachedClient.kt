@@ -3,8 +3,15 @@ package no.nav.poao_tilgang.client
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
-import no.nav.poao_tilgang.client.api.ApiResult
 import no.nav.poao_tilgang.client.utils.CacheUtils.tryCacheFirstNotNull
+import no.nav.poao_tilgang.client_core.AdGruppe
+import no.nav.poao_tilgang.client_core.Decision
+import no.nav.poao_tilgang.client_core.NorskIdent
+import no.nav.poao_tilgang.client_core.PoaoTilgangClient
+import no.nav.poao_tilgang.client_core.PolicyInput
+import no.nav.poao_tilgang.client_core.PolicyRequest
+import no.nav.poao_tilgang.client_core.PolicyResult
+import no.nav.poao_tilgang.client_core.api.ApiResult
 import java.time.Duration
 import java.util.*
 
