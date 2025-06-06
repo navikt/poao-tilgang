@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.client.api
+package no.nav.poao_tilgang.client_core.api
 
 sealed class ApiException(
 	message: String,

@@ -5,4 +5,4 @@ import java.util.*
 data class PolicyEvaluationResultDto (
 	val requestId: UUID,
 	val decision: DecisionDto
-)
+): Response

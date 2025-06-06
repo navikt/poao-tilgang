@@ -18,6 +18,10 @@
             <artifactId>api</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.poao-tilgang</groupId>
+            <artifactId>client-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
         </dependency>

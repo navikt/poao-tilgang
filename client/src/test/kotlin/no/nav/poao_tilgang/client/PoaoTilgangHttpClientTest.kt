@@ -6,13 +6,37 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
+import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
+import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
+import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
+import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
+import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
-import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
-import no.nav.poao_tilgang.client.api.NetworkApiException
+import no.nav.poao_tilgang.client_core.Decision
+import no.nav.poao_tilgang.client_core.EksternBrukerTilgangTilEksternBrukerPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattBehandleFortroligBrukerePolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattBehandleSkjermedePersonerPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattBehandleStrengtFortroligBrukerePolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilEksternBrukerPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilModiaAdminPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilModiaPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilNavEnhetMedSperrePolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilNavEnhetPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput
+import no.nav.poao_tilgang.client_core.NorskIdent
+import no.nav.poao_tilgang.client_core.PoaoTilgangClient
+import no.nav.poao_tilgang.client_core.PoaoTilgangHttpClient
+import no.nav.poao_tilgang.client_core.TilgangType
+import no.nav.poao_tilgang.client_core.api.ApiResult
+import no.nav.poao_tilgang.client_core.api.ApiResult.Companion.failure
+import no.nav.poao_tilgang.client_core.api.ApiResult.Companion.success
+import no.nav.poao_tilgang.client_core.api.BadHttpStatusApiException
+import no.nav.poao_tilgang.client_core.api.NetworkApiException
+import no.nav.poao_tilgang.client_core.api.ResponseDataApiException
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.TilgangType.LESE
 import no.nav.poao_tilgang.core.domain.TilgangType.SKRIVE
@@ -37,14 +61,14 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	private val fnr2 = "654756834"
 
 
-	lateinit var client: PoaoTilgangHttpClient
+	lateinit var client: PoaoTilgangOkHttpClient
 
 	@Autowired
 	private lateinit var adGruppeProvider: AdGruppeProvider
 
 	@BeforeEach
 	fun setup() {
-		client = PoaoTilgangHttpClient(
+		client = PoaoTilgangOkHttpClient(
 			serverUrl(),
 			{ mockOAuthServer.issueAzureAdM2MToken() },
 			RestClient.baseClientBuilder().readTimeout(Duration.ofMinutes(15)).build()
@@ -70,7 +94,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy`() {
 		setupMocks(adGrupper = listOf(),  listOf(EnhetTilgang("0123", "En enhet", emptyList())))
-		val decision = client.evaluatePolicy(NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(navAnsattId, norskIdent)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(
+				navAnsattId,
+				norskIdent
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -90,10 +119,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate EksternBrukerTilgangTilEksternBrukerPolicy`() {
-		val decision = client.evaluatePolicy(EksternBrukerTilgangTilEksternBrukerPolicyInput(
-			rekvirentNorskIdent = "234",
-			ressursNorskIdent = "234"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			EksternBrukerTilgangTilEksternBrukerPolicyInput(
+				rekvirentNorskIdent = "234",
+				ressursNorskIdent = "234"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -107,10 +138,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 		mockAbacHttpServer.mockPermitAll()
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilNavEnhetPolicyInput(
-			navAnsattAzureId = navAnsattId,
-			navEnhetId = "0123"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilNavEnhetPolicyInput(
+				navAnsattAzureId = navAnsattId,
+				navEnhetId = "0123"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -123,10 +156,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 		mockAbacHttpServer.mockPermitAll()
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
-			navAnsattAzureId = navAnsattId,
-			navEnhetId = "0123"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
+				navAnsattAzureId = navAnsattId,
+				navEnhetId = "0123"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -191,7 +226,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `skal returnere BadHttpStatusApiException for feilende status`() {
-		val badClient = PoaoTilgangHttpClient(serverUrl(), { "" })
+		val badClient = PoaoTilgangOkHttpClient(serverUrl(), { "" })
 
 		val exception = badClient.erSkjermetPerson("34242").exception
 		exception should beInstanceOf<BadHttpStatusApiException>()
@@ -201,12 +236,38 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `skal returnere NetworkApiException for netverk feil`() {
-		val badClient = PoaoTilgangHttpClient("http://not-a-real-host", { "" })
+		val badClient = PoaoTilgangOkHttpClient("http://not-a-real-host", { "" })
 
 		val exception = badClient.erSkjermetPerson("34242").exception
 
 		exception should beInstanceOf<NetworkApiException>()
 		exception?.cause should beInstanceOf<UnknownHostException>()
+	}
+
+	@Test
+	fun `skal returnere ResponseDataApiException når serialisering feiler`() {
+		val badClient = PoaoTilgangHttpClient(serverUrl(),
+			{ a,b,c -> success("{ lol }") },
+			object: PoaoTilgangClient.BodyParser {
+				override fun parsePolicyRequestsBody(body: String): ApiResult<EvaluatePoliciesResponse> =
+					throw IllegalArgumentException("test")
+				override fun parseHentTilgangsAttributterBody(body: String): ApiResult<TilgangsattributterResponse> =
+					throw IllegalArgumentException("test")
+				override fun parseErSkjermetPersonBody(body: String): ApiResult<Map<NorskIdent, Boolean>> =
+					throw IllegalArgumentException("test")
+				override fun parseHentAdGrupper(body: String): ApiResult<HentAdGrupperForBrukerResponse> =
+					throw IllegalArgumentException("test")
+			},
+			object: PoaoTilgangClient.Serializer {
+				override fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String = ""
+				override fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String = ""
+				override fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String = ""
+			}
+		)
+
+		val exception = badClient.erSkjermetPerson("34242").exception
+		exception should beInstanceOf<ResponseDataApiException>()
+		exception?.message shouldBe "test"
 	}
 
 	@Test
@@ -218,9 +279,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -249,9 +312,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaAdminPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilModiaAdminPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -280,9 +345,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -310,9 +377,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleSkjermedePersonerPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleSkjermedePersonerPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -355,9 +424,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group")), enhetTilganger: List<EnhetTilgang> = emptyList()) {
 		mockPersonData(norskIdent,brukersEnhet)
-		mockRolleTilganger(
-			navIdent, navAnsattId, adGrupper
-		)
+		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 		mockEnhetsTilganger(navIdent, enhetTilganger)
 	}
 

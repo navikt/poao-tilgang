@@ -8,8 +8,16 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
-import no.nav.poao_tilgang.client.api.ApiResult
-import no.nav.poao_tilgang.client.api.ResponseDataApiException
+import no.nav.poao_tilgang.client_core.AdGruppe
+import no.nav.poao_tilgang.client_core.Decision
+import no.nav.poao_tilgang.client_core.NorskIdent
+import no.nav.poao_tilgang.client_core.PoaoTilgangClient
+import no.nav.poao_tilgang.client_core.PolicyInput
+import no.nav.poao_tilgang.client_core.PolicyRequest
+import no.nav.poao_tilgang.client_core.PolicyResult
+import no.nav.poao_tilgang.client_core.api.ApiResult
+import no.nav.poao_tilgang.client_core.api.ResponseDataApiException
+import no.nav.poao_tilgang.client_core.toRequestDto
 import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 import java.util.*
@@ -43,7 +51,7 @@ class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilg
 
 
 	private fun valuatePolicy(input: PolicyRequest): Decision {
-		val requestDto = toRequestDto(input)
+		val requestDto = input.toRequestDto()
 
 		val valueToTree = ClientObjectMapper.objectMapper.valueToTree<JsonNode>(requestDto.policyInput)
 		val policyInput = apiCoreMapper.mapToPolicyInput(requestDto.policyId, valueToTree)
