@@ -91,6 +91,11 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.poao-tilgang</groupId>
+                <artifactId>client-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.poao-tilgang</groupId>
                 <artifactId>api-core-mapper</artifactId>
                 <version>${project.version}</version>
             </dependency>
