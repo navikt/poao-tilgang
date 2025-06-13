@@ -25,8 +25,8 @@ class TilgangController(
 	@PostMapping("/modia")
 	fun harTilgangTilModia(@RequestBody request: HarTilgangTilModiaRequest): TilgangResponse {
 		authService.verifyRequestIsMachineToMachine()
-
-		val decision = tilgangService.harTilgangTilModia(request.navIdent)
+		val navIdent = request.navIdent.trim().split(" ")[0]
+		val decision = tilgangService.harTilgangTilModia(navIdent)
 
 		return mapTilResponse(decision)
 	}
