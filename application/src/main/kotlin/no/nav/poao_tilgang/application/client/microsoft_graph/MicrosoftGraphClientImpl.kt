@@ -10,6 +10,8 @@ import no.nav.poao_tilgang.core.domain.AzureObjectId
 import no.nav.poao_tilgang.core.domain.NavIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.springframework.http.HttpStatus
+import org.springframework.web.server.ResponseStatusException
 
 open class MicrosoftGraphClientImpl(
 	private val baseUrl: String,
@@ -61,6 +63,11 @@ open class MicrosoftGraphClientImpl(
 
 	@Timed("microsoft_graph.hent_azure_id_med_nav_identhent_azure_id_med_nav_ident", histogram = true, percentiles = [0.5, 0.95, 0.99], extraTags = ["type", "client"])
 	override fun hentAzureIdMedNavIdent(navIdent: NavIdent): AzureObjectId {
+		val regex = "[A-Za-z]\\d{6}".toRegex()
+
+		if (!navIdent.matches(regex)) {
+			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "navIdent må ha formatet X123456")
+		}
 		val request = Request.Builder()
 			.url("$baseUrl/v1.0/users?\$select=id&\$count=true&\$filter=onPremisesSamAccountName eq '$navIdent'")
 			.header("ConsistencyLevel", "eventual")

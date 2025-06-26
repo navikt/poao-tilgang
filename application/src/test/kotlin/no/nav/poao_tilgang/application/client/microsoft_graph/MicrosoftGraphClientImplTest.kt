@@ -118,7 +118,7 @@ class MicrosoftGraphClientImplTest {
 			tokenProvider = { "TOKEN" },
 		)
 
-		val navIdent = "Z1234"
+		val navIdent = "Z123454"
 		val navAnsattAzureId = UUID.randomUUID()
 
 		mockServer.handleRequest(
@@ -159,7 +159,7 @@ class MicrosoftGraphClientImplTest {
 		)
 
 		val navAnsattAzureId = UUID.randomUUID()
-		val expectedNavIdent = "Z1234"
+		val expectedNavIdent = "Z123445"
 
 		mockServer.handleRequest(
 			response = MockResponse()

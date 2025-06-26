@@ -9,12 +9,10 @@ import no.nav.poao_tilgang.application.service.TilgangService
 import no.nav.poao_tilgang.application.utils.Issuer
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/v1/tilgang")
@@ -27,11 +25,7 @@ class TilgangController(
 	@PostMapping("/modia")
 	fun harTilgangTilModia(@RequestBody request: HarTilgangTilModiaRequest): TilgangResponse {
 		authService.verifyRequestIsMachineToMachine()
-		val regex = "[A-Za-z]\\d{6}".toRegex()
 
-		if (!request.navIdent.matches(regex)) {
-			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "navIdent må ha formatet X123456")
-		}
 		val decision = tilgangService.harTilgangTilModia(request.navIdent)
 
 		return mapTilResponse(decision)
