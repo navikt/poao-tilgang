@@ -4,4 +4,4 @@ import java.util.UUID
 
 data class NavAnsattBehandleStrengtFortroligBrukerePolicyInputV1Dto(
 	val navAnsattAzureId: UUID
-)
+): PolicyInput
