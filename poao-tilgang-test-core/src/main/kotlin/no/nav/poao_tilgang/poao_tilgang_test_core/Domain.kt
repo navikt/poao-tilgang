@@ -90,7 +90,7 @@ class NavAnsatte {
 		val navAnsatt = NavAnsatt()
 		add(navAnsatt)
 		navAnsatt.adGrupper.add(tilgjengligeAdGrupper.modiaOppfolging)
-		navAnsatt.enheter.add(NavEnhetTilgang(enhet, "enhetNavn $enhet", emptyList()))
+		navAnsatt.enheter.add(NavEnhetTilgang(enhet))
 		return navAnsatt
 	}
 
@@ -99,7 +99,7 @@ class NavAnsatte {
 		add(navAnsatt)
 		navAnsatt.adGrupper.add(tilgjengligeAdGrupper.modiaOppfolging)
 		navAnsatt.adGrupper.add(tilgjengligeAdGrupper.gosysNasjonal)
-		navAnsatt.enheter.add(NavEnhetTilgang("0000", "NAV Viken", emptyList()))
+		navAnsatt.enheter.add(NavEnhetTilgang("0000"))
 
 		return navAnsatt
 	}

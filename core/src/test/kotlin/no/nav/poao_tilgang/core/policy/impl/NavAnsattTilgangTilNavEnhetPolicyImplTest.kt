@@ -73,7 +73,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns listOf(
-			NavEnhetTilgang(navEnhetId, "test", emptyList())
+			NavEnhetTilgang(navEnhetId)
 		)
 
 		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))

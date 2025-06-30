@@ -1,7 +1,6 @@
 package no.nav.poao_tilgang.application.provider
 
 import no.nav.poao_tilgang.application.client.axsys.AxsysClient
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgang
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
@@ -16,9 +15,7 @@ class NavEnhetTilgangProviderImpl(
 		return axsysClient.hentTilganger(navIdent)
 			.map {
 				NavEnhetTilgang(
-					enhetId = it.enhetId,
-					enhetNavn = it.enhetNavn,
-					temaer = it.temaer
+					enhetId = it.enhetId
 				)
 			}.also {
 //				secureLog.info("Axsys , hentTilganger for navIdent: $navIdent, result: $it")

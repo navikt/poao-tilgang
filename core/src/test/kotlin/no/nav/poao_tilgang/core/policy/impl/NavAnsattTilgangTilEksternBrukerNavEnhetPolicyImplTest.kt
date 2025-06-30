@@ -109,9 +109,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
 			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
+				navEnhet
 			)
 		)
 
@@ -149,9 +147,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
 			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
+				navEnhet
 			)
 		)
 
@@ -189,9 +185,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 		every { navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent) } returns listOf(
 			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
+				navEnhet
 			)
 		)
 

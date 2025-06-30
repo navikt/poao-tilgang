@@ -10,7 +10,5 @@ interface NavEnhetTilgangProvider {
 }
 
 data class NavEnhetTilgang(
-	val enhetId: NavEnhetId,
-	val enhetNavn: String,
-	val temaer: List<String>
+	val enhetId: NavEnhetId
 )

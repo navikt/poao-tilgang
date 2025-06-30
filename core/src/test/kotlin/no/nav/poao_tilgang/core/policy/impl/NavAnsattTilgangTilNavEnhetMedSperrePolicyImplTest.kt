@@ -73,7 +73,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns listOf(
-			NavEnhetTilgang(navEnhetId, "test", emptyList())
+			NavEnhetTilgang(navEnhetId)
 		)
 
 		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
@@ -108,7 +108,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns listOf(
-			NavEnhetTilgang(navEnhetId, "test", emptyList())
+			NavEnhetTilgang(navEnhetId)
 		)
 		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
 
