@@ -11,7 +11,7 @@ import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 

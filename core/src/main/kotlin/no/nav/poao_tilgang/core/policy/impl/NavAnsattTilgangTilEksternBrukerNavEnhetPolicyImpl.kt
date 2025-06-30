@@ -19,6 +19,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 	private val navEnhetTilgangProvider: NavEnhetTilgangProvider
 ) : NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 
+	private val log = LoggerFactory.getLogger(javaClass)
 	private val secureLog = LoggerFactory.getLogger("SecureLog")
 	private val nasjonalTilgangGrupperOgAdmin = adGruppeProvider.hentTilgjengeligeAdGrupper().let {
 		listOf(
