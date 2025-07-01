@@ -46,6 +46,7 @@
         <kotest.version>5.9.1</kotest.version>
         <common.version>3.2024.10.25_13.44-9db48a0dbe67</common.version>
         <okhttp.version>4.12.0</okhttp.version>
+        <unleash.version>10.2.1</unleash.version>
     </properties>
 
     <distributionManagement>
@@ -155,6 +156,11 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.getunleash</groupId>
+                <artifactId>unleash-client-java</artifactId>
+                <version>${unleash.version}</version>
             </dependency>
 
             <dependency>

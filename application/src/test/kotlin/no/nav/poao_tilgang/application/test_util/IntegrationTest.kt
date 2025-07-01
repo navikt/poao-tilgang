@@ -1,6 +1,5 @@
 package no.nav.poao_tilgang.application.test_util
 
-import no.nav.common.featuretoggle.UnleashClient
 import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
@@ -33,9 +32,6 @@ open class IntegrationTest {
 	@MockBean
 	lateinit var myApplicationRunner: MyApplicationRunner
 
-	@MockBean
-	lateinit var mockUnleashHttpServer: UnleashClient
-
 	@LocalServerPort
 	private var port: Int = 0
 
@@ -44,15 +40,15 @@ open class IntegrationTest {
 		.build()
 
 	companion object {
-		lateinit var mockOAuthServer : MockOAuthServer
-		lateinit var mockMicrosoftGraphHttpServer : MockMicrosoftGraphHttpServer
-		lateinit var mockSkjermetPersonHttpServer : MockSkjermetPersonHttpServer
-		lateinit var mockAxsysHttpServer : MockAxsysHttpServer
-		lateinit var mockAbacHttpServer : MockAbacHttpServer
-		lateinit var mockVeilarbarenaHttpServer : MockVeilarbarenaHttpServer
-		lateinit var mockPdlPipHttpServer : MockPdlPipHttpServer
-		lateinit var mockNorgHttpServer : MockNorgHttpServer
-		lateinit var mockMachineToMachineHttpServer : MockMachineToMachineHttpServer
+		lateinit var mockOAuthServer: MockOAuthServer
+		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
+		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
+		lateinit var mockAxsysHttpServer: MockAxsysHttpServer
+		lateinit var mockAbacHttpServer: MockAbacHttpServer
+		lateinit var mockVeilarbarenaHttpServer: MockVeilarbarenaHttpServer
+		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
+		lateinit var mockNorgHttpServer: MockNorgHttpServer
+		lateinit var mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
 
 		@BeforeAll
 		@JvmStatic
@@ -101,6 +97,8 @@ open class IntegrationTest {
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
+			System.setProperty("UNLEASH_SERVER_API_URL", "http://localhost:8080")
+			System.setProperty("UNLEASH_SERVER_API_TOKEN", "test")
 		}
 
 		private fun setupAdGrupperIder() {
@@ -116,6 +114,7 @@ open class IntegrationTest {
 			System.setProperty("AD_GRUPPE_ID_AKTIVITETSPLAN_KVP", UUID.randomUUID().toString())
 			System.setProperty("NAIS_APP_NAME", "poao-tilgang")
 		}
+
 		@JvmStatic
 		@AfterAll
 		fun close(): Unit {
@@ -139,8 +138,6 @@ open class IntegrationTest {
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
-
-
 
 	fun serverUrl() = "http://localhost:$port"
 
@@ -193,6 +190,4 @@ open class IntegrationTest {
 	fun mockEnhetsTilganger(navIdent: String, enhetsTilganger: List<EnhetTilgang>) {
 		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, enhetsTilganger)
 	}
-
-
 }

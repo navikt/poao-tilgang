@@ -1,5 +1,7 @@
 package no.nav.poao_tilgang.application.config
 
+import io.getunleash.DefaultUnleash
+import io.getunleash.util.UnleashConfig
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -10,6 +12,7 @@ import no.nav.common.token_client.builder.AzureAdTokenClientBuilder
 import no.nav.common.token_client.client.MachineToMachineTokenClient
 import no.nav.common.utils.Credentials
 import no.nav.common.utils.EnvironmentUtils
+import no.nav.common.utils.EnvironmentUtils.isProduction
 import no.nav.common.utils.NaisUtils
 import no.nav.poao_tilgang.application.controller.internal.HealthChecksPoaoTilgang
 import no.nav.poao_tilgang.application.middleware.RequesterLogFilter
@@ -21,6 +24,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.context.annotation.Scope
 
 
 @Configuration
@@ -118,12 +122,26 @@ open class ApplicationConfig {
 	}
 
 	@Bean
-	open fun healthChecks() : HealthChecksPoaoTilgang {
+	open fun healthChecks(): HealthChecksPoaoTilgang {
 		return HealthChecksPoaoTilgang()
 	}
 
 	@Bean
-	open fun meterRegistry(): MeterRegistry{
+	open fun meterRegistry(): MeterRegistry {
 		return PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 	}
+
+	@Bean
+	open fun unleashClient(
+		@Value("\${nais.env.unleash.url}") unleashUrl: String,
+		@Value("\${nais.env.unleash.apiToken}") unleashApiToken: String,
+	): DefaultUnleash = DefaultUnleash(
+		UnleashConfig.builder()
+			.appName(APPLICATION_NAME)
+			.instanceId(APPLICATION_NAME)
+			.unleashAPI("$unleashUrl/api")
+			.apiKey(unleashApiToken)
+			.environment(if (isProduction().orElse(false)) "production" else "development")
+			.build()
+	)
 }
