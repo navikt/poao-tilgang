@@ -1,0 +1,14 @@
+apiVersion: unleash.nais.io/v1
+kind: ApiToken
+metadata:
+  name: poao-tilgang
+  namespace: poao
+  labels:
+    team: poao
+spec:
+  unleashInstance:
+    apiVersion: unleash.nais.io/v1
+    kind: RemoteUnleash
+    name: poao
+  secretName: poao-tilgang-unleash-api-token
+  environment: production
