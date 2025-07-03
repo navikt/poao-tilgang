@@ -135,10 +135,11 @@ open class ApplicationConfig {
 	open fun unleashClient(
 		@Value("\${nais.env.unleash.url}") unleashUrl: String,
 		@Value("\${nais.env.unleash.apiToken}") unleashApiToken: String,
+		@Value("\${nais.env.podName}") podName: String
 	): DefaultUnleash = DefaultUnleash(
 		UnleashConfig.builder()
 			.appName(APPLICATION_NAME)
-			.instanceId(APPLICATION_NAME)
+			.instanceId(podName)
 			.unleashAPI("$unleashUrl/api")
 			.apiKey(unleashApiToken)
 			.environment(if (isProduction().orElse(false)) "production" else "development")

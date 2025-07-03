@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.test_util
 
 import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
+import no.nav.poao_tilgang.application.config.ApplicationConfig.Companion.APPLICATION_NAME
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -99,6 +100,7 @@ open class IntegrationTest {
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
 			System.setProperty("UNLEASH_SERVER_API_URL", "http://localhost:8080")
 			System.setProperty("UNLEASH_SERVER_API_TOKEN", "test")
+			System.setProperty("NAIS_POD_NAME", "$APPLICATION_NAME-${UUID.randomUUID().toString().take(5)}")
 		}
 
 		private fun setupAdGrupperIder() {
