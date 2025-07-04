@@ -62,6 +62,7 @@ spec:
           namespace: nom
       external:
         - host: graph.microsoft.com
+        - host: poao-unleash-api.nav.cloud.nais.io
   env:
     - name: spring_profiles_active
       value: fss
