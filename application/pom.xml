@@ -85,6 +85,10 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.getunleash</groupId>
+            <artifactId>unleash-client-java</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.poao-tilgang</groupId>
@@ -110,10 +114,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>feature-toggle</artifactId>
         </dependency>
 
         <dependency>

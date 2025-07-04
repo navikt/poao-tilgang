@@ -1,8 +1,9 @@
 package no.nav.poao_tilgang.application.test_util
 
-import no.nav.common.featuretoggle.UnleashClient
+import io.getunleash.DefaultUnleash
 import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
+import no.nav.poao_tilgang.application.config.ApplicationConfig.Companion.APPLICATION_NAME
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -17,10 +18,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.Duration
 import java.util.*
@@ -30,11 +31,11 @@ import java.util.*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [Application::class])
 @ActiveProfiles("test")
 open class IntegrationTest {
-	@MockBean
+	@MockitoBean
 	lateinit var myApplicationRunner: MyApplicationRunner
 
-	@MockBean
-	lateinit var mockUnleashHttpServer: UnleashClient
+	@MockitoBean
+	lateinit var unleashClient: DefaultUnleash
 
 	@LocalServerPort
 	private var port: Int = 0
@@ -44,15 +45,15 @@ open class IntegrationTest {
 		.build()
 
 	companion object {
-		lateinit var mockOAuthServer : MockOAuthServer
-		lateinit var mockMicrosoftGraphHttpServer : MockMicrosoftGraphHttpServer
-		lateinit var mockSkjermetPersonHttpServer : MockSkjermetPersonHttpServer
-		lateinit var mockAxsysHttpServer : MockAxsysHttpServer
-		lateinit var mockAbacHttpServer : MockAbacHttpServer
-		lateinit var mockVeilarbarenaHttpServer : MockVeilarbarenaHttpServer
-		lateinit var mockPdlPipHttpServer : MockPdlPipHttpServer
-		lateinit var mockNorgHttpServer : MockNorgHttpServer
-		lateinit var mockMachineToMachineHttpServer : MockMachineToMachineHttpServer
+		lateinit var mockOAuthServer: MockOAuthServer
+		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
+		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
+		lateinit var mockAxsysHttpServer: MockAxsysHttpServer
+		lateinit var mockAbacHttpServer: MockAbacHttpServer
+		lateinit var mockVeilarbarenaHttpServer: MockVeilarbarenaHttpServer
+		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
+		lateinit var mockNorgHttpServer: MockNorgHttpServer
+		lateinit var mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
 
 		@BeforeAll
 		@JvmStatic
@@ -101,6 +102,9 @@ open class IntegrationTest {
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
+			System.setProperty("UNLEASH_SERVER_API_URL", "http://localhost:8080")
+			System.setProperty("UNLEASH_SERVER_API_TOKEN", "test")
+			System.setProperty("NAIS_POD_NAME", "$APPLICATION_NAME-${UUID.randomUUID().toString().take(5)}")
 		}
 
 		private fun setupAdGrupperIder() {
@@ -116,6 +120,7 @@ open class IntegrationTest {
 			System.setProperty("AD_GRUPPE_ID_AKTIVITETSPLAN_KVP", UUID.randomUUID().toString())
 			System.setProperty("NAIS_APP_NAME", "poao-tilgang")
 		}
+
 		@JvmStatic
 		@AfterAll
 		fun close(): Unit {
@@ -139,8 +144,6 @@ open class IntegrationTest {
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
-
-
 
 	fun serverUrl() = "http://localhost:$port"
 
@@ -193,6 +196,4 @@ open class IntegrationTest {
 	fun mockEnhetsTilganger(navIdent: String, enhetsTilganger: List<EnhetTilgang>) {
 		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, enhetsTilganger)
 	}
-
-
 }
