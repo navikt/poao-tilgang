@@ -143,6 +143,7 @@ open class ApplicationConfig {
 			.unleashAPI("$unleashUrl/api")
 			.apiKey(unleashApiToken)
 			.environment(if (isProduction().orElse(false)) "production" else "development")
+			.synchronousFetchOnInitialisation(true)
 			.build()
 	)
 }
