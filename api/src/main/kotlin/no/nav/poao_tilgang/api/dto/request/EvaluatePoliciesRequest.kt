@@ -1,6 +1,7 @@
 package no.nav.poao_tilgang.api.dto.request
 
-data class EvaluatePoliciesRequest<I> (
-	val requests: List<PolicyEvaluationRequestDto<I>>
-)
+import no.nav.poao_tilgang.api.dto.request.policy_input.PolicyInput
 
+data class EvaluatePoliciesRequest<I: PolicyInput> (
+	val requests: List<PolicyEvaluationRequestDto<I>>
+): Request

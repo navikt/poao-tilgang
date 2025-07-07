@@ -53,12 +53,12 @@ jobs:
           java-version: 21
           cache: 'maven'
       - name: Deploy release
-        run: mvn -B -Drevision="${{ env.VERSION }}" -DskipTests source:jar deploy
+        run: mvn -B -Drevision="test.${{ env.VERSION }}" -DskipTests source:jar deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          name: Release ${{ env.VERSION }}
-          tag_name: test:${{ env.VERSION }}
+          name: Release test.${{ env.VERSION }}
+          tag_name: test.${{ env.VERSION }}
           prerelease: false

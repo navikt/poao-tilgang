@@ -2,10 +2,10 @@ package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
-import no.nav.poao_tilgang.client.Decision
-import no.nav.poao_tilgang.client.NavAnsattTilgangTilModiaPolicyInput
-import no.nav.poao_tilgang.client.PoaoTilgangClient
-import no.nav.poao_tilgang.client.PoaoTilgangHttpClient
+import no.nav.poao_tilgang.client_core.Decision
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilModiaPolicyInput
+import no.nav.poao_tilgang.client.PoaoTilgangOkHttpClient
+import no.nav.poao_tilgang.client_core.PoaoTilgangClient
 import no.nav.poao_tilgang.poao_tilgang_test_core.NavAnsatt
 import no.nav.poao_tilgang.poao_tilgang_test_core.tilgjengligeAdGrupper
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ class Poao_wiermockTest {
 	val baseUrl = managedWiermock.wireMockServer.baseUrl()
 	val navContext = managedWiermock.navContext
 
-	val poaoTilgangHttpClient: PoaoTilgangClient = PoaoTilgangHttpClient(baseUrl, { "kake" })
+	val poaoTilgangHttpClient: PoaoTilgangClient = PoaoTilgangOkHttpClient(baseUrl, { "kake" })
 
 
 	@Test

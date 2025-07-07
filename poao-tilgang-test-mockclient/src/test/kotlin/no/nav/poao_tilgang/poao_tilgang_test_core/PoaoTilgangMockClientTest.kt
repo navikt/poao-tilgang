@@ -1,9 +1,9 @@
 package no.nav.poao_tilgang.poao_tilgang_test_core
 
 import io.kotest.matchers.shouldBe
-import no.nav.poao_tilgang.client.NavAnsattTilgangTilEksternBrukerPolicyInput
+import no.nav.poao_tilgang.client_core.NavAnsattTilgangTilEksternBrukerPolicyInput
 import no.nav.poao_tilgang.client.PoaoTilgangMockClient
-import no.nav.poao_tilgang.client.TilgangType
+import no.nav.poao_tilgang.client_core.TilgangType
 import org.junit.jupiter.api.Test
 
 
