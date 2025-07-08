@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 const val AD_GRUPPE_ENHET_PREFIKS = "0000-GA-ENHET_"
 
 @Component
-class NavEnhetTilgangProviderImpl(
+open class NavEnhetTilgangProviderImpl(
 	private val axsysClient: AxsysClient,
 	private val adGruppeProvider: AdGruppeProvider,
 	private val defaultUnleash: DefaultUnleash
