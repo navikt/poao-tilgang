@@ -1,6 +1,7 @@
 package no.nav.poao_tilgang.application.provider
 
 import io.getunleash.DefaultUnleash
+import io.micrometer.core.annotation.Timed
 import no.nav.poao_tilgang.application.client.axsys.AxsysClient
 import no.nav.poao_tilgang.application.utils.HENT_ENHETSTILGANGER_FRA_AD_OG_LOGG_DIFF
 import no.nav.poao_tilgang.core.domain.NavIdent
@@ -21,6 +22,7 @@ class NavEnhetTilgangProviderImpl(
 
 	private val logger = LoggerFactory.getLogger(javaClass)
 
+	@Timed(value = "nav_enhet_tilgang_provider.hent_enhet_tilganger", histogram = true, percentiles = [0.5, 0.95, 0.99], extraTags = ["type", "provider"])
 	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang> {
 		return if (defaultUnleash.isEnabled(HENT_ENHETSTILGANGER_FRA_AD_OG_LOGG_DIFF)) {
 			val enhetTilgangerFraADGrupper = hentEnhetTilgangerFraADGrupper(navIdent)
