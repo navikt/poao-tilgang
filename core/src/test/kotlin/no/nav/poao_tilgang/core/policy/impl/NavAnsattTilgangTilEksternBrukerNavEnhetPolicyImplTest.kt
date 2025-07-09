@@ -8,7 +8,10 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
+import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -107,11 +110,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet
-			)
-		)
+		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(navEnhet)
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
@@ -145,11 +144,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet
-			)
-		)
+		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(navEnhet)
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
@@ -183,11 +178,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet
-			)
-		)
+		every { navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent) } returns listOf(navEnhet)
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(

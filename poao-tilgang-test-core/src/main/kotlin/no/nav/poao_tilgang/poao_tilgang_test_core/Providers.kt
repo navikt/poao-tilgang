@@ -45,7 +45,7 @@ class OppfolgingsenhetProviderImpl(private val navContext: NavContext) : Oppfolg
 }
 
 class NavEnhetTilgangProviderImpl(private val navContext: NavContext) : NavEnhetTilgangProvider {
-	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang> {
+	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetId> {
 		return navContext.navAnsatt.get(navIdent)?.enheter?.toList() ?: emptyList()
 	}
 }

@@ -81,7 +81,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		}
 
 		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-			.any { input.navEnhetId == it.enhetId }
+			.any { input.navEnhetId == it }
 		timer.record("app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre.egen", Duration.ofMillis(System.currentTimeMillis()-startTime))
 
 		return if (harTilgangTilEnhet) Decision.Permit else denyDecision

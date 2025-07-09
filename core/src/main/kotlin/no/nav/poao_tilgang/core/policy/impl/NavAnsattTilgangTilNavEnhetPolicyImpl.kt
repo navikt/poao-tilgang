@@ -42,7 +42,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 		return if (toggleProvider.brukAbacDecision()) {
 			val harTilgangAbacDesicion = harTilgangAbac(input)
 			if (toggleProvider.logAbacDecisionDiff()) {
-				asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbacDesicion })
+				asyncLogDecisionDiff(name, input, ::harTilgang, { _ -> harTilgangAbacDesicion })
 			}
 			harTilgangAbacDesicion
 		} else {
@@ -61,7 +61,10 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 
 		val harTilgangAbac = abacProvider.harVeilederTilgangTilNavEnhet(navIdent, input.navEnhetId)
 
-		timer.record("app.poao-tilgang.NavAnsattTilgangTilNavEnhet", Duration.ofMillis(System.currentTimeMillis() - startTime))
+		timer.record(
+			"app.poao-tilgang.NavAnsattTilgangTilNavEnhet",
+			Duration.ofMillis(System.currentTimeMillis() - startTime)
+		)
 
 		return toAbacDecision(harTilgangAbac)
 	}
@@ -70,7 +73,10 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	internal fun harTilgang(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
 		val startTime = System.currentTimeMillis()
 		val harTilgangEgen = harTilgangEgen(input)
-		timer.record("app.poao-tilgang.NavAnsattTilgangTilNavEnhet", Duration.ofMillis(System.currentTimeMillis() - startTime))
+		timer.record(
+			"app.poao-tilgang.NavAnsattTilgangTilNavEnhet",
+			Duration.ofMillis(System.currentTimeMillis() - startTime)
+		)
 		return harTilgangEgen
 	}
 
@@ -90,14 +96,15 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 
 		// TODO Slutte med denne sjekken hvis fag er enige (bør ikke trenge tilgang til modia_oppfølging for å ha tilgang til enhet)
 
-		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId)).whenDeny {
-			return it
-		}
+		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId))
+			.whenDeny {
+				return it
+			}
 
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 
 		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-			.any { input.navEnhetId == it.enhetId }
+			.any { input.navEnhetId == it }
 
 		return if (harTilgangTilEnhet) return Decision.Permit else denyDecision
 	}

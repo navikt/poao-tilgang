@@ -6,9 +6,12 @@ import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
-import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.policy.test_utils.MockTimer
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
+import no.nav.poao_tilgang.core.provider.AbacProvider
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
+import no.nav.poao_tilgang.core.provider.ToggleProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -48,7 +51,14 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns navIdent
 
 		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
-		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
+		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
+			navEnhetTilgangProvider,
+			adGruppeProvider,
+			abacProvider,
+			mockTimer,
+			toggleProvider,
+			oppfolgingPolicy
+		)
 	}
 
 	@Test
@@ -59,7 +69,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			testAdGrupper.aktivitetsplanKvp
 		)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
@@ -72,11 +87,14 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns listOf(
-			NavEnhetTilgang(navEnhetId)
-		)
+		} returns listOf(navEnhetId)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
@@ -91,7 +109,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Deny(
 			"Har ikke tilgang til NAV enhet med sperre",
@@ -107,10 +130,13 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns listOf(
-			NavEnhetTilgang(navEnhetId)
+		} returns listOf(navEnhetId)
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
 		)
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
 			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",

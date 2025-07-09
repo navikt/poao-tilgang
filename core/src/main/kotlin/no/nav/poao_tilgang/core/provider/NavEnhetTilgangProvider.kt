@@ -4,9 +4,5 @@ import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.domain.NavIdent
 
 interface NavEnhetTilgangProvider {
-	fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang>
+	fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetId>
 }
-
-data class NavEnhetTilgang(
-	val enhetId: NavEnhetId
-)
