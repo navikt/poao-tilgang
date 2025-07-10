@@ -4,4 +4,4 @@ import java.util.*
 
 data class NavAnsattTilgangTilModiaPolicyInputV1Dto (
 	val navAnsattAzureId: UUID
-): PolicyInput
+): RequestPolicyInput()

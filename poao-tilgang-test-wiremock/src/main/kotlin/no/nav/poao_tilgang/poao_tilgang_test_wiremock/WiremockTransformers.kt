@@ -1,30 +1,17 @@
 package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.common.FileSource
-import com.github.tomakehurst.wiremock.extension.Parameters
-import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer
-import com.github.tomakehurst.wiremock.http.Request
+import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformerV2
 import com.github.tomakehurst.wiremock.http.ResponseDefinition
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent
 import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
-import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.HarTilgangTilModiaRequest
 import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
 import no.nav.poao_tilgang.api.dto.response.AdGruppeDto
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
 import no.nav.poao_tilgang.api.dto.response.DecisionType
-import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
 import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
-import no.nav.poao_tilgang.api.dto.response.PolicyEvaluationResultDto
 import no.nav.poao_tilgang.api.dto.response.TilgangResponse
-import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
-import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
@@ -34,10 +21,9 @@ import kotlin.reflect.KFunction1
 class WiremockTransformers(val policies: Policies = Policies(), baspath : String) {
 	val navContext = policies.navContext
 
-
-	val skjermetPerson = Response("skjermetPerson", "$baspath/api/v1/skjermet-person", ::kjermetPerson, ErSkjermetPersonBulkRequest::class.java)
-	val adgroupController = Response("adgroupController", "$baspath/api/v1/ad-gruppe", ::getAdGrupper, HentAdGrupperForBrukerRequest::class.java)
-	val tilgangsKontroller = Response("tilgangsKontroller", "$baspath/api/v1/tilgang/modia", ::harTilgang, HarTilgangTilModiaRequest::class.java)
+	val skjermetPerson = ResponseTransformer("skjermetPerson", "$baspath/api/v1/skjermet-person", ::kjermetPerson, ErSkjermetPersonBulkRequest::class.java)
+	val adgroupController = ResponseTransformer("adgroupController", "$baspath/api/v1/ad-gruppe", ::getAdGrupper, HentAdGrupperForBrukerRequest::class.java)
+	val tilgangsKontroller = ResponseTransformer("tilgangsKontroller", "$baspath/api/v1/tilgang/modia", ::harTilgang, HarTilgangTilModiaRequest::class.java)
 	val polecyController = PolicyController(policies, baspath)
 
 	val listOfExtension = arrayOf(skjermetPerson, adgroupController, polecyController, tilgangsKontroller)
@@ -52,7 +38,7 @@ class WiremockTransformers(val policies: Policies = Policies(), baspath : String
 
 
 		val evaluate =  policies.navAnsattTilgangTilModiaPolicy.evaluate(NavAnsattTilgangTilModiaPolicy.Input(navAnsatt.azureObjectId))
-		val decisionDto = decisionDto(evaluate)
+		val decisionDto = evaluate.toDecisionDto()
 		return TilgangResponse(decisionDto)
 
 	}
@@ -69,107 +55,23 @@ class WiremockTransformers(val policies: Policies = Policies(), baspath : String
 	}
 }
 
-
-
-class PolicyController(val policies: Policies, baspath: String) : ResponseDefinitionTransformer() {
-	val apiCoreMapper = ApiCoreMapper(policies.providers.adGruppeProvider)
-
-	val path = "$baspath/api/v1/policy/evaluate"
-	override fun getName(): String {
-		return "policyController"
-	}
-
-	override fun transform(
-		request: Request,
-		responseDefinition: ResponseDefinition,
-		files: FileSource?,
-		parameters: Parameters?
-	): ResponseDefinition {
-		val bodyAsString = request.bodyAsString
-		val readValue = ClientObjectMapper.objectMapper.readValue(
-			bodyAsString,
-			object : TypeReference<EvaluatePoliciesRequest<JsonNode>>() {})
-
-		val response = response(readValue)
-
-
-		return ResponseDefinitionBuilder()
-			.withHeader("Content-Type", "application/json")
-			.withStatus(200)
-			.withBody(ClientObjectMapper.objectMapper.writeValueAsString(response))
-			.build()
-
-	}
-
-	private fun response(requestDto: EvaluatePoliciesRequest<JsonNode>): EvaluatePoliciesResponse {
-		val a = requestDto.requests.map {
-			val kake = apiCoreMapper.mapToPolicyInput(it.policyId, it.policyInput)
-			val evaluate = policies.policyResolver.evaluate(kake)
-			val value = decisionDto(evaluate.decision)
-
-			PolicyEvaluationResultDto(it.requestId,  value)
-		}
-		return EvaluatePoliciesResponse(a)
-	}
-
-	override fun applyGlobally(): Boolean {
-		return false
-	}
-}
-
-private fun decisionDto(decision: Decision): DecisionDto {
-	return when (decision) {
-		is Decision.Permit -> DecisionDto(
-			DecisionType.PERMIT,
-			null, null
-		)
-
-		is Decision.Deny -> DecisionDto(
-			DecisionType.DENY,
-			decision.message,
-			decision.reason.name,
-			)
-	}
-}
-
-class Response<T>(
+class ResponseTransformer<T>(
 	private val name: String,
 	val path: String,
 	val responsFunc: KFunction1<T, Any?>,
 	val requestBody: Class<T>
-): ResponseDefinitionTransformer()   {
-	override fun getName(): String {
-		return name
-	}
-
-	override fun transform(
-		request: Request,
-		responseDefinition: ResponseDefinition,
-		files: FileSource?,
-		parameters: Parameters?
-	): ResponseDefinition {
-
-		val bodyAsString = request.bodyAsString
-		val requestDto = ClientObjectMapper.objectMapper.readValue(bodyAsString, requestBody)
+): ResponseDefinitionTransformerV2   {
+	override fun applyGlobally() = false
+	override fun getName() = name
+	override fun transform(serverEvent: ServeEvent?): ResponseDefinition? {
+		val bodyAsString = serverEvent?.request?.bodyAsString ?: return null
+		val requestDto = WiremockClientObjectMapper.objectMapper.readValue(bodyAsString, requestBody)
 		val response = responsFunc(requestDto)
 
 		return ResponseDefinitionBuilder()
 			.withHeader("Content-Type", "application/json")
 			.withStatus(200)
-			.withBody(ClientObjectMapper.objectMapper.writeValueAsString(response))
+			.withBody(WiremockClientObjectMapper.objectMapper.writeValueAsString(response))
 			.build()
-
 	}
-
-	override fun applyGlobally(): Boolean {
-		return false
-	}
-
-}
-
-internal object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }

@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.client
+package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
@@ -24,22 +24,14 @@ import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.NavAnsattTi
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.NavAnsattTilgangTilNavEnhetPolicyRequestDto
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyRequestDto
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.PolicyEvaluationRequestDto
-import no.nav.poao_tilgang.api.dto.request.policy_input.EksternBrukerTilgangTilEksternBrukerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattBehandleFortroligBrukerePolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattBehandleSkjermedePersonerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattBehandleStrengtFortroligBrukerePolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentBehandleFortroligBrukerePolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentBehandleSkjermedePersonerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentBehandleStrengtFortroligBrukerePolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentLesetilgangTilEksternBrukerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattNavIdentTilgangTilNavEnhetPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilEksternBrukerPolicyInputV2Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilModiaAdminPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilModiaPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilNavEnhetMedSperrePolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilNavEnhetPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInputV1Dto
+
+object WiremockClientObjectMapper {
+	val objectMapper: ObjectMapper = ObjectMapper()
+		.registerKotlinModule()
+		.registerModule(JavaTimeModule())
+		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+		.addMixIn(PolicyEvaluationRequestDto::class.java, PolicyEvaluationRequestMixIn::class.java)
+}
 
 @JsonTypeInfo(
 	use = JsonTypeInfo.Id.NAME,
@@ -68,11 +60,3 @@ import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattUtenModiarolleT
 	Type(value = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyRequestDto::class, name = "NAV_ANSATT_UTEN_MODIAROLLE_TILGANG_TIL_EKSTERN_BRUKER_V1"),
 )
 abstract class PolicyEvaluationRequestMixIn
-
-object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-		.addMixIn(PolicyEvaluationRequestDto::class.java, PolicyEvaluationRequestMixIn::class.java)
-}

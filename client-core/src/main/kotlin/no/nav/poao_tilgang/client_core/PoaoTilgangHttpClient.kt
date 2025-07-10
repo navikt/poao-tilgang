@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.client_core
 import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
+import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import no.nav.poao_tilgang.api.dto.response.PolicyEvaluationResultDto
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.client_core.api.ApiResult

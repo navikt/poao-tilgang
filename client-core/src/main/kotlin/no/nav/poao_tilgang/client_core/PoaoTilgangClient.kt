@@ -52,14 +52,14 @@ interface PoaoTilgangClient {
 		fun parseHentAdGrupper(body: String): ApiResult<HentAdGrupperForBrukerResponse>
 	}
 	interface Serializer {
-		fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String
+		fun serializeEvaluatePolicies(body: EvaluatePoliciesRequest): String
 		fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String
 		fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String
 	}
 }
 
 fun serializerFrom(serialize: (body: Request) -> String): PoaoTilgangClient.Serializer = object: PoaoTilgangClient.Serializer {
-	override fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String = serialize(body)
+	override fun serializeEvaluatePolicies(body: EvaluatePoliciesRequest): String = serialize(body)
 	override fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String = serialize(body)
 	override fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String = serialize(body)
 }

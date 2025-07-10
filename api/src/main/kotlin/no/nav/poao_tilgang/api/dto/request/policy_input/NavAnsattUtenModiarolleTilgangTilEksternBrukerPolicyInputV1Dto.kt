@@ -5,4 +5,4 @@ import java.util.UUID
 data class NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInputV1Dto(
 	val navIdent: UUID,
 	val norskIdent: String
-): PolicyInput
+): RequestPolicyInput()

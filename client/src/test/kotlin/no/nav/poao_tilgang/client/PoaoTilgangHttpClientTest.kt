@@ -9,6 +9,7 @@ import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
+import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
 import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
@@ -259,7 +260,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 					throw IllegalArgumentException("test")
 			},
 			object: PoaoTilgangClient.Serializer {
-				override fun <I> serializeEvaluatePolicies(body: EvaluatePoliciesRequest<I>): String = ""
+				override fun serializeEvaluatePolicies(body: EvaluatePoliciesRequest): String = ""
 				override fun serializeHentAdGrupper(body: HentAdGrupperForBrukerRequest): String = ""
 				override fun serializeErSkjermet(body: ErSkjermetPersonBulkRequest): String = ""
 			}

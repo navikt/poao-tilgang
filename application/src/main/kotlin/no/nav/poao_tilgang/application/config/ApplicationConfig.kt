@@ -1,5 +1,6 @@
 package no.nav.poao_tilgang.application.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -13,6 +14,7 @@ import no.nav.common.utils.EnvironmentUtils
 import no.nav.common.utils.NaisUtils
 import no.nav.poao_tilgang.application.controller.internal.HealthChecksPoaoTilgang
 import no.nav.poao_tilgang.application.middleware.RequesterLogFilter
+import no.nav.poao_tilgang.application.utils.JsonUtils
 import no.nav.poao_tilgang.application.utils.SecureLog
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
@@ -125,5 +127,10 @@ open class ApplicationConfig {
 	@Bean
 	open fun meterRegistry(): MeterRegistry{
 		return PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+	}
+
+	@Bean
+	open fun objectMapper(): ObjectMapper {
+		return JsonUtils.objectMapper
 	}
 }

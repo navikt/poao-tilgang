@@ -1,11 +1,11 @@
 package no.nav.poao_tilgang.application.controller
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.binder.cache.CaffeineStatsCounter
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
-import no.nav.poao_tilgang.api.dto.request.PolicyEvaluationRequestDto
+import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.PolicyEvaluationRequestDto
+import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
 import no.nav.poao_tilgang.api.dto.response.DecisionType
 import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
@@ -51,7 +51,7 @@ class PolicyController(
 
 	@ProtectedWithClaims(issuer = Issuer.AZURE_AD)
 	@PostMapping("/evaluate")
-	fun evaluatePolicies(@RequestBody evaluatePoliciesRequest: EvaluatePoliciesRequest<JsonNode>): EvaluatePoliciesResponse {
+	fun evaluatePolicies(@RequestBody evaluatePoliciesRequest: EvaluatePoliciesRequest): EvaluatePoliciesResponse {
 		authService.verifyRequestIsMachineToMachine()
 
 		val evaluations = evaluatePoliciesRequest.requests
@@ -61,9 +61,9 @@ class PolicyController(
 	}
 
 
-	private fun evaluateRequest(request: PolicyEvaluationRequestDto<JsonNode>): PolicyEvaluationResultDto {
+	private fun evaluateRequest(request: PolicyEvaluationRequestDto): PolicyEvaluationResultDto {
 		val policyInput = apiCoreMapper
-			.mapToPolicyInput(request.policyId, request.policyInput)
+			.mapToPolicyInput(request.policyInput)
 			.let {
 				when (it) {
 					is PolicyInputWithNorskIdent -> byttTilGjeldendeIdent(it)

@@ -4,4 +4,4 @@ import java.util.*
 
 data class NavAnsattBehandleSkjermedePersonerPolicyInputV1Dto(
 	val navAnsattAzureId: UUID
-): PolicyInput
+): RequestPolicyInput()

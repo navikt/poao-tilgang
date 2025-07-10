@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
@@ -52,9 +53,7 @@ class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilg
 
 	private fun valuatePolicy(input: PolicyRequest): Decision {
 		val requestDto = input.toRequestDto()
-
-		val valueToTree = ClientObjectMapper.objectMapper.valueToTree<JsonNode>(requestDto.policyInput)
-		val policyInput = apiCoreMapper.mapToPolicyInput(requestDto.policyId, valueToTree)
+		val policyInput = apiCoreMapper.mapToPolicyInput(requestDto.policyInput)
 		val result = resolver.evaluate(policyInput)
 		val decision = result.decision
 		return when(decision) {

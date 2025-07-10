@@ -5,4 +5,4 @@ import java.util.*
 data class NavAnsattTilgangTilNavEnhetMedSperrePolicyInputV1Dto(
 	val navAnsattAzureId: UUID,
 	val navEnhetId: String
-): PolicyInput
+): RequestPolicyInput()
