@@ -35,7 +35,6 @@ fun sendRequestUsingOkHttp(tokenProvider: () -> String, client: OkHttpClient): (
 
 	try {
 		client.newCall(request).execute().use { response ->
-//			val responseBody = response.body?.string()
 			if (!response.isSuccessful) {
 				return@use failure(BadHttpStatusApiException(response.code, response.body?.string()))
 			}

@@ -60,7 +60,7 @@ class PoaoTilgangCachedClientTest {
 		val ansattId1 = UUID.randomUUID()
 		val ansattId2 = UUID.randomUUID()
 
-		val grupper1 = listOf(AdGruppe(UUID.randomUUID(), "grp1"))
+		val grupper1 = listOf(AdGruppe(UUID.randomUUID(),"grp1"))
 		val grupper2 = listOf(AdGruppe(UUID.randomUUID(),"grp2"))
 
 		every { client.hentAdGrupper(ansattId1) } returns ApiResult.success(grupper1)

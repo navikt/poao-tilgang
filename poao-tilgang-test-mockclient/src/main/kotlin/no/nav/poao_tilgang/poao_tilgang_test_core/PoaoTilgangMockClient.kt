@@ -1,11 +1,5 @@
 package no.nav.poao_tilgang.client
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
@@ -23,12 +17,6 @@ import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 import java.util.*
 
-internal object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-}
 class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilgangClient {
 	private val policyes = Policies(navContext)
 	private val apiCoreMapper = ApiCoreMapper(policyes.providers.adGruppeProvider)

@@ -2,11 +2,9 @@ package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.common.FileSource
-import com.github.tomakehurst.wiremock.extension.Parameters
-import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer
-import com.github.tomakehurst.wiremock.http.Request
+import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformerV2
 import com.github.tomakehurst.wiremock.http.ResponseDefinition
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
 import no.nav.poao_tilgang.api.dto.response.DecisionType
@@ -16,27 +14,21 @@ import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 
-class PolicyController(val policies: Policies, baspath: String) : ResponseDefinitionTransformer() {
+class PolicyController(val policies: Policies, baspath: String) : ResponseDefinitionTransformerV2 {
 	val apiCoreMapper = ApiCoreMapper(policies.providers.adGruppeProvider)
-
 	val path = "$baspath/api/v1/policy/evaluate"
-	override fun getName(): String {
-		return "policyController"
-	}
+	override fun getName() = "policyController"
+	override fun applyGlobally() = false
 
 	override fun transform(
-		request: Request,
-		responseDefinition: ResponseDefinition,
-		files: FileSource?,
-		parameters: Parameters?
+		serveEvent: ServeEvent?
 	): ResponseDefinition {
-		val bodyAsString = request.bodyAsString
+		val bodyAsString = serveEvent?.request?.bodyAsString
 		val readValue = WiremockClientObjectMapper.objectMapper.readValue(
 			bodyAsString,
 			object : TypeReference<EvaluatePoliciesRequest>() {})
 
 		val response = response(readValue)
-
 
 		return ResponseDefinitionBuilder()
 			.withHeader("Content-Type", "application/json")
@@ -56,11 +48,6 @@ class PolicyController(val policies: Policies, baspath: String) : ResponseDefini
 		}
 		return EvaluatePoliciesResponse(a)
 	}
-
-	override fun applyGlobally(): Boolean {
-		return false
-	}
-
 }
 
 fun Decision.toDecisionDto(): DecisionDto {

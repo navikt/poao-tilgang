@@ -1,7 +1,6 @@
 package no.nav.poao_tilgang.client_core
 
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.PolicyEvaluationRequestDto
-import no.nav.poao_tilgang.api.dto.request.PolicyId
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.EksternBrukerTilgangTilEksternBrukerPolicyRequestDto
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.NavAnsattBehandleFortroligBrukerePolicyRequestDto
 import no.nav.poao_tilgang.api.dto.request.policy_evaluation_request.NavAnsattBehandleSkjermedePersonerPolicyRequestDto
@@ -34,7 +33,6 @@ import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilModia
 import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilNavEnhetMedSperrePolicyInputV1Dto
 import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilNavEnhetPolicyInputV1Dto
 import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInputV1Dto
-import no.nav.poao_tilgang.api.dto.request.policy_input.RequestPolicyInput
 import java.util.*
 
 enum class TilgangType {
