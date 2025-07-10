@@ -33,7 +33,7 @@ jobs:
         run: mvn -B package
 
   create-release-for-branch:
-    name: Deploy application to prod gcp and create release
+    name: Create release
     needs: [test-build-and-push]
     permissions:
       contents: write
