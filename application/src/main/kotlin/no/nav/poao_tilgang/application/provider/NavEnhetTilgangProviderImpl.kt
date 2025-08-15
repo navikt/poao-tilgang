@@ -3,7 +3,6 @@ package no.nav.poao_tilgang.application.provider
 import io.getunleash.DefaultUnleash
 import io.micrometer.core.annotation.Timed
 import no.nav.poao_tilgang.application.client.axsys.AxsysClient
-import no.nav.poao_tilgang.application.provider.NavEnhetTilgangProviderImpl.Companion.AD_GRUPPE_ENHET_PREFIKS
 import no.nav.poao_tilgang.application.utils.HENT_ENHETSTILGANGER_FRA_AD_OG_LOGG_DIFF
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.NavEnhetId
