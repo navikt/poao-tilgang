@@ -120,8 +120,6 @@ spec:
           namespace: dab
         - application: veilarbdialog
           namespace: dab
-        - application: tiltakspenger-saksbehandling-api
-          namespace: tpts
         - application: pam-cv-api-gcp
           namespace: teampam
         - application: ao-oppfolgingskontor
