@@ -102,7 +102,7 @@ spec:
         - application: paw-arbeidssokerregisteret-api-soek
           namespace: paw
           cluster: prod-gcp
-        - application: paw-arbeidssoekerregisteret-api-oppslag
+        - application: paw-arbeidssoekerregisteret-api-oppslag-v2
           namespace: paw
           cluster: prod-gcp
         - application: paw-arbeidssokerregisteret-api-inngang
