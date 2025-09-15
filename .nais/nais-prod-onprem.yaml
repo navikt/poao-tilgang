@@ -62,6 +62,7 @@ spec:
           namespace: nom
       external:
         - host: graph.microsoft.com
+        - host: poao-unleash-api.nav.cloud.nais.io
   env:
     - name: spring_profiles_active
       value: fss
@@ -109,6 +110,8 @@ spec:
       value: e750ceb5-b70b-4d94-b4fa-9d22467b786b
     - name: AD_GRUPPE_ID_AKTIVITETSPLAN_KVP
       value: f743db0b-bf8e-4a10-b5be-08a9170346fb
+  envFrom:
+    - secret: poao-tilgang-unleash-api-token
   vault:
     enabled: true
     paths:

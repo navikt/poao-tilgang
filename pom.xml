@@ -34,7 +34,7 @@
         <revision>1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.version>2.0.0</kotlin.version>
+        <kotlin.version>2.1.10</kotlin.version>
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -46,6 +46,7 @@
         <kotest.version>5.9.1</kotest.version>
         <common.version>3.2024.10.25_13.44-9db48a0dbe67</common.version>
         <okhttp.version>4.12.0</okhttp.version>
+        <unleash.version>10.2.1</unleash.version>
     </properties>
 
     <distributionManagement>
@@ -155,6 +156,11 @@
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.getunleash</groupId>
+                <artifactId>unleash-client-java</artifactId>
+                <version>${unleash.version}</version>
             </dependency>
 
             <dependency>
