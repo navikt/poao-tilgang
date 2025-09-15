@@ -117,8 +117,6 @@ spec:
           namespace: dab
         - application: veilarbdialog
           namespace: dab
-        - application: tiltakspenger-saksbehandling-api
-          namespace: tpts
         - application: amt-deltaker-bff
           namespace: amt
         - application: amt-deltaker
@@ -138,6 +136,7 @@ spec:
         - host: pdl-api.prod-fss-pub.nais.io
         - host: norg2.prod-fss-pub.nais.io
         - host: graph.microsoft.com
+        - host: poao-unleash-api.nav.cloud.nais.io
   env:
     - name: MICROSOFT_GRAPH_SCOPE
       value: https://graph.microsoft.com/.default
