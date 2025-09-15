@@ -45,7 +45,7 @@
         <mockk.version>1.14.5</mockk.version>
         <kotest.version>5.9.1</kotest.version>
         <common.version>3.2024.10.25_13.44-9db48a0dbe67</common.version>
-        <okhttp.version>4.12.0</okhttp.version>
+        <okhttp.version>5.1.0</okhttp.version>
         <unleash.version>10.2.1</unleash.version>
     </properties>
 
