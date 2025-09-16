@@ -18,6 +18,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 
 	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
+	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
 
 	private val abacProvider = mockk<AbacProvider>()
 
@@ -38,6 +39,8 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	@BeforeEach
 	internal fun setUp() {
 		every { toggleProvider.brukAbacDecision() } returns false
+		every { toggleProvider.logAbacDecisionDiff() } returns false
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
 
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
@@ -48,7 +51,15 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns navIdent
 
 		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
-		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
+		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			adGruppeProvider,
+			abacProvider,
+			mockTimer,
+			toggleProvider,
+			oppfolgingPolicy
+		)
 	}
 
 	@Test
@@ -59,7 +70,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			testAdGrupper.aktivitetsplanKvp
 		)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
@@ -76,7 +92,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
@@ -91,7 +112,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Deny(
 			"Har ikke tilgang til NAV enhet med sperre",
@@ -110,7 +136,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns listOf(
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Deny(
 			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",

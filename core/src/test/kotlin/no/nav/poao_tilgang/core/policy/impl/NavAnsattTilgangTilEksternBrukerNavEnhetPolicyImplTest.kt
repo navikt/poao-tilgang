@@ -11,7 +11,7 @@ import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
@@ -24,11 +24,16 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	private val geografiskTilknyttetEnhetProvider = mockk<GeografiskTilknyttetEnhetProvider>()
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
+	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
+	private val toggleProvider = mockk<ToggleProvider>()
 
 	private lateinit var policy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 
 	@BeforeEach
 	internal fun setUp() {
+		every { toggleProvider.brukAbacDecision() } returns false
+		every { toggleProvider.logAbacDecisionDiff() } returns false
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
 		} returns testAdGrupper
@@ -37,7 +42,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider,
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
-			navEnhetTilgangProvider
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			toggleProvider
 		)
 	}
 

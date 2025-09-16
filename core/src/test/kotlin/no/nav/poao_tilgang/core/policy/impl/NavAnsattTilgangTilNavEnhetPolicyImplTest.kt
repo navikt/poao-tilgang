@@ -6,8 +6,8 @@ import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
-import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.policy.test_utils.MockTimer
+import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,6 +18,7 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 
 	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
+	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
 
 	private val abacProvider = mockk<AbacProvider>()
 
@@ -37,6 +38,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	@BeforeEach
 	internal fun setUp() {
 		every { toggleProvider.brukAbacDecision() } returns false
+		every { toggleProvider.logAbacDecisionDiff() } returns false
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
 
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
@@ -47,7 +50,15 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		} returns navIdent
 
 		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
-		tilgangTilNavEnhetPolicy = NavAnsattTilgangTilNavEnhetPolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
+		tilgangTilNavEnhetPolicy = NavAnsattTilgangTilNavEnhetPolicyImpl(
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			adGruppeProvider,
+			abacProvider,
+			mockTimer,
+			toggleProvider,
+			oppfolgingPolicy
+		)
 	}
 
 	@Test
@@ -59,7 +70,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			testAdGrupper.modiaAdmin
 		)
 
-		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision =
+			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Permit
 	}
@@ -76,7 +88,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
 
-		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision =
+			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Permit
 	}
@@ -91,7 +104,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision =
+			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
 			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",
@@ -109,7 +123,8 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
 
-		val decision = tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision =
+			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
 
 		decision shouldBe Decision.Deny(
 			"Har ikke tilgang til NAV enhet",

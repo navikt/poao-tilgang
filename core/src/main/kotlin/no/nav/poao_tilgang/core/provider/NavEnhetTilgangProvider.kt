@@ -9,6 +9,10 @@ interface NavEnhetTilgangProvider {
 
 }
 
+interface NavEnhetTilgangProviderV2 {
+	fun hentEnhetTilganger(navIdent: NavIdent): Set<NavEnhetId>
+}
+
 data class NavEnhetTilgang(
 	val enhetId: NavEnhetId,
 	val enhetNavn: String,
