@@ -29,7 +29,7 @@ class ToggleProviderImpl : ToggleProvider {
 	}
 
 	override fun brukEntraIdSomFasitForEnhetstilgang(): Boolean {
-		return false
+		return true
 	}
 }
 
