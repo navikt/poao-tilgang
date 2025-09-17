@@ -1,6 +1,7 @@
 package no.nav.poao_tilgang.core.policy.impl
 
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -11,6 +12,8 @@ import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
@@ -31,6 +34,14 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 
 	@BeforeEach
 	internal fun setUp() {
+		clearMocks(
+			oppfolgingsenhetProvider,
+			geografiskTilknyttetEnhetProvider,
+			adGruppeProvider,
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			toggleProvider
+		)
 		every { toggleProvider.brukAbacDecision() } returns false
 		every { toggleProvider.logAbacDecisionDiff() } returns false
 		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
@@ -96,8 +107,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@Test
-	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk enhet for bruker ikke finnes`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk enhet for bruker ikke finnes`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -121,6 +136,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 				listOf()
 			)
 		)
+		every { navEnhetTilgangProviderV2.hentEnhetTilganger(any()) } returns setOf(
+			navEnhet
+		)
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
@@ -136,8 +154,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@Test
-	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk ikke finnes over tilganger til veileder`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk ikke finnes over tilganger til veileder`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -161,6 +183,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 				listOf()
 			)
 		)
+		every { navEnhetTilgangProviderV2.hentEnhetTilganger(any()) } returns setOf(
+			navEnhet
+		)
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
@@ -176,8 +201,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@Test
-	internal fun `skal sjekke tilgang til geografisk enhet`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	internal fun `skal sjekke tilgang til geografisk enhet`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -200,6 +229,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 				"",
 				listOf()
 			)
+		)
+		every { navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent = navIdent) } returns setOf(
+			navEnhet
 		)
 
 		val decision = policy.evaluate(
@@ -242,8 +274,12 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		)
 	}
 
-	@Test
-	internal fun `skal gå videre til sjekk av oppfølgingsenhet dersom man får 404 fra norg (geografisk tilknytning)`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	internal fun `skal gå videre til sjekk av oppfølgingsenhet dersom man får 404 fra norg (geografisk tilknytning)`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -263,6 +299,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent)
 		} returns emptyList()
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent = navIdent)
+		} returns emptySet()
 
 		val decision = policy.evaluate(
 			NavAnsattTilgangTilEksternBrukerNavEnhetPolicy.Input(
@@ -274,6 +313,4 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(any())
 		}
 	}
-
-
 }

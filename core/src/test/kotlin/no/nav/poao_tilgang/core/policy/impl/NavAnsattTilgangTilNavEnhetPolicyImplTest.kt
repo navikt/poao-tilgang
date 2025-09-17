@@ -1,6 +1,7 @@
 package no.nav.poao_tilgang.core.policy.impl
 
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.Decision
@@ -11,6 +12,8 @@ import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 class NavAnsattTilgangTilNavEnhetPolicyImplTest {
@@ -37,6 +40,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 
 	@BeforeEach
 	internal fun setUp() {
+		clearMocks(
+			adGruppeProvider,
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			abacProvider
+		)
 		every { toggleProvider.brukAbacDecision() } returns false
 		every { toggleProvider.logAbacDecisionDiff() } returns false
 		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
@@ -76,8 +85,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		decision shouldBe Decision.Permit
 	}
 
-	@Test
-	fun `skal returnere permit hvis tilgang til enhet`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere permit hvis tilgang til enhet`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
@@ -87,6 +100,11 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		} returns listOf(
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns setOf(
+			navEnhetId
+		)
 
 		val decision =
 			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
@@ -94,8 +112,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		decision shouldBe Decision.Permit
 	}
 
-	@Test
-	fun `skal returnere deny hvis har ikke modia oppfolging`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere deny hvis har ikke modia oppfolging`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -103,6 +125,9 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns emptySet()
 
 		val decision =
 			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
@@ -113,8 +138,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		)
 	}
 
-	@Test
-	fun `skal returnere deny hvis ikke tilgang til enhet`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere deny hvis ikke tilgang til enhet`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
@@ -122,6 +151,9 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns emptySet()
 
 		val decision =
 			tilgangTilNavEnhetPolicy.harTilgang(NavAnsattTilgangTilNavEnhetPolicy.Input(navAnsattAzureId, navEnhetId))
