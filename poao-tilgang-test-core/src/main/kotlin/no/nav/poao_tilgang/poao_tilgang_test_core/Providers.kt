@@ -4,18 +4,21 @@ import no.nav.poao_tilgang.core.domain.*
 import no.nav.poao_tilgang.core.provider.*
 
 
-
 data class Providers(
 	val navContext: NavContext = NavContext(),
 	val toggleProvider: ToggleProvider = ToggleProviderImpl(),
 	val skjermetPersonProvider: SkjermetPersonProvider = SkjermetPersonProviderImpl(navContext),
 	val oppfolgingsenhetProvider: OppfolgingsenhetProvider = OppfolgingsenhetProviderImpl(navContext),
 	val navEnhetTilgangProvider: NavEnhetTilgangProvider = NavEnhetTilgangProviderImpl(navContext),
-	val geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider = GeografiskTilknyttetEnhetProviderImpl(navContext),
+	val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2 = NavEnhetTilgangProviderV2Impl(navContext),
+	val geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider = GeografiskTilknyttetEnhetProviderImpl(
+		navContext
+	),
 	val diskresjonskodeProvider: DiskresjonskodeProvider = DiskresjonskodeProviderImpl(navContext),
 	val adGruppeProvider: AdGruppeProvider = AdGruppeProviderImpl(navContext),
 	val abacProvider: AbacProvider = AbacProviderImpl(),
 )
+
 class ToggleProviderImpl : ToggleProvider {
 	override fun brukAbacDecision(): Boolean {
 		return false
@@ -24,9 +27,13 @@ class ToggleProviderImpl : ToggleProvider {
 	override fun logAbacDecisionDiff(): Boolean {
 		return true
 	}
+
+	override fun brukEntraIdSomFasitForEnhetstilgang(): Boolean {
+		return true
+	}
 }
 
-class SkjermetPersonProviderImpl(private  val navContext: NavContext) : SkjermetPersonProvider {
+class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetPersonProvider {
 	override fun erSkjermetPerson(norskIdent: String): Boolean {
 		return navContext.privatBrukere.get(norskIdent)?.erSkjermet ?: true
 	}
@@ -42,13 +49,19 @@ class OppfolgingsenhetProviderImpl(private val navContext: NavContext) : Oppfolg
 	}
 }
 
-class NavEnhetTilgangProviderImpl(private val navContext: NavContext): NavEnhetTilgangProvider {
+class NavEnhetTilgangProviderImpl(private val navContext: NavContext) : NavEnhetTilgangProvider {
 	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang> {
 		return navContext.navAnsatt.get(navIdent)?.enheter?.toList() ?: emptyList()
 	}
 }
 
-class GeografiskTilknyttetEnhetProviderImpl(private val navContext: NavContext): GeografiskTilknyttetEnhetProvider {
+class NavEnhetTilgangProviderV2Impl(private val navContext: NavContext) : NavEnhetTilgangProviderV2 {
+	override fun hentEnhetTilganger(navIdent: NavIdent): Set<NavEnhetId> {
+		return navContext.navAnsatt.get(navIdent)?.enheter?.map { it.enhetId }?.toSet() ?: emptySet()
+	}
+}
+
+class GeografiskTilknyttetEnhetProviderImpl(private val navContext: NavContext) : GeografiskTilknyttetEnhetProvider {
 	override fun hentGeografiskTilknyttetEnhet(norskIdent: NorskIdent): NavEnhetId? {
 		return navContext.privatBrukere.get(norskIdent)?.oppfolgingsenhet //for enklere oppset
 	}
@@ -61,13 +74,13 @@ class GeografiskTilknyttetEnhetProviderImpl(private val navContext: NavContext):
 	}
 }
 
-class DiskresjonskodeProviderImpl(private val  navContext: NavContext): DiskresjonskodeProvider {
+class DiskresjonskodeProviderImpl(private val navContext: NavContext) : DiskresjonskodeProvider {
 	override fun hentDiskresjonskode(norskIdent: String): Diskresjonskode? {
 		return navContext.privatBrukere.get(norskIdent)?.diskresjonskode
 	}
 }
 
-class AdGruppeProviderImpl(private val navContext: NavContext): AdGruppeProvider {
+class AdGruppeProviderImpl(private val navContext: NavContext) : AdGruppeProvider {
 	override fun hentAdGrupper(navAnsattAzureId: AzureObjectId): List<AdGruppe> {
 		return navContext.navAnsatt.get(navAnsattAzureId)?.adGrupper?.toList() ?: emptyList()
 	}
@@ -84,7 +97,8 @@ class AdGruppeProviderImpl(private val navContext: NavContext): AdGruppeProvider
 		return tilgjengligeAdGrupper
 	}
 }
-class AbacProviderImpl(): AbacProvider {
+
+class AbacProviderImpl() : AbacProvider {
 	override fun harVeilederTilgangTilPerson(
 		veilederIdent: String,
 		tilgangType: TilgangType,

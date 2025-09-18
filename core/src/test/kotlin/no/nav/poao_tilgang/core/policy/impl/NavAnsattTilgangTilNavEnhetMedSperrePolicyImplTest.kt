@@ -1,16 +1,19 @@
 package no.nav.poao_tilgang.core.policy.impl
 
 import io.kotest.matchers.shouldBe
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
-import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.policy.test_utils.MockTimer
+import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
@@ -18,6 +21,7 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 
 	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
+	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
 
 	private val abacProvider = mockk<AbacProvider>()
 
@@ -37,7 +41,15 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 
 	@BeforeEach
 	internal fun setUp() {
+		clearMocks(
+			adGruppeProvider,
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			abacProvider
+		)
 		every { toggleProvider.brukAbacDecision() } returns false
+		every { toggleProvider.logAbacDecisionDiff() } returns false
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
 
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
@@ -48,7 +60,15 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns navIdent
 
 		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
-		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(navEnhetTilgangProvider, adGruppeProvider, abacProvider, mockTimer, toggleProvider, oppfolgingPolicy)
+		navEnhetMedSperrePolicy = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			adGruppeProvider,
+			abacProvider,
+			mockTimer,
+			toggleProvider,
+			oppfolgingPolicy
+		)
 	}
 
 	@Test
@@ -59,13 +79,22 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 			testAdGrupper.aktivitetsplanKvp
 		)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
 
-	@Test
-	fun `skal returnere permit hvis tilgang til enhet`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere permit hvis tilgang til enhet`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
@@ -75,14 +104,28 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns listOf(
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns setOf(
+			navEnhetId
+		)
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Permit
 	}
 
-	@Test
-	fun `skal returnere deny hvis ikke tilgang til enhet`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere deny hvis ikke tilgang til enhet`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
@@ -90,8 +133,16 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		every {
 			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
 		} returns emptyList()
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns emptySet()
 
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Deny(
 			"Har ikke tilgang til NAV enhet med sperre",
@@ -99,8 +150,12 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		)
 	}
 
-	@Test
-	fun `skal returnere deny hvis ikke tilgang til modia oppfølging`() {
+	@ParameterizedTest
+	@ValueSource(booleans = [false, true])
+	fun `skal returnere deny hvis ikke tilgang til modia oppfølging`(
+		brukEntraIdSomFasitForEnhetstilgang: Boolean
+	) {
+		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -110,7 +165,18 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImplTest {
 		} returns listOf(
 			NavEnhetTilgang(navEnhetId, "test", emptyList())
 		)
-		val decision = navEnhetMedSperrePolicy.harTilgang(NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(navAnsattAzureId, navEnhetId))
+		every {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+		} returns setOf(
+			navEnhetId
+		)
+
+		val decision = navEnhetMedSperrePolicy.harTilgang(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input(
+				navAnsattAzureId,
+				navEnhetId
+			)
+		)
 
 		decision shouldBe Decision.Deny(
 			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Modia-Oppfolging\"",

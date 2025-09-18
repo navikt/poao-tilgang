@@ -53,14 +53,16 @@ open class PolicyConfig {
 	@Bean
 	open fun navAnsattTilgangTilNavEnhetMedSperrePolicy(
 		navEnhetTilgangProvider: NavEnhetTilgangProvider,
+		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
 		abacProvider: AbacProvider,
 		timerService: TimerService,
 		toggleProvider: ToggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
-		): NavAnsattTilgangTilNavEnhetMedSperrePolicy {
+	): NavAnsattTilgangTilNavEnhetMedSperrePolicy {
 		return NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
 			adGruppeProvider,
 			abacProvider,
 			timerService,
@@ -84,27 +86,36 @@ open class PolicyConfig {
 		oppfolgingsenhetProvider: OppfolgingsenhetProvider,
 		geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider,
 		adGruppeProvider: AdGruppeProvider,
-		navEnhetTilgangProvider: NavEnhetTilgangProvider
+		navEnhetTilgangProvider: NavEnhetTilgangProvider,
+		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
+		toggleProvider: ToggleProvider
 	): NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 		return NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 			oppfolgingsenhetProvider,
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
-			navEnhetTilgangProvider
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			toggleProvider
 		)
 	}
 
 	@Bean
 	open fun tilgangTilNavEnhetPolicy(
 		navEnhetTilgangProvider: NavEnhetTilgangProvider,
+		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
 		abacProvider: AbacProvider,
 		timerService: TimerService,
 		toggleProvider: ToggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
-		): NavAnsattTilgangTilNavEnhetPolicy {
+	): NavAnsattTilgangTilNavEnhetPolicy {
 		return NavAnsattTilgangTilNavEnhetPolicyImpl(
-			navEnhetTilgangProvider, adGruppeProvider, abacProvider,timerService,
+			navEnhetTilgangProvider,
+			navEnhetTilgangProviderV2,
+			adGruppeProvider,
+			abacProvider,
+			timerService,
 			toggleProvider,
 			navAnsattTilgangTilOppfolgingPolicy
 		)

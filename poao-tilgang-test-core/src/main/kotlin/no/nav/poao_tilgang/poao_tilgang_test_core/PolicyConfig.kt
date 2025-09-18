@@ -4,7 +4,7 @@ import no.nav.poao_tilgang.core.policy.impl.*
 import no.nav.poao_tilgang.core.utils.Timer
 import java.time.Duration
 
-class TimerService():Timer {
+class TimerService() : Timer {
 	override fun record(name: String, duration: Duration, vararg tags: String) {
 		//bare for test
 	}
@@ -18,12 +18,13 @@ class TimerService():Timer {
 data class Policies(
 	val navContext: NavContext = NavContext(),
 	val providers: Providers = Providers(navContext),
-	val timer: Timer= TimerService(),
+	val timer: Timer = TimerService(),
 	val navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicyImpl = NavAnsattTilgangTilOppfolgingPolicyImpl(
 		providers.adGruppeProvider
 	),
 	val navAnsattTilgangTilNavEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		providers.navEnhetTilgangProvider,
+		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
 		providers.abacProvider,
 		timer,
@@ -35,9 +36,12 @@ data class Policies(
 		providers.geografiskTilknyttetEnhetProvider,
 		providers.adGruppeProvider,
 		providers.navEnhetTilgangProvider,
+		providers.navEnhetTilgangProviderV2,
+		providers.toggleProvider
 	),
 	val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl = NavAnsattTilgangTilNavEnhetPolicyImpl(
 		providers.navEnhetTilgangProvider,
+		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
 		providers.abacProvider,
 		timer,
@@ -86,25 +90,25 @@ data class Policies(
 		providers.adGruppeProvider,
 		timer,
 		providers.toggleProvider,
-		),
-	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl (
+	),
+	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 		navAnsattTilgangTilSkjermetPersonPolicy,
 		navAnsattTilgangTilEksternBrukerNavEnhetPolicy
 	),
 	val policyResolver: PolicyResolver = PolicyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy,
-			navAnsattTilgangTilModiaPolicy,
-			eksternBrukerTilgangTilEksternBrukerPolicy,
-			navAnsattTilgangTilNavEnhetPolicy,
-			navAnsattBehandleStrengtFortroligBrukerePolicy,
-			navAnsattBehandleFortroligBrukerePolicy,
-			navAnsattTilgangTilNavEnhetMedSperrePolicy,
-			navAnsattBehandleSkjermedePersonerPolicy,
-			navAnsattTilgangTilModiaAdminPolicy,
-			navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
-			timer,
-			providers.toggleProvider,
+		navAnsattTilgangTilModiaPolicy,
+		eksternBrukerTilgangTilEksternBrukerPolicy,
+		navAnsattTilgangTilNavEnhetPolicy,
+		navAnsattBehandleStrengtFortroligBrukerePolicy,
+		navAnsattBehandleFortroligBrukerePolicy,
+		navAnsattTilgangTilNavEnhetMedSperrePolicy,
+		navAnsattBehandleSkjermedePersonerPolicy,
+		navAnsattTilgangTilModiaAdminPolicy,
+		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
+		timer,
+		providers.toggleProvider,
 	)
 ) {
 }

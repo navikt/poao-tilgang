@@ -4,10 +4,7 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
-import no.nav.poao_tilgang.core.provider.AbacProvider
-import no.nav.poao_tilgang.core.provider.AdGruppeProvider
-import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
-import no.nav.poao_tilgang.core.provider.ToggleProvider
+import no.nav.poao_tilgang.core.provider.*
 import no.nav.poao_tilgang.core.utils.AbacDecisionDiff.asyncLogDecisionDiff
 import no.nav.poao_tilgang.core.utils.AbacDecisionDiff.toAbacDecision
 import no.nav.poao_tilgang.core.utils.Timer
@@ -16,6 +13,7 @@ import java.time.Duration
 
 class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 	private val navEnhetTilgangProvider: NavEnhetTilgangProvider,
+	private val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 	private val adGruppeProvider: AdGruppeProvider,
 	private val abacProvider: AbacProvider,
 	private val timer: Timer,
@@ -37,14 +35,14 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		return if (toggleProvider.brukAbacDecision()) {
 			val harTilgangAbac = harTilgangAbac(input)
 			if (toggleProvider.logAbacDecisionDiff()) {
-				asyncLogDecisionDiff(name, input, ::harTilgang, { _ ->harTilgangAbac })
+				asyncLogDecisionDiff(name, input, ::harTilgang, { _ -> harTilgangAbac })
 			}
 
 			harTilgangAbac
 		} else {
 			val resultat = harTilgang(input)
 			if (toggleProvider.logAbacDecisionDiff()) {
- 				asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
+				asyncLogDecisionDiff(name, input, { _ -> resultat }, ::harTilgangAbac)
 			}
 			resultat
 		}
@@ -53,18 +51,21 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 	private fun harTilgangAbac(input: NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input): Decision {
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(input.navAnsattAzureId)
 
-		val startTime=System.currentTimeMillis()
+		val startTime = System.currentTimeMillis()
 
 		val harTilgangAbac = abacProvider.harVeilederTilgangTilNavEnhetMedSperre(navIdent, input.navEnhetId)
 
-		timer.record("app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre", Duration.ofMillis(System.currentTimeMillis()-startTime))
+		timer.record(
+			"app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre",
+			Duration.ofMillis(System.currentTimeMillis() - startTime)
+		)
 
 		return toAbacDecision(harTilgangAbac)
 	}
 
 	// Er ikke private slik at vi kan teste implementasjonen
 	internal fun harTilgang(input: NavAnsattTilgangTilNavEnhetMedSperrePolicy.Input): Decision {
-		val startTime=System.currentTimeMillis()
+		val startTime = System.currentTimeMillis()
 		adGruppeProvider.hentAdGrupper(input.navAnsattAzureId)
 			.has(aktivitetsplanKvp)
 			.whenPermit { return it }
@@ -76,13 +77,22 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		// MEN
 		//  Sjekk av 'tilgang til oppfølging' kicker inn pga resource_type == "no.nav.abac.attributter.resource.felles.enhet"
 		// https://confluence.adeo.no/pages/viewpage.action?pageId=202371312
-		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId)).whenDeny {
-			return it
-		}
+		navAnsattTilgangTilOppfolgingPolicy.evaluate(NavAnsattTilgangTilOppfolgingPolicy.Input(input.navAnsattAzureId))
+			.whenDeny {
+				return it
+			}
 
-		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-			.any { input.navEnhetId == it.enhetId }
-		timer.record("app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre.egen", Duration.ofMillis(System.currentTimeMillis()-startTime))
+		val harTilgangTilEnhet = if (toggleProvider.brukEntraIdSomFasitForEnhetstilgang()) {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+				.any { input.navEnhetId == it }
+		} else {
+			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
+				.any { input.navEnhetId == it.enhetId }
+		}
+		timer.record(
+			"app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre.egen",
+			Duration.ofMillis(System.currentTimeMillis() - startTime)
+		)
 
 		return if (harTilgangTilEnhet) Decision.Permit else denyDecision
 	}
