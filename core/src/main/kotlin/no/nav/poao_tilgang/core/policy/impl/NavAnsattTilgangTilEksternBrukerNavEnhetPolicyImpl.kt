@@ -5,10 +5,7 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
-import no.nav.poao_tilgang.core.provider.AdGruppeProvider
-import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
-import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
-import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
+import no.nav.poao_tilgang.core.provider.*
 import no.nav.poao_tilgang.core.utils.hasAtLeastOne
 import org.slf4j.LoggerFactory
 
@@ -16,7 +13,9 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 	private val oppfolgingsenhetProvider: OppfolgingsenhetProvider,
 	private val geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider,
 	private val adGruppeProvider: AdGruppeProvider,
-	private val navEnhetTilgangProvider: NavEnhetTilgangProvider
+	private val navEnhetTilgangProvider: NavEnhetTilgangProvider,
+	private val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
+	private val toggleProvider: ToggleProvider
 ) : NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 
 	private val secureLog = LoggerFactory.getLogger("SecureLog")
@@ -67,8 +66,13 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 		typeEnhet: String
 	): Decision {
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
-		val harTilgangTilEnhet = navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-			.any { navEnhetId == it.enhetId }
+		val harTilgangTilEnhet = if (toggleProvider.brukEntraIdSomFasitForEnhetstilgang()) {
+			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
+				.any { navEnhetId == it }
+		} else {
+			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
+				.any { navEnhetId == it.enhetId }
+		}
 		secureLog.info("$name, harTilgangTilEnhet: $harTilgangTilEnhet, navEnhetForBruker: $navEnhetId, navident: $navIdent, azureId: $navAnsattAzureId, for type Enhet: $typeEnhet")
 		return if (harTilgangTilEnhet) Decision.Permit else denyDecisionNotAccessToEnhet
 	}
