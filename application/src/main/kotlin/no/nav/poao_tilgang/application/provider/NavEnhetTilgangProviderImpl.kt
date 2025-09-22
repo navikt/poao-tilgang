@@ -55,4 +55,4 @@ private fun tilValidertNavEnhetId(navEnhetId: String): NavEnhetId {
 	return navEnhetId
 }
 
-internal data class NavEnhetIdValideringException(val melding: String) : RuntimeException(melding)
+data class NavEnhetIdValideringException(val melding: String) : RuntimeException(melding)
