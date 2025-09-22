@@ -35,6 +35,10 @@ open class NavEnhetTilgangProviderV2Impl(
 private const val NAV_ENHET_ID_LENGDE = 4
 
 fun tilNavEnhetId(adGruppeNavn: String): NavEnhetId {
+	if (!adGruppeNavn.startsWith(AD_GRUPPE_ENHET_PREFIKS)) {
+		throw NavEnhetIdValideringException("Ugyldig format: ${adGruppeNavn}. Forventet format: \"$AD_GRUPPE_ENHET_PREFIKS\"-prefiks etterfulgt av fire siffer.")
+	}
+
 	return adGruppeNavn
 		.uppercase()
 		.substringAfter(ENHET_PREFIKS)
