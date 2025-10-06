@@ -8,7 +8,6 @@ import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
 import org.springframework.stereotype.Component
-import java.lang.Integer.parseInt
 
 @Component
 open class NavEnhetTilgangProviderV2Impl(
@@ -47,14 +46,7 @@ fun tilNavEnhetId(adGruppeNavn: String): NavEnhetId {
 
 private fun tilValidertNavEnhetId(navEnhetId: String): NavEnhetId {
 	if (navEnhetId.length != NAV_ENHET_ID_LENGDE) throw NavEnhetIdValideringException("Ugyldig lengde: ${navEnhetId.length}. Forventet: $NAV_ENHET_ID_LENGDE.")
-	if (
-		try {
-			parseInt(navEnhetId)
-			false
-		} catch (_: NumberFormatException) {
-			true
-		}
-	) throw NavEnhetIdValideringException("Ugyldige tegn: ${navEnhetId.length}. Forventet: 4 siffer.")
+	if (!Regex("[0-9]{4}").matches(navEnhetId)) throw NavEnhetIdValideringException("Ugyldige tegn: ${navEnhetId.length}. Forventet: 4 siffer.")
 
 	return navEnhetId
 }
