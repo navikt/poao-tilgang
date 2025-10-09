@@ -4,7 +4,10 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.provider.AbacProvider
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.provider.ToggleProvider
 import no.nav.poao_tilgang.core.utils.AbacDecisionDiff.asyncLogDecisionDiff
 import no.nav.poao_tilgang.core.utils.AbacDecisionDiff.toAbacDecision
 import no.nav.poao_tilgang.core.utils.Timer
@@ -12,7 +15,6 @@ import no.nav.poao_tilgang.core.utils.has
 import java.time.Duration
 
 class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
-	private val navEnhetTilgangProvider: NavEnhetTilgangProvider,
 	private val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 	private val adGruppeProvider: AdGruppeProvider,
 	private val abacProvider: AbacProvider,
@@ -82,13 +84,8 @@ class NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 				return it
 			}
 
-		val harTilgangTilEnhet = if (toggleProvider.brukEntraIdSomFasitForEnhetstilgang()) {
-			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
-				.any { input.navEnhetId == it }
-		} else {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-				.any { input.navEnhetId == it.enhetId }
-		}
+		val harTilgangTilEnhet = navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent).any { input.navEnhetId == it }
+
 		timer.record(
 			"app.poao-tilgang.NavAnsattTilgangTilNavEnhetMedSperre.egen",
 			Duration.ofMillis(System.currentTimeMillis() - startTime)

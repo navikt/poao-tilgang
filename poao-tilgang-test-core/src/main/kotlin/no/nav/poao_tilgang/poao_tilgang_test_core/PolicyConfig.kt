@@ -23,7 +23,6 @@ data class Policies(
 		providers.adGruppeProvider
 	),
 	val navAnsattTilgangTilNavEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
 		providers.abacProvider,
@@ -35,12 +34,9 @@ data class Policies(
 		providers.oppfolgingsenhetProvider,
 		providers.geografiskTilknyttetEnhetProvider,
 		providers.adGruppeProvider,
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
-		providers.toggleProvider
 	),
 	val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl = NavAnsattTilgangTilNavEnhetPolicyImpl(
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
 		providers.abacProvider,

@@ -52,7 +52,6 @@ open class PolicyConfig {
 
 	@Bean
 	open fun navAnsattTilgangTilNavEnhetMedSperrePolicy(
-		navEnhetTilgangProvider: NavEnhetTilgangProvider,
 		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
 		abacProvider: AbacProvider,
@@ -61,7 +60,6 @@ open class PolicyConfig {
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 	): NavAnsattTilgangTilNavEnhetMedSperrePolicy {
 		return NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
 			adGruppeProvider,
 			abacProvider,
@@ -86,23 +84,18 @@ open class PolicyConfig {
 		oppfolgingsenhetProvider: OppfolgingsenhetProvider,
 		geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider,
 		adGruppeProvider: AdGruppeProvider,
-		navEnhetTilgangProvider: NavEnhetTilgangProvider,
-		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
-		toggleProvider: ToggleProvider
+		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2
 	): NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 		return NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 			oppfolgingsenhetProvider,
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
-			navEnhetTilgangProvider,
-			navEnhetTilgangProviderV2,
-			toggleProvider
+			navEnhetTilgangProviderV2
 		)
 	}
 
 	@Bean
 	open fun tilgangTilNavEnhetPolicy(
-		navEnhetTilgangProvider: NavEnhetTilgangProvider,
 		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
 		abacProvider: AbacProvider,
@@ -111,7 +104,6 @@ open class PolicyConfig {
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 	): NavAnsattTilgangTilNavEnhetPolicy {
 		return NavAnsattTilgangTilNavEnhetPolicyImpl(
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
 			adGruppeProvider,
 			abacProvider,

@@ -9,18 +9,18 @@ import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
 import no.nav.poao_tilgang.core.policy.test_utils.MockTimer
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.provider.AbacProvider
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.provider.ToggleProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 
-	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
 	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
 
 	private val abacProvider = mockk<AbacProvider>()
@@ -42,25 +42,20 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 	internal fun setUp() {
 		clearMocks(
 			adGruppeProvider,
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
 			abacProvider
 		)
 		every { toggleProvider.brukAbacDecision() } returns false
 		every { toggleProvider.logAbacDecisionDiff() } returns false
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
-
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
 		} returns testAdGrupper
-
 		every {
 			adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)
 		} returns navIdent
 
 		oppfolgingPolicy = NavAnsattTilgangTilOppfolgingPolicyImpl(adGruppeProvider)
 		tilgangTilNavEnhetPolicy = NavAnsattTilgangTilNavEnhetPolicyImpl(
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
 			adGruppeProvider,
 			abacProvider,
@@ -85,21 +80,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		decision shouldBe Decision.Permit
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	fun `skal returnere permit hvis tilgang til enhet`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	fun `skal returnere permit hvis tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
 
-		every {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns listOf(
-			NavEnhetTilgang(navEnhetId, "test", emptyList())
-		)
 		every {
 			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
 		} returns setOf(
@@ -112,19 +98,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		decision shouldBe Decision.Permit
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	fun `skal returnere deny hvis har ikke modia oppfolging`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	fun `skal returnere deny hvis har ikke modia oppfolging`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
 
-		every {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns emptyList()
 		every {
 			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
 		} returns emptySet()
@@ -138,19 +117,12 @@ class NavAnsattTilgangTilNavEnhetPolicyImplTest {
 		)
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	fun `skal returnere deny hvis ikke tilgang til enhet`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	fun `skal returnere deny hvis ikke tilgang til enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.modiaOppfolging)
 
-		every {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent)
-		} returns emptyList()
 		every {
 			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent)
 		} returns emptySet()

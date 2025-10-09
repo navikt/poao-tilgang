@@ -16,8 +16,4 @@ class ToggleProviderImpl(private val unleashClient: DefaultUnleash) : ToggleProv
 	override fun logAbacDecisionDiff(): Boolean {
 		return false
 	}
-
-	override fun brukEntraIdSomFasitForEnhetstilgang(): Boolean {
-		return unleashClient.isEnabled(BRUK_ENHETSTILGANGER_FRA_AD)
-	}
 }

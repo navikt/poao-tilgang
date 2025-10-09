@@ -12,8 +12,4 @@ class ToggleProviderTestImpl : ToggleProvider {
 	override fun logAbacDecisionDiff(): Boolean {
 		return true
 	}
-
-	override fun brukEntraIdSomFasitForEnhetstilgang(): Boolean {
-		return false
-	}
 }

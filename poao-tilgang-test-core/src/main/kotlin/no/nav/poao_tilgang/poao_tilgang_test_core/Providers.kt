@@ -9,7 +9,6 @@ data class Providers(
 	val toggleProvider: ToggleProvider = ToggleProviderImpl(),
 	val skjermetPersonProvider: SkjermetPersonProvider = SkjermetPersonProviderImpl(navContext),
 	val oppfolgingsenhetProvider: OppfolgingsenhetProvider = OppfolgingsenhetProviderImpl(navContext),
-	val navEnhetTilgangProvider: NavEnhetTilgangProvider = NavEnhetTilgangProviderImpl(navContext),
 	val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2 = NavEnhetTilgangProviderV2Impl(navContext),
 	val geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider = GeografiskTilknyttetEnhetProviderImpl(
 		navContext
@@ -27,10 +26,6 @@ class ToggleProviderImpl : ToggleProvider {
 	override fun logAbacDecisionDiff(): Boolean {
 		return true
 	}
-
-	override fun brukEntraIdSomFasitForEnhetstilgang(): Boolean {
-		return true
-	}
 }
 
 class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetPersonProvider {
@@ -46,12 +41,6 @@ class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetP
 class OppfolgingsenhetProviderImpl(private val navContext: NavContext) : OppfolgingsenhetProvider {
 	override fun hentOppfolgingsenhet(norskIdent: NorskIdent): NavEnhetId? {
 		return navContext.privatBrukere.get(norskIdent)?.oppfolgingsenhet
-	}
-}
-
-class NavEnhetTilgangProviderImpl(private val navContext: NavContext) : NavEnhetTilgangProvider {
-	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang> {
-		return navContext.navAnsatt.get(navIdent)?.enheter?.toList() ?: emptyList()
 	}
 }
 

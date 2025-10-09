@@ -131,7 +131,6 @@ spec:
           namespace: nom
       external:
         - host: abac-veilarb-proxy.prod-fss-pub.nais.io
-        - host: axsys.prod-fss-pub.nais.io
         - host: veilarbarena.prod-fss-pub.nais.io
         - host: pdl-api.prod-fss-pub.nais.io
         - host: norg2.prod-fss-pub.nais.io
@@ -146,10 +145,6 @@ spec:
       value: api://prod-gcp.nom.skjermede-personer-pip/.default
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.cluster.local
-    - name: AXSYS_URL
-      value: https://axsys.prod-fss-pub.nais.io
-    - name: AXSYS_SCOPE
-      value: api://prod-fss.org.axsys/.default
     - name: ABAC_URL
       value: https://abac-veilarb-proxy.prod-fss-pub.nais.io/api/proxy/abac
     - name: ABAC_SCOPE

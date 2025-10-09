@@ -8,12 +8,12 @@ import io.kotest.matchers.types.beInstanceOf
 import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
-import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
 import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENHET_PREFIKS
 import no.nav.poao_tilgang.core.domain.TilgangType.LESE
 import no.nav.poao_tilgang.core.domain.TilgangType.SKRIVE
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
@@ -54,23 +54,31 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilEksternBrukerPolicy V2`(tilgangType: TilgangType) {
-		val coreTilgangType = when(tilgangType) {
+		val coreTilgangType = when (tilgangType) {
 			TilgangType.LESE -> LESE
 			TilgangType.SKRIVE -> SKRIVE
 		}
 		mockAbacHttpServer.mockPermit(coreTilgangType)
-		setupMocks(adGrupper = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
+		setupMocks(
+			adGrupper = listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
+				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal
+			)
+		)
 
 		val decision =
-			client.evaluatePolicy(NavAnsattTilgangTilEksternBrukerPolicyInput(navAnsattId, tilgangType, norskIdent)).getOrThrow()
+			client.evaluatePolicy(NavAnsattTilgangTilEksternBrukerPolicyInput(navAnsattId, tilgangType, norskIdent))
+				.getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy`() {
-		setupMocks(adGrupper = listOf(),  listOf(EnhetTilgang("0123", "En enhet", emptyList())))
-		val decision = client.evaluatePolicy(NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(navAnsattId, norskIdent)).getOrThrow()
+		setupMocks(adGrupper = listOf(AdGruppe(UUID.randomUUID(), "${ENHET_PREFIKS}0123")))
+		val decision =
+			client.evaluatePolicy(NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(navAnsattId, norskIdent))
+				.getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -90,10 +98,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate EksternBrukerTilgangTilEksternBrukerPolicy`() {
-		val decision = client.evaluatePolicy(EksternBrukerTilgangTilEksternBrukerPolicyInput(
-			rekvirentNorskIdent = "234",
-			ressursNorskIdent = "234"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			EksternBrukerTilgangTilEksternBrukerPolicyInput(
+				rekvirentNorskIdent = "234",
+				ressursNorskIdent = "234"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -101,16 +111,22 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetPolicy`() {
 		mockRolleTilganger(
-			navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging)
+			navIdent,
+			navAnsattId,
+			listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
+				AdGruppe(UUID.randomUUID(), "${ENHET_PREFIKS}0123")
+			)
 		)
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("0123", "En enhet", emptyList())))
 
 		mockAbacHttpServer.mockPermitAll()
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilNavEnhetPolicyInput(
-			navAnsattAzureId = navAnsattId,
-			navEnhetId = "0123"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilNavEnhetPolicyInput(
+				navAnsattAzureId = navAnsattId,
+				navEnhetId = "0123"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -118,15 +134,17 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetMedSperrePolicy`() {
 		mockRolleTilganger(
-			navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp)
+			navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp)
 		)
 
 		mockAbacHttpServer.mockPermitAll()
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
-			navAnsattAzureId = navAnsattId,
-			navEnhetId = "0123"
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(
+				navAnsattAzureId = navAnsattId,
+				navEnhetId = "0123"
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -218,9 +236,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -233,11 +253,16 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleStrengtFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
-		decision shouldBe Decision.Deny("NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Strengt_Fortrolig_Adresse\"","MANGLER_TILGANG_TIL_AD_GRUPPE")
+		decision shouldBe Decision.Deny(
+			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Strengt_Fortrolig_Adresse\"",
+			"MANGLER_TILGANG_TIL_AD_GRUPPE"
+		)
 	}
 
 	@Test
@@ -249,9 +274,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaAdminPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilModiaAdminPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -264,11 +291,16 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattTilgangTilModiaAdminPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattTilgangTilModiaAdminPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
-		decision shouldBe Decision.Deny("Har ikke tilgang til rollen 0000-GA-Modia_Admin","MANGLER_TILGANG_TIL_AD_GRUPPE")
+		decision shouldBe Decision.Deny(
+			"Har ikke tilgang til rollen 0000-GA-Modia_Admin",
+			"MANGLER_TILGANG_TIL_AD_GRUPPE"
+		)
 	}
 
 	@Test
@@ -280,9 +312,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -295,11 +329,16 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleFortroligBrukerePolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleFortroligBrukerePolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
-		decision shouldBe Decision.Deny("NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Fortrolig_Adresse\"","MANGLER_TILGANG_TIL_AD_GRUPPE")
+		decision shouldBe Decision.Deny(
+			"NAV-ansatt mangler tilgang til AD-gruppen \"0000-GA-Fortrolig_Adresse\"",
+			"MANGLER_TILGANG_TIL_AD_GRUPPE"
+		)
 	}
 
 	@Test
@@ -310,9 +349,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleSkjermedePersonerPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleSkjermedePersonerPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
 		decision shouldBe Decision.Permit
 	}
@@ -325,11 +366,16 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		val decision = client.evaluatePolicy(NavAnsattBehandleSkjermedePersonerPolicyInput(
-			navAnsattAzureId = navAnsattId
-		)).getOrThrow()
+		val decision = client.evaluatePolicy(
+			NavAnsattBehandleSkjermedePersonerPolicyInput(
+				navAnsattAzureId = navAnsattId
+			)
+		).getOrThrow()
 
-		decision shouldBe Decision.Deny("NAV-ansatt mangler tilgang til en av AD-gruppene [0000-GA-Egne_ansatte]", reason="MANGLER_TILGANG_TIL_AD_GRUPPE")
+		decision shouldBe Decision.Deny(
+			"NAV-ansatt mangler tilgang til en av AD-gruppene [0000-GA-Egne_ansatte]",
+			reason = "MANGLER_TILGANG_TIL_AD_GRUPPE"
+		)
 	}
 
 	@Test
@@ -353,12 +399,10 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		)
 	}
 
-	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group")), enhetTilganger: List<EnhetTilgang> = emptyList()) {
-		mockPersonData(norskIdent,brukersEnhet)
+	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group"))) {
+		mockPersonData(norskIdent, brukersEnhet)
 		mockRolleTilganger(
 			navIdent, navAnsattId, adGrupper
 		)
-		mockEnhetsTilganger(navIdent, enhetTilganger)
 	}
-
 }

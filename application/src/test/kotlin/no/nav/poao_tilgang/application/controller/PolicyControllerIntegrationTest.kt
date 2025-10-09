@@ -2,10 +2,10 @@ package no.nav.poao_tilgang.application.controller
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENHET_PREFIKS
 import no.nav.poao_tilgang.core.domain.TilgangType
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import okhttp3.Response
@@ -51,8 +51,14 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val nyIdent = norskIdent
 
 		mockPersonData(nyIdent, brukersEnhet, brukersKommune, gammelIdent = gammelIdent)
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList())))
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
+		mockRolleTilganger(
+			navIdent,
+			navAnsattId,
+			listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
+				AdGruppe(UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet")
+			)
+		)
 
 		val requestId = UUID.randomUUID()
 
@@ -69,7 +75,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `should evaluate NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1 policy - deny`() {
-		setupMocksHappyCase(adGrupper = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell))
+		setupMocksHappyCase(
+			adGrupper = listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 
 		mockAbacHttpServer.mockDeny(TilgangType.SKRIVE)
 
@@ -81,7 +93,11 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 			"NAV_ANSATT_NAV_IDENT_SKRIVETILGANG_TIL_EKSTERN_BRUKER_V1"
 		)
 
-		response.body?.string() shouldBe denyResponse(requestId, "NAV-ansatt mangler tilgang til AD-gruppen \\\"0000-GA-Modia-Oppfolging\\\"", "MANGLER_TILGANG_TIL_AD_GRUPPE")
+		response.body?.string() shouldBe denyResponse(
+			requestId,
+			"NAV-ansatt mangler tilgang til AD-gruppen \\\"0000-GA-Modia-Oppfolging\\\"",
+			"MANGLER_TILGANG_TIL_AD_GRUPPE"
+		)
 	}
 
 	@ParameterizedTest
@@ -105,7 +121,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2 policy - deny`(tilgangType: TilgangType) {
-		setupMocksHappyCase(adGrupper = listOf( noAccessGroup))
+		setupMocksHappyCase(
+			adGrupper = listOf(
+				noAccessGroup, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 		mockAbacHttpServer.mockDeny(tilgangType)
 
 		val requestId = UUID.randomUUID()
@@ -186,8 +208,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `nasjonal tilgang should override enhet tilgang EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 policy - permit`() {
 
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
-		mockRolleTilganger(navIdent, navAnsattId, listOf( adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal))
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 
 		val requestId = UUID.randomUUID()
 
@@ -204,8 +231,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `modiaadmin tilgang should override enhet tilgang EKSTERN_BRUKER_TILGANG_TIL_EKSTERN_BRUKER_V1 policy - permit`() {
 
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin))
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 
 		val requestId = UUID.randomUUID()
 
@@ -221,9 +253,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	@Test
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_V1 policy - permit`() {
 		val requestId = UUID.randomUUID()
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang(brukersEnhet, "BrukersEnhet", emptyList())))
-
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 
 		mockAbacHttpServer.mockPermitAll()
 
@@ -240,8 +276,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_NAV_ENHET_V1 policy - deny`() {
 		val requestId = UUID.randomUUID()
 
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
-		mockEnhetsTilganger(navIdent, listOf(EnhetTilgang("9999", "AnnenEnhet", emptyList())))
+		mockRolleTilganger(
+			navIdent, navAnsattId, listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
 
 		mockAbacHttpServer.mockDenyAll()
 
@@ -262,7 +303,11 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE policy - permit`() {
 		val requestId = UUID.randomUUID()
 
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().strengtFortroligAdresse))
+		mockRolleTilganger(
+			navIdent,
+			navAnsattId,
+			listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().strengtFortroligAdresse)
+		)
 
 		val response = sendPolicyRequest(
 			requestId,
@@ -296,7 +341,11 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should evaluate NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE policy - permit`() {
 		val requestId = UUID.randomUUID()
 
-		mockRolleTilganger(navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().fortroligAdresse))
+		mockRolleTilganger(
+			navIdent,
+			navAnsattId,
+			listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().fortroligAdresse)
+		)
 
 		val response = sendPolicyRequest(
 			requestId,
@@ -468,11 +517,13 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	}
 
 	private fun setupMocksHappyCase(
-		adGrupper: List<AdGruppe> = listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging),
-		enhetTilganger: List<EnhetTilgang> = listOf(EnhetTilgang(brukersEnhet, "Brukersenhet", emptyList()))
+		adGrupper: List<AdGruppe> = listOf(
+			adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging, AdGruppe(
+				UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+			)
+		),
 	) {
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
-		mockEnhetsTilganger(navIdent, enhetTilganger)
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 	}
 }

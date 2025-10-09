@@ -11,4 +11,5 @@ object AdGruppeNavn {
 	const val SYFO_SENSITIV 				= "0000-GA-SYFO-SENSITIV"
 	const val EGNE_ANSATTE               	= "0000-GA-Egne_ansatte"
 	const val AKTIVITETSPLAN_KVP            = "0000-GA-aktivitesplan_kvp"
+	const val ENHET_PREFIKS 				= "0000-GA-ENHET_"
 }
