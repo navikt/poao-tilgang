@@ -12,26 +12,20 @@ open class PolicyConfig {
 
 	@Bean
 	open fun navAnsattTilgangTilEksternBrukerPolicy(
-		abacProvider: AbacProvider,
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 		navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicy,
 		navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
-		adGruppeProvider: AdGruppeProvider,
 		timerService: TimerService,
-		toggleProvider: ToggleProvider,
 	): NavAnsattTilgangTilEksternBrukerPolicy {
 		return NavAnsattTilgangTilEksternBrukerPolicyImpl(
-			abacProvider,
 			navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 			navAnsattTilgangTilSkjermetPersonPolicy,
 			navAnsattTilgangTilEksternBrukerNavEnhetPolicy,
 			navAnsattTilgangTilOppfolgingPolicy,
 			navAnsattTilgangTilModiaGenerellPolicy,
-			adGruppeProvider,
 			timerService,
-			toggleProvider
 		)
 	}
 
@@ -54,17 +48,13 @@ open class PolicyConfig {
 	open fun navAnsattTilgangTilNavEnhetMedSperrePolicy(
 		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
-		abacProvider: AbacProvider,
 		timerService: TimerService,
-		toggleProvider: ToggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 	): NavAnsattTilgangTilNavEnhetMedSperrePolicy {
 		return NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 			navEnhetTilgangProviderV2,
 			adGruppeProvider,
-			abacProvider,
 			timerService,
-			toggleProvider,
 			navAnsattTilgangTilOppfolgingPolicy,
 		)
 	}
@@ -98,17 +88,13 @@ open class PolicyConfig {
 	open fun tilgangTilNavEnhetPolicy(
 		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
-		abacProvider: AbacProvider,
 		timerService: TimerService,
-		toggleProvider: ToggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy
 	): NavAnsattTilgangTilNavEnhetPolicy {
 		return NavAnsattTilgangTilNavEnhetPolicyImpl(
 			navEnhetTilgangProviderV2,
 			adGruppeProvider,
-			abacProvider,
 			timerService,
-			toggleProvider,
 			navAnsattTilgangTilOppfolgingPolicy
 		)
 	}

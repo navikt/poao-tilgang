@@ -25,9 +25,7 @@ data class Policies(
 	val navAnsattTilgangTilNavEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
-		providers.abacProvider,
 		timer,
-		providers.toggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl = NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
@@ -39,9 +37,7 @@ data class Policies(
 	val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl = NavAnsattTilgangTilNavEnhetPolicyImpl(
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
-		providers.abacProvider,
 		timer,
-		providers.toggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val eksternBrukerTilgangTilEksternBrukerPolicy: EksternBrukerTilgangTilEksternBrukerPolicyImpl = EksternBrukerTilgangTilEksternBrukerPolicyImpl(),
@@ -77,15 +73,12 @@ data class Policies(
 		navAnsattBehandleStrengtFortroligUtlandBrukerePolicy,
 	),
 	val navAnsattTilgangTilEksternBrukerPolicy: NavAnsattTilgangTilEksternBrukerPolicyImpl = NavAnsattTilgangTilEksternBrukerPolicyImpl(
-		providers.abacProvider,
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 		navAnsattTilgangTilSkjermetPersonPolicy,
 		navAnsattTilgangTilEksternBrukerNavEnhetPolicy,
 		navAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy,
-		providers.adGruppeProvider,
 		timer,
-		providers.toggleProvider,
 	),
 	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
@@ -103,8 +96,7 @@ data class Policies(
 		navAnsattBehandleSkjermedePersonerPolicy,
 		navAnsattTilgangTilModiaAdminPolicy,
 		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
-		timer,
-		providers.toggleProvider,
+		timer
 	)
 ) {
 }

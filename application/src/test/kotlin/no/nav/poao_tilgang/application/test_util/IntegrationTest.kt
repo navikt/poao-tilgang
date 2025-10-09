@@ -47,7 +47,6 @@ open class IntegrationTest {
 		lateinit var mockOAuthServer: MockOAuthServer
 		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
 		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
-		lateinit var mockAbacHttpServer: MockAbacHttpServer
 		lateinit var mockVeilarbarenaHttpServer: MockVeilarbarenaHttpServer
 		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
 		lateinit var mockNorgHttpServer: MockNorgHttpServer
@@ -74,7 +73,6 @@ open class IntegrationTest {
 			mockOAuthServer = MockOAuthServer()
 			mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
 			mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
-			mockAbacHttpServer = MockAbacHttpServer()
 			mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
@@ -85,9 +83,6 @@ open class IntegrationTest {
 			mockMicrosoftGraphHttpServer.start()
 			System.setProperty("MICROSOFT_GRAPH_URL", mockMicrosoftGraphHttpServer.serverUrl())
 			System.setProperty("MICROSOFT_GRAPH_SCOPE", "https://graph.microsoft.com/.default")
-			mockAbacHttpServer.start()
-			System.setProperty("ABAC_URL", mockAbacHttpServer.serverUrl())
-			System.setProperty("ABAC_SCOPE", "api://test.pto.abac-veilarb-proxy/.default")
 			mockVeilarbarenaHttpServer.start()
 			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
 			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
@@ -120,7 +115,6 @@ open class IntegrationTest {
 		fun close(): Unit {
 			mockMicrosoftGraphHttpServer.close()
 			mockSkjermetPersonHttpServer.close()
-			mockAbacHttpServer.close()
 			mockVeilarbarenaHttpServer.close()
 			mockPdlPipHttpServer.close()
 			mockNorgHttpServer.close()
@@ -131,7 +125,6 @@ open class IntegrationTest {
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
-		mockAbacHttpServer.reset()
 		mockVeilarbarenaHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()

@@ -39,6 +39,5 @@ class NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
 		).whenDeny { return it }
 
 		return Decision.Permit
-
 	}
 }

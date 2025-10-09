@@ -34,8 +34,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		val requestId = UUID.randomUUID()
 
-		mockAbacHttpServer.mockPermit(TilgangType.SKRIVE)
-
 		val response = sendPolicyRequest(
 			requestId,
 			"""{"navIdent": "$navIdent", "norskIdent": "$norskIdent"}""",
@@ -62,8 +60,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		val requestId = UUID.randomUUID()
 
-		mockAbacHttpServer.mockPermit(TilgangType.SKRIVE)
-
 		val response = sendPolicyRequest(
 			requestId,
 			"""{"navIdent": "$navIdent", "norskIdent": "$gammelIdent"}""",
@@ -82,8 +78,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 				)
 			)
 		)
-
-		mockAbacHttpServer.mockDeny(TilgangType.SKRIVE)
 
 		val requestId = UUID.randomUUID()
 
@@ -107,8 +101,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		val requestId = UUID.randomUUID()
 
-		mockAbacHttpServer.mockPermit(tilgangType)
-
 		val response = sendPolicyRequest(
 			requestId,
 			"""{"navAnsattAzureId": "$navAnsattId", "tilgangType": "${tilgangType.name}", "norskIdent": "$norskIdent"}""",
@@ -128,7 +120,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 				)
 			)
 		)
-		mockAbacHttpServer.mockDeny(tilgangType)
 
 		val requestId = UUID.randomUUID()
 
@@ -261,8 +252,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 			)
 		)
 
-		mockAbacHttpServer.mockPermitAll()
-
 		val response = sendPolicyRequest(
 			requestId,
 			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "${brukersEnhet}"}""",
@@ -283,8 +272,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 				)
 			)
 		)
-
-		mockAbacHttpServer.mockDenyAll()
 
 		val response = sendPolicyRequest(
 			requestId,
@@ -415,8 +402,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		setupMocksHappyCase()
 
-		mockAbacHttpServer.mockPermitAll()
-
 		val response = sendPolicyRequest(
 			requestId,
 			"""{"navAnsattAzureId": "$navAnsattId", "navEnhetId": "$brukersEnhet"}""",
@@ -431,8 +416,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val requestId = UUID.randomUUID()
 
 		setupMocksHappyCase()
-
-		mockAbacHttpServer.mockDenyAll()
 
 		val response = sendPolicyRequest(
 			requestId,
@@ -451,7 +434,6 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 	fun `should cache Decision`() {
 		val requestId = UUID.randomUUID()
 		setupMocksHappyCase()
-		mockAbacHttpServer.mockDenyAll()
 
 		val response = sendPolicyRequest(
 			requestId,

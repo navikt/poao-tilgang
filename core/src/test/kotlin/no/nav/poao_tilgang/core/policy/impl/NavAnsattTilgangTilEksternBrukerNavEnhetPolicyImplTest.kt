@@ -9,7 +9,10 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -25,7 +28,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	private val geografiskTilknyttetEnhetProvider = mockk<GeografiskTilknyttetEnhetProvider>()
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
 	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
-	private val toggleProvider = mockk<ToggleProvider>()
 
 	private lateinit var policy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 
@@ -36,10 +38,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
 			navEnhetTilgangProviderV2,
-			toggleProvider
 		)
-		every { toggleProvider.brukAbacDecision() } returns false
-		every { toggleProvider.logAbacDecisionDiff() } returns false
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
 		} returns testAdGrupper

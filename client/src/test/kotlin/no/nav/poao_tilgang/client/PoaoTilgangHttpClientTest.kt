@@ -14,8 +14,6 @@ import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENHET_PREFIKS
-import no.nav.poao_tilgang.core.domain.TilgangType.LESE
-import no.nav.poao_tilgang.core.domain.TilgangType.SKRIVE
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -54,11 +52,6 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilEksternBrukerPolicy V2`(tilgangType: TilgangType) {
-		val coreTilgangType = when (tilgangType) {
-			TilgangType.LESE -> LESE
-			TilgangType.SKRIVE -> SKRIVE
-		}
-		mockAbacHttpServer.mockPermit(coreTilgangType)
 		setupMocks(
 			adGrupper = listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
@@ -119,8 +112,6 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 			)
 		)
 
-		mockAbacHttpServer.mockPermitAll()
-
 		val decision = client.evaluatePolicy(
 			NavAnsattTilgangTilNavEnhetPolicyInput(
 				navAnsattAzureId = navAnsattId,
@@ -136,8 +127,6 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp)
 		)
-
-		mockAbacHttpServer.mockPermitAll()
 
 		val decision = client.evaluatePolicy(
 			NavAnsattTilgangTilNavEnhetMedSperrePolicyInput(

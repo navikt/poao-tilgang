@@ -6,7 +6,6 @@ import no.nav.poao_tilgang.core.provider.*
 
 data class Providers(
 	val navContext: NavContext = NavContext(),
-	val toggleProvider: ToggleProvider = ToggleProviderImpl(),
 	val skjermetPersonProvider: SkjermetPersonProvider = SkjermetPersonProviderImpl(navContext),
 	val oppfolgingsenhetProvider: OppfolgingsenhetProvider = OppfolgingsenhetProviderImpl(navContext),
 	val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2 = NavEnhetTilgangProviderV2Impl(navContext),
@@ -15,18 +14,7 @@ data class Providers(
 	),
 	val diskresjonskodeProvider: DiskresjonskodeProvider = DiskresjonskodeProviderImpl(navContext),
 	val adGruppeProvider: AdGruppeProvider = AdGruppeProviderImpl(navContext),
-	val abacProvider: AbacProvider = AbacProviderImpl(),
 )
-
-class ToggleProviderImpl : ToggleProvider {
-	override fun brukAbacDecision(): Boolean {
-		return false
-	}
-
-	override fun logAbacDecisionDiff(): Boolean {
-		return true
-	}
-}
 
 class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetPersonProvider {
 	override fun erSkjermetPerson(norskIdent: String): Boolean {
@@ -85,23 +73,4 @@ class AdGruppeProviderImpl(private val navContext: NavContext) : AdGruppeProvide
 	override fun hentTilgjengeligeAdGrupper(): AdGrupper {
 		return tilgjengligeAdGrupper
 	}
-}
-
-class AbacProviderImpl() : AbacProvider {
-	override fun harVeilederTilgangTilPerson(
-		veilederIdent: String,
-		tilgangType: TilgangType,
-		eksternBrukerId: String
-	): Boolean {
-		return true
-	}
-
-	override fun harVeilederTilgangTilNavEnhet(veilederIdent: String, navEnhetId: String): Boolean {
-		return true
-	}
-
-	override fun harVeilederTilgangTilNavEnhetMedSperre(veilederIdent: String, navEnhetId: String): Boolean {
-		return true
-	}
-
 }
