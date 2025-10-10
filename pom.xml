@@ -117,11 +117,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.common</groupId>
-                <artifactId>abac</artifactId>
-                <version>${common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.common</groupId>
                 <artifactId>token-client</artifactId>
                 <version>${common.version}</version>
             </dependency>
@@ -133,6 +128,11 @@
             <dependency>
                 <groupId>no.nav.common</groupId>
                 <artifactId>feature-toggle</artifactId>
+                <version>${common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.common</groupId>
+                <artifactId>types</artifactId>
                 <version>${common.version}</version>
             </dependency>
 

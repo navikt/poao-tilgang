@@ -2,7 +2,6 @@ package no.nav.poao_tilgang.application.test_util
 
 import io.getunleash.DefaultUnleash
 import no.nav.poao_tilgang.application.Application
-import no.nav.poao_tilgang.application.client.axsys.EnhetTilgang
 import no.nav.poao_tilgang.application.config.ApplicationConfig.Companion.APPLICATION_NAME
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
@@ -48,8 +47,6 @@ open class IntegrationTest {
 		lateinit var mockOAuthServer: MockOAuthServer
 		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
 		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
-		lateinit var mockAxsysHttpServer: MockAxsysHttpServer
-		lateinit var mockAbacHttpServer: MockAbacHttpServer
 		lateinit var mockVeilarbarenaHttpServer: MockVeilarbarenaHttpServer
 		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
 		lateinit var mockNorgHttpServer: MockNorgHttpServer
@@ -76,8 +73,6 @@ open class IntegrationTest {
 			mockOAuthServer = MockOAuthServer()
 			mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
 			mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
-			mockAxsysHttpServer = MockAxsysHttpServer()
-			mockAbacHttpServer = MockAbacHttpServer()
 			mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
@@ -88,12 +83,6 @@ open class IntegrationTest {
 			mockMicrosoftGraphHttpServer.start()
 			System.setProperty("MICROSOFT_GRAPH_URL", mockMicrosoftGraphHttpServer.serverUrl())
 			System.setProperty("MICROSOFT_GRAPH_SCOPE", "https://graph.microsoft.com/.default")
-			mockAxsysHttpServer.start()
-			System.setProperty("AXSYS_URL", mockAxsysHttpServer.serverUrl())
-			System.setProperty("AXSYS_SCOPE", "api://test.org.axsys/.default")
-			mockAbacHttpServer.start()
-			System.setProperty("ABAC_URL", mockAbacHttpServer.serverUrl())
-			System.setProperty("ABAC_SCOPE", "api://test.pto.abac-veilarb-proxy/.default")
 			mockVeilarbarenaHttpServer.start()
 			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
 			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
@@ -126,8 +115,6 @@ open class IntegrationTest {
 		fun close(): Unit {
 			mockMicrosoftGraphHttpServer.close()
 			mockSkjermetPersonHttpServer.close()
-			mockAxsysHttpServer.close()
-			mockAbacHttpServer.close()
 			mockVeilarbarenaHttpServer.close()
 			mockPdlPipHttpServer.close()
 			mockNorgHttpServer.close()
@@ -138,8 +125,6 @@ open class IntegrationTest {
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
-		mockAxsysHttpServer.reset()
-		mockAbacHttpServer.reset()
 		mockVeilarbarenaHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
@@ -191,9 +176,5 @@ open class IntegrationTest {
 		mockMicrosoftGraphHttpServer.mockHentNavIdentMedAzureIdResponse(navAnsattId, navIdent)
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperForNavAnsatt(navAnsattId, adGrupper.map { it.id })
 		mockMicrosoftGraphHttpServer.mockHentAdGrupperResponse(adGrupper)
-	}
-
-	fun mockEnhetsTilganger(navIdent: String, enhetsTilganger: List<EnhetTilgang>) {
-		mockAxsysHttpServer.mockHentTilgangerResponse(navIdent, enhetsTilganger)
 	}
 }

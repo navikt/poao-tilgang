@@ -23,29 +23,21 @@ data class Policies(
 		providers.adGruppeProvider
 	),
 	val navAnsattTilgangTilNavEnhetMedSperrePolicy: NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl = NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl(
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
-		providers.abacProvider,
 		timer,
-		providers.toggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl = NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 		providers.oppfolgingsenhetProvider,
 		providers.geografiskTilknyttetEnhetProvider,
 		providers.adGruppeProvider,
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
-		providers.toggleProvider
 	),
 	val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl = NavAnsattTilgangTilNavEnhetPolicyImpl(
-		providers.navEnhetTilgangProvider,
 		providers.navEnhetTilgangProviderV2,
 		providers.adGruppeProvider,
-		providers.abacProvider,
 		timer,
-		providers.toggleProvider,
 		navAnsattTilgangTilOppfolgingPolicy
 	),
 	val eksternBrukerTilgangTilEksternBrukerPolicy: EksternBrukerTilgangTilEksternBrukerPolicyImpl = EksternBrukerTilgangTilEksternBrukerPolicyImpl(),
@@ -81,15 +73,12 @@ data class Policies(
 		navAnsattBehandleStrengtFortroligUtlandBrukerePolicy,
 	),
 	val navAnsattTilgangTilEksternBrukerPolicy: NavAnsattTilgangTilEksternBrukerPolicyImpl = NavAnsattTilgangTilEksternBrukerPolicyImpl(
-		providers.abacProvider,
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 		navAnsattTilgangTilSkjermetPersonPolicy,
 		navAnsattTilgangTilEksternBrukerNavEnhetPolicy,
 		navAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy,
-		providers.adGruppeProvider,
 		timer,
-		providers.toggleProvider,
 	),
 	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
@@ -107,8 +96,7 @@ data class Policies(
 		navAnsattBehandleSkjermedePersonerPolicy,
 		navAnsattTilgangTilModiaAdminPolicy,
 		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
-		timer,
-		providers.toggleProvider,
+		timer
 	)
 ) {
 }

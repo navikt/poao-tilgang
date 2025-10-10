@@ -10,7 +10,6 @@ class HealthChecksPoaoTilgang(
 	override fun health(): Health {
 		/*
 		Vi har avhengigheter til:
-		* Axsys
 		* Microsoft graph api
 		* Norg
 		* Pdl

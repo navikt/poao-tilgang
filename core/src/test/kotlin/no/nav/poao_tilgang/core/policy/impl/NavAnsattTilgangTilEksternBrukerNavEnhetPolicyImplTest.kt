@@ -9,11 +9,12 @@ import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import java.util.*
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
@@ -26,9 +27,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	private val oppfolgingsenhetProvider = mockk<OppfolgingsenhetProvider>()
 	private val geografiskTilknyttetEnhetProvider = mockk<GeografiskTilknyttetEnhetProvider>()
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
-	private val navEnhetTilgangProvider = mockk<NavEnhetTilgangProvider>()
 	private val navEnhetTilgangProviderV2 = mockk<NavEnhetTilgangProviderV2>()
-	private val toggleProvider = mockk<ToggleProvider>()
 
 	private lateinit var policy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
 
@@ -38,13 +37,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider,
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
-			toggleProvider
 		)
-		every { toggleProvider.brukAbacDecision() } returns false
-		every { toggleProvider.logAbacDecisionDiff() } returns false
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns false
 		every {
 			adGruppeProvider.hentTilgjengeligeAdGrupper()
 		} returns testAdGrupper
@@ -53,9 +47,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider,
 			geografiskTilknyttetEnhetProvider,
 			adGruppeProvider,
-			navEnhetTilgangProvider,
 			navEnhetTilgangProviderV2,
-			toggleProvider
 		)
 	}
 
@@ -107,12 +99,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk enhet for bruker ikke finnes`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk enhet for bruker ikke finnes`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -129,13 +117,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
-			)
-		)
 		every { navEnhetTilgangProviderV2.hentEnhetTilganger(any()) } returns setOf(
 			navEnhet
 		)
@@ -154,12 +135,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk ikke finnes over tilganger til veileder`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	internal fun `skal sjekke tilgang til oppfølgingsenhet hvis finnes geografisk ikke finnes over tilganger til veileder`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -176,13 +153,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(any()) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
-			)
-		)
 		every { navEnhetTilgangProviderV2.hentEnhetTilganger(any()) } returns setOf(
 			navEnhet
 		)
@@ -201,12 +171,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		}
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	internal fun `skal sjekke tilgang til geografisk enhet`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	internal fun `skal sjekke tilgang til geografisk enhet`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -223,13 +189,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
 		} returns navEnhet
 
-		every { navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent) } returns listOf(
-			NavEnhetTilgang(
-				navEnhet,
-				"",
-				listOf()
-			)
-		)
 		every { navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent = navIdent) } returns setOf(
 			navEnhet
 		)
@@ -274,12 +233,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 		)
 	}
 
-	@ParameterizedTest
-	@ValueSource(booleans = [false, true])
-	internal fun `skal gå videre til sjekk av oppfølgingsenhet dersom man får 404 fra norg (geografisk tilknytning)`(
-		brukEntraIdSomFasitForEnhetstilgang: Boolean
-	) {
-		every { toggleProvider.brukEntraIdSomFasitForEnhetstilgang() } returns brukEntraIdSomFasitForEnhetstilgang
+	@Test
+	internal fun `skal gå videre til sjekk av oppfølgingsenhet dersom man får 404 fra norg (geografisk tilknytning)`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns emptyList()
@@ -296,9 +251,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 			geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent)
 		} returns null
 
-		every {
-			navEnhetTilgangProvider.hentEnhetTilganger(navIdent = navIdent)
-		} returns emptyList()
 		every {
 			navEnhetTilgangProviderV2.hentEnhetTilganger(navIdent = navIdent)
 		} returns emptySet()

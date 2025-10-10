@@ -129,8 +129,6 @@ spec:
         - application: skjermede-personer-pip
           namespace: nom
       external:
-        - host: abac-veilarb-proxy.dev-fss-pub.nais.io
-        - host: axsys.dev-fss-pub.nais.io
         - host: veilarbarena.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
         - host: norg2.dev-fss-pub.nais.io
@@ -145,14 +143,6 @@ spec:
       value: api://dev-gcp.nom.skjermede-personer-pip/.default
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.cluster.local
-    - name: AXSYS_URL
-      value: https://axsys.dev-fss-pub.nais.io
-    - name: AXSYS_SCOPE
-      value: api://dev-fss.org.axsys/.default
-    - name: ABAC_URL
-      value: https://abac-veilarb-proxy.dev-fss-pub.nais.io/api/proxy/abac
-    - name: ABAC_SCOPE
-      value: api://dev-fss.pto.abac-veilarb-proxy/.default
     - name: VEILARBARENA_URL
       value: https://veilarbarena.dev-fss-pub.nais.io/veilarbarena
     - name: VEILARBARENA_SCOPE

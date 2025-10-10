@@ -1,13 +1,11 @@
 package no.nav.poao_tilgang.application.provider
 
 import io.micrometer.core.annotation.Timed
-import no.nav.poao_tilgang.application.client.axsys.AxsysClient
 import no.nav.poao_tilgang.core.domain.AdGruppe
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENHET_PREFIKS
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
-import no.nav.poao_tilgang.core.provider.NavEnhetTilgang
-import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
 import org.springframework.stereotype.Component
 import java.lang.Integer.parseInt
@@ -28,43 +26,18 @@ open class NavEnhetTilgangProviderV2Impl(
 
 		return adGrupperMedNavn
 			.map(AdGruppe::navn)
-			.filter { it.startsWith(AD_GRUPPE_ENHET_PREFIKS) }
+			.filter { it.startsWith(ENHET_PREFIKS) }
 			.map(::tilNavEnhetId)
 			.toSet()
 	}
 }
 
-
-@Component
-open class NavEnhetTilgangProviderImpl(
-	private val axsysClient: AxsysClient,
-) : NavEnhetTilgangProvider {
-
-	@Timed(
-		value = "nav_enhet_tilgang_provider.hent_enhet_tilganger",
-		histogram = true,
-		percentiles = [0.5, 0.95, 0.99],
-		extraTags = ["type", "provider"]
-	)
-	override fun hentEnhetTilganger(navIdent: NavIdent): List<NavEnhetTilgang> {
-		return axsysClient.hentTilganger(navIdent)
-			.map {
-				NavEnhetTilgang(
-					enhetId = it.enhetId,
-					enhetNavn = it.enhetNavn,
-					temaer = it.temaer
-				)
-			}
-	}
-}
-
-private const val AD_GRUPPE_ENHET_PREFIKS = "0000-GA-ENHET_"
 private const val NAV_ENHET_ID_LENGDE = 4
 
 fun tilNavEnhetId(adGruppeNavn: String): NavEnhetId {
 	return adGruppeNavn
 		.uppercase()
-		.substringAfter(AD_GRUPPE_ENHET_PREFIKS)
+		.substringAfter(ENHET_PREFIKS)
 		.let(::tilValidertNavEnhetId)
 }
 
