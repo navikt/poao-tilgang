@@ -1,4 +1,4 @@
-FROM busybox:uclibc as busybox
+FROM busybox:uclibc AS busybox
 FROM gcr.io/distroless/java21-debian12:nonroot
 
 COPY --from=busybox /bin/sh /bin/sh
