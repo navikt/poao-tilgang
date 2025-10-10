@@ -9,3 +9,5 @@ typealias NavIdent = String
 typealias NorskIdent = String
 
 typealias NavEnhetId = String
+
+typealias DisplayName = String
