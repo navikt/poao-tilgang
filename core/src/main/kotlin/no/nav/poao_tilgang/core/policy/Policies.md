@@ -26,6 +26,10 @@ Her dokumenteres primært hvordan de ulike policiene (regelsettene) er implement
 Noen policier har avhengigheter til/bruker andre policier som en del av regelsettet sitt. Dette kan visualiseres slik:
 
 ```mermaid
+---
+config:
+    layout: elk
+---
 graph LR
     %% Nivå 1
     NavAnsattTilgangTilEksternBrukerPolicy
