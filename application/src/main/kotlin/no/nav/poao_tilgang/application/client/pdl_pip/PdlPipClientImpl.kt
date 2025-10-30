@@ -27,7 +27,7 @@ open class PdlPipClientImpl(
 	)
 	override fun hentBrukerInfo(
 		brukerIdent: NorskIdent,
-	): BrukerInfo? {
+	): BrukerInfo {
 		val secureLog = LoggerFactory.getLogger("SecureLog")
 
 		val request = Request.Builder()
@@ -39,7 +39,7 @@ open class PdlPipClientImpl(
 
 		httpClient.newCall(request).execute().use { response ->
 			if (response.code == 404) {
-				secureLog.warn("Fant ikke bruker med brukerIdent $brukerIdent i PDL");
+				secureLog.warn("Fant ikke bruker med brukerIdent $brukerIdent i PDL")
 				throw BrukerFinnesIkkeException("Bruker finnes ikke i pdl. Status: ${response.code}")
 			}
 			if (!response.isSuccessful) {
