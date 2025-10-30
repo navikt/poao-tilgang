@@ -15,10 +15,9 @@ class GjeldendeIdentService(
 	/* Gitt en gammel ident typ dnr, bytt det ut med nyeste ident typ fnr og gjør tilgangskontroll mot dette istedet */
 	override fun invoke(ident: NorskIdent): NorskIdent {
 		val brukerInfo = pdlpipClient.hentBrukerInfo(ident)
-		if (brukerInfo == null) return ident
 
-		return brukerInfo.identer.identer
-			.singleOrNull { it.historisk == false && it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident ?: ident
+		return brukerInfo?.identer?.identer
+			?.singleOrNull { it.historisk == false && it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident ?: ident
 	}
 
 }

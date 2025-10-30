@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.middleware
 
 
 import no.nav.poao_tilgang.core.domain.PolicyNotImplementedException
+import no.nav.poao_tilgang.core.domain.BrukerFinnesIkkeException
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -21,6 +22,15 @@ open class ControllerAdvice {
 		return ResponseEntity
 			.status(HttpStatus.BAD_REQUEST)
 			.body(HttpStatus.BAD_REQUEST.reasonPhrase)
+	}
+
+	@ExceptionHandler(BrukerFinnesIkkeException::class)
+	fun handleBrukerFinnesIkkeException(e: BrukerFinnesIkkeException): ResponseEntity<String> {
+		log.error(e.message, e)
+
+		return ResponseEntity
+			.status(HttpStatus.NOT_FOUND)
+			.body(HttpStatus.NOT_FOUND.reasonPhrase)
 	}
 
 	@ExceptionHandler(JwtTokenUnauthorizedException::class)
