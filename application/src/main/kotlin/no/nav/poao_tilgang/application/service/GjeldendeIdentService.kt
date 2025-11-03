@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.service
 
 import no.nav.poao_tilgang.application.client.pdl_pip.IdentGruppe
 import no.nav.poao_tilgang.application.client.pdl_pip.PdlPipClient
+import no.nav.poao_tilgang.core.domain.BrukerFinnesIkkeException
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import org.springframework.stereotype.Service
 
@@ -15,10 +16,10 @@ class GjeldendeIdentService(
 	/* Gitt en gammel ident typ dnr, bytt det ut med nyeste ident typ fnr og gjør tilgangskontroll mot dette istedet */
 	override fun invoke(ident: NorskIdent): NorskIdent {
 		val brukerInfo = pdlpipClient.hentBrukerInfo(ident)
-		if (brukerInfo == null) return ident
 
 		return brukerInfo.identer.identer
-			.singleOrNull { it.historisk == false && it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }?.ident ?: ident
+			.singleOrNull { it.historisk == false && it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }
+			?.ident ?: throw BrukerFinnesIkkeException("Fant ikke gjeldende ident for bruker.")
 	}
 
 }

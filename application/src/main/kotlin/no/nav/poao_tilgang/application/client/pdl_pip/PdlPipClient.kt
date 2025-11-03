@@ -1,7 +1,7 @@
 package no.nav.poao_tilgang.application.client.pdl_pip
 
 interface PdlPipClient {
-	fun hentBrukerInfo(brukerIdent: String): BrukerInfo?
+	fun hentBrukerInfo(brukerIdent: String): BrukerInfo
 }
 
 enum class IdentGruppe {
