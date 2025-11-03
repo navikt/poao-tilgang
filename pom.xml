@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>3.5.7</version>
     </parent>
 
     <modules>
@@ -34,7 +34,7 @@
         <revision>1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.version>2.2.20</kotlin.version>
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -43,7 +43,7 @@
         <mock-oauth-server.version>2.1.9</mock-oauth-server.version>
         <token-validaiton.version>5.0.34</token-validaiton.version>
         <mockk.version>1.14.5</mockk.version>
-        <kotest.version>5.9.1</kotest.version>
+        <kotest.version>6.0.4</kotest.version>
         <common.version>3.2024.10.25_13.44-9db48a0dbe67</common.version>
         <okhttp.version>4.12.0</okhttp.version>
         <unleash.version>11.1.0</unleash.version>
@@ -241,7 +241,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.7.2</version>
+                <version>1.7.3</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
