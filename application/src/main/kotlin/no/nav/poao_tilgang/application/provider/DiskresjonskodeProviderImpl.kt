@@ -14,8 +14,8 @@ class DiskresjonskodeProviderImpl(
 
 	override fun hentDiskresjonskode(norskIdent: String): Diskresjonskode? {
 		return pdlPipClient.hentBrukerInfo(norskIdent)
-			?.person
-			?.adressebeskyttelse?.firstOrNull()?.let { it.tilDiskresjonskode() }
+			.person
+			.adressebeskyttelse?.firstOrNull()?.let { it.tilDiskresjonskode() }
 			.also {
 //				secureLog.info("PdlPip , hentDiskresjonskode for fnr: $norskIdent, result: $it")
 			}

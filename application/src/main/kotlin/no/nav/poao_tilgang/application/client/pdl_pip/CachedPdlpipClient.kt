@@ -1,7 +1,7 @@
 package no.nav.poao_tilgang.application.client.pdl_pip
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNullable
+import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNotNull
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import java.time.Duration
 
@@ -13,8 +13,8 @@ class CachedPdlpipClient(
 		.expireAfterWrite(Duration.ofHours(1))
 		.build<NorskIdent, BrukerInfo>()
 
-	override fun hentBrukerInfo(brukerIdent: String): BrukerInfo? {
-		return tryCacheFirstNullable(norskIdentToBrukerInfoCache, brukerIdent) {
+	override fun hentBrukerInfo(brukerIdent: String): BrukerInfo {
+		return tryCacheFirstNotNull(norskIdentToBrukerInfoCache, brukerIdent) {
 			pdlPipClient.hentBrukerInfo(brukerIdent)
 		}
 	}

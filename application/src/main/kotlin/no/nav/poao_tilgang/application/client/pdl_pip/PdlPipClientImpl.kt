@@ -3,9 +3,11 @@ package no.nav.poao_tilgang.application.client.pdl_pip
 import io.micrometer.core.annotation.Timed
 import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
+import no.nav.poao_tilgang.core.domain.BrukerFinnesIkkeException
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
@@ -25,7 +27,8 @@ open class PdlPipClientImpl(
 	)
 	override fun hentBrukerInfo(
 		brukerIdent: NorskIdent,
-	): BrukerInfo? {
+	): BrukerInfo {
+		val secureLog = LoggerFactory.getLogger("SecureLog")
 
 		val request = Request.Builder()
 			.url("$baseUrl/api/v1/person")
@@ -36,7 +39,8 @@ open class PdlPipClientImpl(
 
 		httpClient.newCall(request).execute().use { response ->
 			if (response.code == 404) {
-				return null
+				secureLog.warn("Fant ikke bruker med brukerIdent $brukerIdent i PDL")
+				throw BrukerFinnesIkkeException("Bruker finnes ikke i pdl. Status: ${response.code}")
 			}
 			if (!response.isSuccessful) {
 				throw RuntimeException("Klarte ikke å hente personinfo fra pdl-pip. Status: ${response.code}")
