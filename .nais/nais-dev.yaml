@@ -43,8 +43,6 @@ spec:
       destinations:
         - id: elastic
         - id: loki
-  secureLogs:
-    enabled: true
   accessPolicy:
     inbound:
       rules:
@@ -128,6 +126,8 @@ spec:
       rules:
         - application: skjermede-personer-pip
           namespace: nom
+        - application: logging
+          namespace: nais-system
       external:
         - host: veilarbarena.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
