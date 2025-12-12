@@ -162,7 +162,6 @@
                 <artifactId>unleash-client-java</artifactId>
                 <version>${unleash.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>mockwebserver</artifactId>
