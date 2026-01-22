@@ -1,6 +1,5 @@
 package no.nav.poao_tilgang.application.test_util
 
-import io.getunleash.DefaultUnleash
 import no.nav.poao_tilgang.application.Application
 import no.nav.poao_tilgang.application.config.ApplicationConfig.Companion.APPLICATION_NAME
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
@@ -32,9 +31,6 @@ import java.util.*
 open class IntegrationTest {
 	@MockitoBean
 	lateinit var myApplicationRunner: MyApplicationRunner
-
-	@MockitoBean
-	lateinit var unleashClient: DefaultUnleash
 
 	@LocalServerPort
 	private var port: Int = 0
@@ -91,9 +87,6 @@ open class IntegrationTest {
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
-			System.setProperty("UNLEASH_SERVER_API_URL", "http://localhost:8080")
-			System.setProperty("UNLEASH_SERVER_API_TOKEN", "test")
-			System.setProperty("NAIS_POD_NAME", "$APPLICATION_NAME-${UUID.randomUUID().toString().take(5)}")
 		}
 
 		private fun setupAdGrupperIder() {
