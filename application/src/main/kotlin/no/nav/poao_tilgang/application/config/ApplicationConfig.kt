@@ -1,7 +1,5 @@
 package no.nav.poao_tilgang.application.config
 
-import io.getunleash.DefaultUnleash
-import io.getunleash.util.UnleashConfig
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -10,7 +8,6 @@ import no.nav.common.token_client.builder.AzureAdTokenClientBuilder
 import no.nav.common.token_client.client.MachineToMachineTokenClient
 import no.nav.common.utils.Credentials
 import no.nav.common.utils.EnvironmentUtils
-import no.nav.common.utils.EnvironmentUtils.isProduction
 import no.nav.common.utils.NaisUtils
 import no.nav.poao_tilgang.application.controller.internal.HealthChecksPoaoTilgang
 import no.nav.poao_tilgang.application.middleware.RequesterLogFilter
@@ -91,20 +88,4 @@ open class ApplicationConfig {
 	open fun meterRegistry(): MeterRegistry {
 		return PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 	}
-
-	@Bean
-	open fun unleashClient(
-		@Value("\${nais.env.unleash.url}") unleashUrl: String,
-		@Value("\${nais.env.unleash.apiToken}") unleashApiToken: String,
-		@Value("\${nais.env.podName}") podName: String
-	): DefaultUnleash = DefaultUnleash(
-		UnleashConfig.builder()
-			.appName(APPLICATION_NAME)
-			.instanceId(podName)
-			.unleashAPI("$unleashUrl/api")
-			.apiKey(unleashApiToken)
-			.environment(if (isProduction().orElse(false)) "production" else "development")
-			.synchronousFetchOnInitialisation(true)
-			.build()
-	)
 }

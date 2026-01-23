@@ -134,7 +134,6 @@ spec:
         - host: pdl-api.prod-fss-pub.nais.io
         - host: norg2.prod-fss-pub.nais.io
         - host: graph.microsoft.com
-        - host: poao-unleash-api.nav.cloud.nais.io
   env:
     - name: MICROSOFT_GRAPH_SCOPE
       value: https://graph.microsoft.com/.default
@@ -174,5 +173,3 @@ spec:
       value: e750ceb5-b70b-4d94-b4fa-9d22467b786b
     - name: AD_GRUPPE_ID_AKTIVITETSPLAN_KVP
       value: f743db0b-bf8e-4a10-b5be-08a9170346fb
-  envFrom:
-    - secret: poao-tilgang-unleash-api-token
