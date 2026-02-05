@@ -4,7 +4,7 @@ import io.micrometer.core.annotation.Timed
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.Diskresjonskode
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import okhttp3.HttpUrl

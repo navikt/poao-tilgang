@@ -2,7 +2,7 @@ package no.nav.poao_tilgang.application.provider
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.application.client.skjermet_person.SkjermetPersonClient
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.provider.SkjermetPersonProvider
 import org.springframework.stereotype.Component
 import java.time.Duration

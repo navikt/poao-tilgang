@@ -1,7 +1,7 @@
 package no.nav.poao_tilgang.application.service
 
 import no.nav.common.log.MDCConstants
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy

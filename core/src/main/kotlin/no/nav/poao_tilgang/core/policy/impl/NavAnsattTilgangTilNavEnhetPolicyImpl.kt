@@ -6,9 +6,9 @@ import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.utils.Timer
 import no.nav.poao_tilgang.core.utils.has
-import org.slf4j.LoggerFactory
 import java.time.Duration
 
 /**
@@ -29,8 +29,6 @@ class NavAnsattTilgangTilNavEnhetPolicyImpl(
 	)
 
 	override val name = "NavAnsattTilgangTilNavEnhet"
-
-	val secureLog = LoggerFactory.getLogger("SecureLog")
 
 	override fun evaluate(input: NavAnsattTilgangTilNavEnhetPolicy.Input): Decision {
 		return harTilgang(input)

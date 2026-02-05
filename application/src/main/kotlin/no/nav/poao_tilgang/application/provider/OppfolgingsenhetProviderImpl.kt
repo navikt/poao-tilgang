@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.common.types.identer.Fnr
 import no.nav.poao_tilgang.application.client.veilarbarena.PersonRequest
 import no.nav.poao_tilgang.application.client.veilarbarena.VeilarbarenaClient
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider

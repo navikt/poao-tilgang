@@ -2,7 +2,7 @@ package no.nav.poao_tilgang.application.service
 
 import no.nav.poao_tilgang.application.domain.PolicyEvaluationRequest
 import no.nav.poao_tilgang.application.domain.PolicyEvaluationResult
-import no.nav.poao_tilgang.application.utils.SecureLog
+import no.nav.poao_tilgang.core.utils.SecureLog
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.PolicyInput
 import no.nav.poao_tilgang.core.policy.impl.PolicyResolver
