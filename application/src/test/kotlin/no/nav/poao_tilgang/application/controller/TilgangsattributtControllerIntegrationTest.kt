@@ -22,7 +22,7 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 		val disk = Diskresjonskode.FORTROLIG // Response DTO fra poao-tilgang
 		val erSkjermetPerson = true
 
-		mockVeilarbarenaHttpServer.mockIngenOppfolgingsenhet(Fnr.of(norskIdent))
+		mockAoKontorHttpServer.mockIngenOppfolgingsenhet(Fnr.of(norskIdent))
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning, enhet, erSkjermetPerson, disk)
@@ -52,7 +52,7 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
 		val erSkjermetPerson = false
 
-		mockVeilarbarenaHttpServer.mockIngenOppfolgingsenhet(Fnr.of(norskIdent))
+		mockAoKontorHttpServer.mockIngenOppfolgingsenhet(Fnr.of(norskIdent))
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning, enhet, erSkjermetPerson, disk)
@@ -81,7 +81,7 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
 		val erSkjermetPerson = false
 
-		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(enhet, null)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(enhet, null)
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 

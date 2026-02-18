@@ -2,7 +2,7 @@ package no.nav.poao_tilgang.application.client.ao_oppfolgingskontor
 
 import io.kotest.matchers.shouldBe
 import no.nav.common.types.identer.Fnr
-import no.nav.poao_tilgang.application.test_util.mock_clients.MockVeilarbarenaHttpServer
+import no.nav.poao_tilgang.application.test_util.mock_clients.MockAoKontorHttpServer
 import no.nav.poao_tilgang.application.utils.JsonUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class AOKontorClientImplTest {
 
 	companion object {
-		private val mockServer = MockVeilarbarenaHttpServer()
+		private val mockServer = MockAoKontorHttpServer()
 
 		@BeforeAll
 		@JvmStatic
@@ -49,7 +49,7 @@ class AOKontorClientImplTest {
 	}
 
 	@Test
-	fun `hentBrukerOppfolgingsenhetId skal returnere null hvis veilarbarena returnerer 404`() {
+	fun `hentBrukerOppfolgingsenhetId skal returnere null hvis ao-kontor returnerer kontor`() {
 		val client = AoKontorClientImpl(
 			baseUrl = mockServer.serverUrl(),
 			tokenProvider = { "TOKEN" },

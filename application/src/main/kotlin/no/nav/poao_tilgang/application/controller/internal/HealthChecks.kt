@@ -14,7 +14,7 @@ class HealthChecksPoaoTilgang(
 		* Norg
 		* Pdl
 		* Skjermet Person
-		* Veilarbarena
+		* Ao-kontor
 		Men de ulike policyene har forskjellige avhengigheter.
 		TODO Vurder om vi skal ha noen eller alle avhengigheter inn i healthcheck.
 		NB Ingen av klientene våre har innebygget støtte for ping, så det må i så fall implementeres.

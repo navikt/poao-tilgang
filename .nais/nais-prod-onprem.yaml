@@ -73,10 +73,10 @@ spec:
       value: api://prod-fss.nom.skjermede-personer-pip/.default
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.nais.local
-    - name: VEILARBARENA_URL
-      value: http://veilarbarena.pto.svc.nais.local/veilarbarena
-    - name: VEILARBARENA_SCOPE
-      value: api://prod-fss.pto.veilarbarena/.default
+    - name: AO_KONTOR_URL
+      value: http://ao-kontor.dab
+    - name: AO_KONTOR_SCOPE
+      value: api://prod-gcp.dab.ao-kontor/.default
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL

@@ -129,7 +129,6 @@ spec:
         - application: logging
           namespace: nais-system
       external:
-        - host: veilarbarena.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
         - host: norg2.dev-fss-pub.nais.io
         - host: graph.microsoft.com
@@ -142,10 +141,10 @@ spec:
       value: api://dev-gcp.nom.skjermede-personer-pip/.default
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.cluster.local
-    - name: VEILARBARENA_URL
-      value: https://veilarbarena.dev-fss-pub.nais.io/veilarbarena
-    - name: VEILARBARENA_SCOPE
-      value: api://dev-fss.pto.veilarbarena/.default
+    - name: AO_KONTOR_URL
+      value: http://ao-kontor-dab
+    - name: AO_KONTOR_SCOPE
+      value: api://dev-gcp.dab.ao-kontor/.default
     - name: PDLPIP_SCOPE
       value: api://dev-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL

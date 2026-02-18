@@ -22,7 +22,7 @@ class OppfolgingsenhetProviderImplTest {
 		val personRequest = Fnr(norskIdent)
 		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } returns navEnhetId
 		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent) shouldBe navEnhetId
-		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } throws RuntimeException("Klarte ikke å hente status fra veilarbarena. Status: 500")
+		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } throws RuntimeException("Klarte ikke å hente status fra ao-kontor. Status: 500")
 		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent) shouldBe navEnhetId
 	}
 
@@ -32,9 +32,9 @@ class OppfolgingsenhetProviderImplTest {
 		val personRequest = Fnr(norskIdent)
 		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } returns null
 		oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent) shouldBe null
-		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } throws RuntimeException("Klarte ikke å hente status fra veilarbarena. Status: 500")
+		every { aoKontorClient.hentBrukerOppfolgingsenhetId(personRequest) } throws RuntimeException("Klarte ikke å hente status fra ao-kontor. Status: 500")
 		val exception = shouldThrow<RuntimeException> { oppfolgingsenhetProvider.hentOppfolgingsenhet(norskIdent) }
-		exception.message shouldBe "Klarte ikke å hente status fra veilarbarena. Status: 500"
+		exception.message shouldBe "Klarte ikke å hente status fra ao-kontor. Status: 500"
 	}
 
 }

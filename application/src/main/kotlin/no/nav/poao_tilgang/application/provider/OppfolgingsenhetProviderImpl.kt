@@ -26,14 +26,10 @@ class OppfolgingsenhetProviderImpl(
 		}.onSuccess {
 			if (it != null) norskIdentToOppfolgingsenhetCache.put(norskIdent, it)
 		}.onFailure {
-			secureLog.warn("Feil under kall til veilarbarenaClient.hentBrukerOppfolgingsenhetId for norskIdent: ${personRequest.get()}. Forsøker fallback til cache")
+			secureLog.warn("Feil under kall til ao-kontor.hentBrukerOppfolgingsenhetId for norskIdent: ${personRequest.get()}. Forsøker fallback til cache")
 		}.recover {
 			norskIdentToOppfolgingsenhetCache.getIfPresent(norskIdent) ?: throw it
-		}
-			.getOrNull()
-			.also {
-//				secureLog.info("Veilarbarena , hentOppfolgingsEnhetId for norskIdent: ${personRequest.fnr}, result: $it")
-			}
+		}.getOrNull()
 	}
 
 }

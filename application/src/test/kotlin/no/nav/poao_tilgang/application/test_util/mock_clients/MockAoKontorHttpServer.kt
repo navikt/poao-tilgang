@@ -5,7 +5,7 @@ import no.nav.poao_tilgang.application.test_util.MockHttpServer
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import okhttp3.mockwebserver.MockResponse
 
-class MockVeilarbarenaHttpServer : MockHttpServer() {
+class MockAoKontorHttpServer : MockHttpServer() {
 
 	fun mockOppfolgingsenhet(mockOppfolgingsenhet: NavEnhetId, mockGtEnhet: NavEnhetId?) {
 		val response = MockResponse()
