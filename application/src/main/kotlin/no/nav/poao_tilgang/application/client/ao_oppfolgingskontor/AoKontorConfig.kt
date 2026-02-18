@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class AoKontorConfig {
 
-	@Value("\${veilarbarena.url}")
+	@Value("\${ao-kontor.url}")
 	lateinit var url: String
 
-	@Value("\${veilarbarena.scope}")
+	@Value("\${ao-kontor.scope}")
 	lateinit var scope: String
 
 	@Bean
