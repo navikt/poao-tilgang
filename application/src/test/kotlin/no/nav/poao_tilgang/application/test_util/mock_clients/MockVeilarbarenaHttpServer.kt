@@ -1,43 +1,51 @@
 package no.nav.poao_tilgang.application.test_util.mock_clients
 
-import no.nav.poao_tilgang.application.client.veilarbarena.PersonRequest
+import no.nav.common.types.identer.Fnr
 import no.nav.poao_tilgang.application.test_util.MockHttpServer
-import no.nav.poao_tilgang.application.utils.JsonUtils
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import okhttp3.mockwebserver.MockResponse
 
 class MockVeilarbarenaHttpServer : MockHttpServer() {
 
-	fun mockOppfolgingsenhet(oppfolgingsenhet: NavEnhetId) {
+	fun mockOppfolgingsenhet(mockOppfolgingsenhet: NavEnhetId, mockGtEnhet: NavEnhetId?) {
 		val response = MockResponse()
 			.setBody(
 				"""
 					{
-						"formidlingsgruppe": "ARBS",
-						"kvalifiseringsgruppe": "BFORM",
-						"rettighetsgruppe": "DAGP",
-						"iservFraDato": "2021-11-16T10:09:03",
-						"oppfolgingsenhet": "$oppfolgingsenhet"
+						"data": {
+							"kontorTilhorigheter": {
+								"arbeidsoppfolging": { "kontorId": "$mockOppfolgingsenhet" },
+								"geografiskTilknytning": { "kontorId": "$mockGtEnhet" }
+							}
+						}
 					}
 				""".trimIndent()
 			)
 
 		handleRequest(
-			matchPath = "/api/v2/arena/hent-status",
+			matchPath = "/graphql",
 			matchMethod = "POST",
 			response = response
 		)
 	}
 
-	fun mockIngenOppfolgingsenhet(personRequest: PersonRequest) {
-		val personRequestJSON = JsonUtils.toJsonString(personRequest)
+	fun mockIngenOppfolgingsenhet(fnr: Fnr) {
 		val response = MockResponse()
-			.setResponseCode(404)
+			.setBody("""
+				{
+					"data": {
+						"kontorTilhorigheter": {
+							"arbeidsoppfolging": null,
+							"geografiskTilknytning": null
+						}
+					}
+				}
+			""".trimIndent())
 
 		handleRequest(
-			matchPath = "/api/v2/arena/hent-status",
+			matchPath = "/graphql",
 			matchMethod = "POST",
-			matchBodyContains = personRequestJSON,
+			matchBodyContains = fnr.get(),
 			response = response
 		)
 	}

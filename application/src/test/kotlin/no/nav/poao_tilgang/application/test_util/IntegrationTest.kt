@@ -161,7 +161,7 @@ open class IntegrationTest {
 			)
 		)
 		mockNorgHttpServer.mockTilhorendeEnhet(kommuneNr, brukersEnhet)
-		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet)
+		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet, brukersEnhet)
 	}
 
 	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
