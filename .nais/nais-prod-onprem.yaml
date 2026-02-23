@@ -74,9 +74,9 @@ spec:
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.nais.local
     - name: AO_KONTOR_URL
-      value: http://ao-kontor.dab
+      value: http://ao-oppfolgingskontor.dab
     - name: AO_KONTOR_SCOPE
-      value: api://prod-gcp.dab.ao-kontor/.default
+      value: api://prod-gcp.dab.ao-oppfolgingskontor/.default
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL
