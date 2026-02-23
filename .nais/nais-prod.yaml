@@ -144,7 +144,7 @@ spec:
       value: http://skjermede-personer-pip.nom.svc.cluster.local
     - name: AO_KONTOR_URL
       value: http://ao-kontor.dab
-    - name: VEILARBARENA_SCOPE
+    - name: AO_KONTOR_SCOPE
       value: api://prod-gcp.dab.ao-kontor/.default
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default
