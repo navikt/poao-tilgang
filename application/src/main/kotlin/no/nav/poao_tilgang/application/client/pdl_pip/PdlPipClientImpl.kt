@@ -3,11 +3,11 @@ package no.nav.poao_tilgang.application.client.pdl_pip
 import io.micrometer.core.annotation.Timed
 import no.nav.common.rest.client.RestClient
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.BrukerFinnesIkkeException
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
@@ -28,8 +28,6 @@ open class PdlPipClientImpl(
 	override fun hentBrukerInfo(
 		brukerIdent: NorskIdent,
 	): BrukerInfo {
-		val secureLog = LoggerFactory.getLogger("SecureLog")
-
 		val request = Request.Builder()
 			.url("$baseUrl/api/v1/person")
 			.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)

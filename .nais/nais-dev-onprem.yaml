@@ -34,8 +34,6 @@ spec:
       claims:
         extra:
           - azp_name
-  secureLogs:
-    enabled: true
   webproxy: true
   accessPolicy:
     inbound:
