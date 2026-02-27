@@ -62,6 +62,7 @@ spec:
           namespace: nom
       external:
         - host: graph.microsoft.com
+        - host: ao-oppfolgingskontor.intern.nav.no
   env:
     - name: spring_profiles_active
       value: fss
