@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.application.utils
+package no.nav.poao_tilgang.core.utils
 
 import org.slf4j.LoggerFactory
 import org.slf4j.MarkerFactory

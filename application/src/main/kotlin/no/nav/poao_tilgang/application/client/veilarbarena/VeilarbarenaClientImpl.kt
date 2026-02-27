@@ -5,7 +5,7 @@ import no.nav.common.rest.client.RestClient.baseClient
 import no.nav.common.rest.client.RestUtils.MEDIA_TYPE_JSON
 import no.nav.poao_tilgang.application.utils.JsonUtils
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.NavEnhetId
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient

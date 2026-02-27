@@ -9,8 +9,8 @@ import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.GeografiskTilknyttetEnhetProvider
 import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
 import no.nav.poao_tilgang.core.provider.OppfolgingsenhetProvider
+import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.utils.hasAtLeastOne
-import org.slf4j.LoggerFactory
 
 class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 	private val oppfolgingsenhetProvider: OppfolgingsenhetProvider,
@@ -19,7 +19,6 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 	private val navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2
 ) : NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
 
-	private val secureLog = LoggerFactory.getLogger("SecureLog")
 	private val nasjonalTilgangGrupperOgAdmin = adGruppeProvider.hentTilgjengeligeAdGrupper().let {
 		listOf(
 			it.gosysNasjonal,

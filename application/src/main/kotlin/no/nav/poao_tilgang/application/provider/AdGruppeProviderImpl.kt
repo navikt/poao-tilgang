@@ -3,7 +3,6 @@ package no.nav.poao_tilgang.application.provider
 import com.github.benmanes.caffeine.cache.Caffeine
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClient
 import no.nav.poao_tilgang.application.utils.CacheUtils.tryCacheFirstNotNull
-import no.nav.poao_tilgang.application.utils.SecureLog.secureLog
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.AKTIVITETSPLAN_KVP
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.EGNE_ANSATTE
