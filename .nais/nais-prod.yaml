@@ -129,6 +129,8 @@ spec:
           namespace: nom
         - application: logging
           namespace: nais-system
+        - application: ao-oppfolgingskontor
+          namespace: dab
       external:
         - host: pdl-api.prod-fss-pub.nais.io
         - host: norg2.prod-fss-pub.nais.io
