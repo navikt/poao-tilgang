@@ -1,7 +1,6 @@
 package no.nav.poao_tilgang.application.test_util
 
 import no.nav.poao_tilgang.application.Application
-import no.nav.poao_tilgang.application.config.ApplicationConfig.Companion.APPLICATION_NAME
 import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -43,7 +42,7 @@ open class IntegrationTest {
 		lateinit var mockOAuthServer: MockOAuthServer
 		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
 		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
-		lateinit var mockVeilarbarenaHttpServer: MockVeilarbarenaHttpServer
+		lateinit var mockAoKontorHttpServer: MockAoKontorHttpServer
 		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
 		lateinit var mockNorgHttpServer: MockNorgHttpServer
 		lateinit var mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
@@ -69,7 +68,7 @@ open class IntegrationTest {
 			mockOAuthServer = MockOAuthServer()
 			mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
 			mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
-			mockVeilarbarenaHttpServer = MockVeilarbarenaHttpServer()
+			mockAoKontorHttpServer = MockAoKontorHttpServer()
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
 			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
@@ -79,9 +78,9 @@ open class IntegrationTest {
 			mockMicrosoftGraphHttpServer.start()
 			System.setProperty("MICROSOFT_GRAPH_URL", mockMicrosoftGraphHttpServer.serverUrl())
 			System.setProperty("MICROSOFT_GRAPH_SCOPE", "https://graph.microsoft.com/.default")
-			mockVeilarbarenaHttpServer.start()
-			System.setProperty("VEILARBARENA_URL", mockVeilarbarenaHttpServer.serverUrl())
-			System.setProperty("VEILARBARENA_SCOPE", "api://test.pto.veilarbarena/.default")
+			mockAoKontorHttpServer.start()
+			System.setProperty("AO_KONTOR_URL", mockAoKontorHttpServer.serverUrl())
+			System.setProperty("AO_KONTOR_SCOPE", "api://test.dab.ao-kontor/.default")
 			mockPdlPipHttpServer.start()
 			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
@@ -108,7 +107,7 @@ open class IntegrationTest {
 		fun close(): Unit {
 			mockMicrosoftGraphHttpServer.close()
 			mockSkjermetPersonHttpServer.close()
-			mockVeilarbarenaHttpServer.close()
+			mockAoKontorHttpServer.close()
 			mockPdlPipHttpServer.close()
 			mockNorgHttpServer.close()
 		}
@@ -118,7 +117,7 @@ open class IntegrationTest {
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
-		mockVeilarbarenaHttpServer.reset()
+		mockAoKontorHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
@@ -161,7 +160,7 @@ open class IntegrationTest {
 			)
 		)
 		mockNorgHttpServer.mockTilhorendeEnhet(kommuneNr, brukersEnhet)
-		mockVeilarbarenaHttpServer.mockOppfolgingsenhet(brukersEnhet)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(brukersEnhet, brukersEnhet)
 	}
 
 	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {

@@ -57,6 +57,7 @@ spec:
           namespace: nom
       external:
         - host: graph.microsoft.com
+        - host: ao-oppfolgingskontor.intern.dev.nav.no
   env:
     - name: spring_profiles_active
       value: fss
@@ -68,10 +69,10 @@ spec:
       value: api://dev-fss.nom.skjermede-personer-pip/.default
     - name: SKJERMET_PERSON_URL
       value: http://skjermede-personer-pip.nom.svc.nais.local
-    - name: VEILARBARENA_URL
-      value: http://veilarbarena.pto.svc.nais.local/veilarbarena
-    - name: VEILARBARENA_SCOPE
-      value: api://dev-fss.pto.veilarbarena/.default
+    - name: AO_KONTOR_URL
+      value: https://ao-oppfolgingskontor.intern.dev.nav.no
+    - name: AO_KONTOR_SCOPE
+      value: api://dev-gcp.dab.ao-oppfolgingskontor/.default
     - name: PDLPIP_SCOPE
       value: api://dev-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL

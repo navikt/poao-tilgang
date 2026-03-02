@@ -1,17 +1,17 @@
-package no.nav.poao_tilgang.application.client.veilarbarena
+package no.nav.poao_tilgang.application.client.ao_oppfolgingskontor
 
 import io.kotest.matchers.shouldBe
 import no.nav.common.types.identer.Fnr
-import no.nav.poao_tilgang.application.test_util.mock_clients.MockVeilarbarenaHttpServer
+import no.nav.poao_tilgang.application.test_util.mock_clients.MockAoKontorHttpServer
 import no.nav.poao_tilgang.application.utils.JsonUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
-class VeilarbarenaClientImplTest {
+class AOKontorClientImplTest {
 
 	companion object {
-		private val mockServer = MockVeilarbarenaHttpServer()
+		private val mockServer = MockAoKontorHttpServer()
 
 		@BeforeAll
 		@JvmStatic
@@ -27,40 +27,35 @@ class VeilarbarenaClientImplTest {
 
 	@Test
 	fun `hentBrukerOppfolgingsenhetId skal lage riktig request og parse respons`() {
-		val client = VeilarbarenaClientImpl(
+		val client = AoKontorClientImpl(
 			baseUrl = mockServer.serverUrl(),
 			tokenProvider = { "TOKEN" },
-			consumerId = "poao-tilgang"
 		)
 
-		val personRequest = PersonRequest(Fnr.of("987654"))
-		val personRequestJSON = JsonUtils.toJsonString(personRequest)
+		val personRequestJSON = JsonUtils.toJsonString(GraphqlRequest(Variables("987654")))
 
-		mockServer.mockOppfolgingsenhet("1234")
+		mockServer.mockOppfolgingsenhet("1234", null)
 
-		val oppfolgingsenhetId = client.hentBrukerOppfolgingsenhetId(personRequest)
+		val oppfolgingsenhetId = client.hentBrukerOppfolgingsenhetId(Fnr.of("987654"))
 
 		oppfolgingsenhetId shouldBe "1234"
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldBe "/api/v2/arena/hent-status"
+		request.path shouldBe "/graphql"
 		request.method shouldBe "POST"
 		request.getHeader("Authorization") shouldBe "Bearer TOKEN"
-		request.getHeader("Nav-Consumer-Id") shouldBe "poao-tilgang"
-		request.getHeader("forceSync") shouldBe "true"
 		request.body.readUtf8() shouldBe personRequestJSON
 	}
 
 	@Test
-	fun `hentBrukerOppfolgingsenhetId skal returnere null hvis veilarbarena returnerer 404`() {
-		val client = VeilarbarenaClientImpl(
+	fun `hentBrukerOppfolgingsenhetId skal returnere null hvis ao-kontor returnerer kontor`() {
+		val client = AoKontorClientImpl(
 			baseUrl = mockServer.serverUrl(),
 			tokenProvider = { "TOKEN" },
-			consumerId = "poao-tilgang"
 		)
 
-		val personRequest = PersonRequest(Fnr.of("987654"))
+		val personRequest = Fnr.of("987654")
 		mockServer.mockIngenOppfolgingsenhet(personRequest)
 
 		val oppfolgingsenhetId = client.hentBrukerOppfolgingsenhetId(personRequest)
