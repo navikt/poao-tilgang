@@ -155,9 +155,9 @@ spec:
     - name: NORG_URL
       value: https://norg2.prod-fss-pub.nais.io
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE
-      value: 9ec6487d-f37a-4aad-a027-cd221c1ac32b
+      value: e98efc34-12d1-401f-b059-f17e62834065
     - name: AD_GRUPPE_ID_STRENGT_FORTROLIG_ADRESSE
-      value: ad7b87a6-9180-467c-affc-20a566b0fec0
+      value: 2931da41-8b8e-42cd-99c0-04a169ddae40
     - name: AD_GRUPPE_ID_MODIA_ADMIN
       value: d69a34b7-13fe-4b65-9711-14edf866ddcd
     - name: AD_GRUPPE_ID_MODIA_OPPFOLGING
