@@ -1,9 +1,9 @@
-package no.nav.poao_tilgang.client.tilgangsmaskin
+package no.nav.poao_tilgang.application.client.tilgangsmaskin
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
-import no.nav.poao_tilgang.client.ClientObjectMapper.objectMapper
+import no.nav.poao_tilgang.application.utils.JsonUtils.objectMapper
 import no.nav.poao_tilgang.client.NorskIdent
 import no.nav.poao_tilgang.client.api.*
 import no.nav.poao_tilgang.client.api.ApiResult.Companion.failure

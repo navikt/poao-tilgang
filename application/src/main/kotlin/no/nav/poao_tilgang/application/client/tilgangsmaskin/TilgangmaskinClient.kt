@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.client.tilgangsmaskin
+package no.nav.poao_tilgang.application.client.tilgangsmaskin
 
 import no.nav.poao_tilgang.client.NorskIdent
 import no.nav.poao_tilgang.client.api.ApiResult

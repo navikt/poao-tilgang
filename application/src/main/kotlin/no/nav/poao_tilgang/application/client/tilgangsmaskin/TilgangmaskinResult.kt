@@ -1,4 +1,4 @@
-package no.nav.poao_tilgang.client.tilgangsmaskin
+package no.nav.poao_tilgang.application.client.tilgangsmaskin
 
 sealed class TilgangmaskinResult {
 

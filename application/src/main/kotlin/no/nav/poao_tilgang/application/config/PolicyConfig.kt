@@ -14,7 +14,7 @@ open class PolicyConfig {
 	open fun navAnsattTilgangTilEksternBrukerPolicy(
 		navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 		navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicy,
-		navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy,
+		tilgangmaskinProvider: no.nav.poao_tilgang.core.provider.TilgangmaskinProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
 		timerService: TimerService,
@@ -22,7 +22,7 @@ open class PolicyConfig {
 		return NavAnsattTilgangTilEksternBrukerPolicyImpl(
 			navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
 			navAnsattTilgangTilSkjermetPersonPolicy,
-			navAnsattTilgangTilEksternBrukerNavEnhetPolicy,
+			tilgangmaskinProvider,
 			navAnsattTilgangTilOppfolgingPolicy,
 			navAnsattTilgangTilModiaGenerellPolicy,
 			timerService,
