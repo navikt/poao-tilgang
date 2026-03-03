@@ -130,6 +130,8 @@ spec:
           namespace: nais-system
         - application: ao-oppfolgingskontor
           namespace: dab
+        - application: populasjonstilgangskontroll
+          namespace: tilgangsmaskin
       external:
         - host: pdl-api.dev-fss-pub.nais.io
         - host: norg2.dev-fss-pub.nais.io
@@ -147,6 +149,10 @@ spec:
       value: http://ao-oppfolgingskontor.dab
     - name: AO_KONTOR_SCOPE
       value: api://dev-gcp.dab.ao-oppfolgingskontor/.default
+    - name: TILGANGSMASKIN_URL
+      value: http://populasjonstilgangskontroll.tilgangsmaskin
+    - name: TILGANGSMASKIN_SCOPE
+      value: api://dev-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default
     - name: PDLPIP_SCOPE
       value: api://dev-fss.pdl.pdl-pip-api/.default
     - name: PDLPIP_URL
