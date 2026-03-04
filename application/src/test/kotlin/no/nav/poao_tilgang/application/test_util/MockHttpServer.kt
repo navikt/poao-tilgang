@@ -16,7 +16,7 @@ open class MockHttpServer : Closeable {
 
 	private var lastRequestCount = 0
 
-	private val responseHandlers = mutableMapOf<(request: RecordedRequest) -> Boolean, MockResponse>()
+	private val responseHandlers = mutableMapOf<(request: RecordedRequest) -> Boolean, (RecordedRequest) -> MockResponse>()
 
 	fun start() {
 		try {
@@ -38,7 +38,10 @@ open class MockHttpServer : Closeable {
 	}
 
 	fun addResponseHandler(requestMatcher: (req: RecordedRequest) -> Boolean, response: MockResponse) {
-		responseHandlers[requestMatcher] = response
+		responseHandlers[requestMatcher] = { response }
+	}
+	fun addResponseHandler(requestMatcher: (req: RecordedRequest) -> Boolean, responseCreator: (RecordedRequest) -> MockResponse) {
+		responseHandlers[requestMatcher] = responseCreator
 	}
 
 	/**
@@ -54,7 +57,7 @@ open class MockHttpServer : Closeable {
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
 		matchQueryParam: Map<String, String>? = null,
-		response: MockResponse
+		response: (RecordedRequest) -> MockResponse
 	) {
 		val requestMatcher = matcher@{ req: RecordedRequest ->
 			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
@@ -83,6 +86,15 @@ open class MockHttpServer : Closeable {
 
 		addResponseHandler(requestMatcher, response)
 	}
+	/* If mock setup does not require requeset input to create response they can just send the response as response param */
+	fun handleRequest(
+		matchPath: String? = null,
+		matchMethod: String? = null,
+		matchHeaders: Map<String, String>? = null,
+		matchBodyContains: String? = null,
+		matchQueryParam: Map<String, String>? = null,
+		response: MockResponse
+	) = handleRequest(matchPath, matchMethod, matchHeaders, matchBodyContains, matchQueryParam, { response })
 
 	fun latestRequest(): RecordedRequest {
 		return server.takeRequest()
@@ -95,12 +107,16 @@ open class MockHttpServer : Closeable {
 	private fun createResponseDispatcher(): Dispatcher {
 		return object : Dispatcher() {
 			override fun dispatch(request: RecordedRequest): MockResponse {
-				val response = responseHandlers.entries.find { it.key.invoke(request) }?.value
-					?: throw IllegalStateException("No handler for $request")
+				val response = responseHandlers.entries
+					.find {
+						val requestMatcher = it.key
+						requestMatcher.invoke(request)
+					}?.value
+					?: throw IllegalStateException("No handler for path:${request.path} - body ${request.bodySize} :${request.body.readUtf8()}")
 
 				log.info("Responding [${request.path}]: $response")
 
-				return response
+				return response(request)
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.controller
 
 import io.kotest.matchers.shouldBe
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import org.junit.jupiter.api.Test
 
@@ -12,7 +13,7 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 		val response = sendRequest(
 			method = "POST",
 			path = "/api/v1/skjermet-person",
-			body = """{"norskeIdenter": ["1234354"]}""".toJsonRequestBody()
+			body = """{"norskeIdenter": ["${TestDataGenerator.norskIdent()}"]}""".toJsonRequestBody()
 		)
 
 		response.code shouldBe 401
@@ -23,7 +24,7 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 		val response = sendRequest(
 			method = "POST",
 			path = "/api/v1/skjermet-person",
-			body = """{"norskeIdenter": ["1234354"]}""".toJsonRequestBody(),
+			body = """{"norskeIdenter": ["${TestDataGenerator.norskIdent()}"]}""".toJsonRequestBody(),
 			headers = mapOf("Authorization" to "Bearer ${mockOAuthServer.issueAzureAdToken()}")
 		)
 
@@ -32,8 +33,8 @@ class SkjermetPersonControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermet - should return 200 with correct response`() {
-		val norskIdent1 = "13487453"
-		val norskIdent2 = "54364545"
+		val norskIdent1 = TestDataGenerator.norskIdent()
+		val norskIdent2 = TestDataGenerator.norskIdent()
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(
 			norskIdent1 to true,

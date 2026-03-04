@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -25,7 +24,6 @@ import java.time.Duration
 import java.util.*
 
 @ExtendWith(SpringExtension::class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [Application::class])
 @ActiveProfiles("test")
 open class IntegrationTest {
@@ -122,12 +120,12 @@ open class IntegrationTest {
 
 	@AfterEach
 	fun reset() {
-		mockMicrosoftGraphHttpServer.reset()
-		mockSkjermetPersonHttpServer.reset()
-		mockAoKontorHttpServer.reset()
-		mockTilgangsmaskinHttpServer.reset()
-		mockPdlPipHttpServer.reset()
-		mockNorgHttpServer.reset()
+//		mockMicrosoftGraphHttpServer.reset()
+//		mockSkjermetPersonHttpServer.reset()
+//		mockAoKontorHttpServer.reset()
+//		mockTilgangsmaskinHttpServer.reset()
+//		mockPdlPipHttpServer.reset()
+//		mockNorgHttpServer.reset()
 	}
 
 	fun serverUrl() = "http://localhost:$port"
