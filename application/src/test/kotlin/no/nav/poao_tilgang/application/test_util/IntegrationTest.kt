@@ -5,6 +5,7 @@ import no.nav.poao_tilgang.application.config.MyApplicationRunner
 import no.nav.poao_tilgang.application.test_util.mock_clients.*
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.NavEnhetId
+import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -146,6 +147,10 @@ open class IntegrationTest {
 		}
 
 		return client.newCall(reqBuilder.build()).execute()
+	}
+
+	fun mockTilgangsMaskinPermit(navIdent: NavIdent) {
+		mockTilgangsmaskinHttpServer.mockGodkjent(navIdent)
 	}
 
 	fun mockPersonData(
