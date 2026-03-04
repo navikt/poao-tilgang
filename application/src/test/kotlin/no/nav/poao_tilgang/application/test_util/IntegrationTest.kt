@@ -81,6 +81,8 @@ open class IntegrationTest {
 			mockAoKontorHttpServer.start()
 			System.setProperty("AO_KONTOR_URL", mockAoKontorHttpServer.serverUrl())
 			System.setProperty("AO_KONTOR_SCOPE", "api://test.dab.ao-kontor/.default")
+			System.setProperty("TILGANGSMASKIN_URL", mockAoKontorHttpServer.serverUrl())
+			System.setProperty("TILGANGSMASKIN_SCOPE", "api://test.tilgangsmaskin.populasjonstilgangskontroll/.default")
 			mockPdlPipHttpServer.start()
 			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
