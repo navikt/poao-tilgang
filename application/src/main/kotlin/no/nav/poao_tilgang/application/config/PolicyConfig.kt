@@ -12,16 +12,12 @@ open class PolicyConfig {
 
 	@Bean
 	open fun navAnsattTilgangTilEksternBrukerPolicy(
-		navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-		navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicy,
-		tilgangmaskinProvider: no.nav.poao_tilgang.core.provider.TilgangmaskinProvider,
+		tilgangmaskinProvider: TilgangmaskinProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
 		timerService: TimerService,
 	): NavAnsattTilgangTilEksternBrukerPolicy {
 		return NavAnsattTilgangTilEksternBrukerPolicyImpl(
-			navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-			navAnsattTilgangTilSkjermetPersonPolicy,
 			tilgangmaskinProvider,
 			navAnsattTilgangTilOppfolgingPolicy,
 			navAnsattTilgangTilModiaGenerellPolicy,

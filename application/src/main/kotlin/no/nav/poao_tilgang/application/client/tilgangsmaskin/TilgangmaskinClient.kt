@@ -1,8 +1,8 @@
 package no.nav.poao_tilgang.application.client.tilgangsmaskin
 
-import no.nav.poao_tilgang.client.NorskIdent
-import no.nav.poao_tilgang.client.api.ApiResult
+import no.nav.poao_tilgang.core.domain.NavIdent
+import no.nav.poao_tilgang.core.domain.NorskIdent
 
 interface TilgangmaskinClient {
-	fun evaluerKjerneregler(norskIdent: NorskIdent): ApiResult<TilgangmaskinResult>
+	fun evaluerKompletteRegler(norskIdent: NorskIdent, navIdent: NavIdent): TilgangmaskinResult
 }

@@ -4,15 +4,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
 import no.nav.poao_tilgang.application.utils.JsonUtils.objectMapper
-import no.nav.poao_tilgang.client.NorskIdent
-import no.nav.poao_tilgang.client.api.*
-import no.nav.poao_tilgang.client.api.ApiResult.Companion.failure
-import no.nav.poao_tilgang.client.api.ApiResult.Companion.success
-import okhttp3.MediaType.Companion.toMediaType
+import no.nav.poao_tilgang.application.utils.JsonUtils.toJsonString
+import no.nav.poao_tilgang.application.utils.RestUtils.authorization
+import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
+import no.nav.poao_tilgang.core.domain.NavIdent
+import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
 
 class TilgangmaskinHttpClient(
 	private val baseUrl: String,
@@ -20,51 +18,25 @@ class TilgangmaskinHttpClient(
 	private val client: OkHttpClient = RestClient.baseClient()
 ) : TilgangmaskinClient {
 
-	private val jsonMediaType = "application/json".toMediaType()
-
-	override fun evaluerKjerneregler(norskIdent: NorskIdent): ApiResult<TilgangmaskinResult> {
+	override fun evaluerKompletteRegler(norskIdent: NorskIdent, navIdent: NavIdent): TilgangmaskinResult {
 		val request = Request.Builder()
-			.url(joinPaths(baseUrl, "/api/v1/kjerne"))
-			.post(objectMapper.writeValueAsString(norskIdent).toRequestBody(jsonMediaType))
-			.header("Authorization", "Bearer ${tokenProvider()}")
+			.url(joinPaths(baseUrl, "/api/v1/ccf/komplett/${navIdent}"))
+			.post(toJsonString(norskIdent).toJsonRequestBody())
+			.authorization(tokenProvider)
 			.build()
 
-		return try {
-			client.newCall(request).execute().use { response ->
-				when (response.code) {
-					204 -> success(TilgangmaskinResult.Godkjent)
-					403 -> {
-						val body = response.body?.string()
-						if (body != null) {
-							try {
-								val avvist = objectMapper.readValue<TilgangmaskinResult.Avvist>(body)
-								success(avvist)
-							} catch (e: Exception) {
-								failure(ResponseDataApiException("Kunne ikke parse avvisningsrespons fra tilgangsmaskin: ${e.message}"))
-							}
-						} else {
-							success(
-								TilgangmaskinResult.Avvist(
-									type = null,
-									title = null,
-									status = 403,
-									instance = null,
-									brukerIdent = null,
-									navIdent = null,
-									begrunnelse = null,
-									traceId = null,
-									kanOverstyres = null
-								)
-							)
-						}
+		return client.newCall(request).execute().use { response ->
+			when (response.code) {
+				204 -> TilgangmaskinResult.Godkjent
+				403 -> {
+					val body = response.body?.string()
+					if (body != null) {
+						objectMapper.readValue<TilgangmaskinResult.Avvist>(body)
+					} else {
+						throw RuntimeException("HTTP 403 fra tilgangsmaskinen uten body")
 					}
-					else -> failure(BadHttpStatusApiException(response.code, response.body?.string()))
 				}
-			}
-		} catch (e: Throwable) {
-			when (e) {
-				is IOException -> failure(NetworkApiException(e))
-				else -> failure(UnspecifiedApiException(e))
+				else -> throw RuntimeException("Fikk uhåndtert statuskode ${response.code} fra tilgangsmaskinen, body=${response.body?.string()}")
 			}
 		}
 	}

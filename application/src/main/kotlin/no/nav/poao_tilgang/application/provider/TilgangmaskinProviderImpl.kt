@@ -5,8 +5,8 @@ import no.nav.poao_tilgang.application.client.tilgangsmaskin.TilgangmaskinClient
 import no.nav.poao_tilgang.application.client.tilgangsmaskin.TilgangmaskinResult
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
+import no.nav.poao_tilgang.core.domain.NavIdent
 import no.nav.poao_tilgang.core.provider.TilgangmaskinProvider
-import no.nav.poao_tilgang.core.utils.SecureLog.secureLog
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,30 +14,16 @@ class TilgangmaskinProviderImpl(
     private val tilgangmaskinClient: TilgangmaskinClient
 ) : TilgangmaskinProvider {
 
-    override fun evaluerKjerneregler(norskIdent: String): Decision {
-        val result = tilgangmaskinClient.evaluerKjerneregler(norskIdent)
+    override fun evaluerKompletteRegler(norskIdent: String, navIdent: NavIdent): Decision {
+        val result = tilgangmaskinClient.evaluerKompletteRegler(norskIdent, navIdent)
 
-        return result.fold(
-            onSuccess = { tilgangmaskinResult ->
-                when (tilgangmaskinResult) {
-                    is TilgangmaskinResult.Godkjent -> Decision.Permit
-                    is TilgangmaskinResult.Avvist -> {
-                        secureLog.info("Tilgangsmaskin avviste tilgang for bruker: begrunnelse=${tilgangmaskinResult.begrunnelse}, title=${tilgangmaskinResult.title}")
-                        Decision.Deny(
-                            message = tilgangmaskinResult.begrunnelse ?: "Tilgang avvist av tilgangsmaskinen",
-                            reason = mapAvvisningskodeTilDenyReason(tilgangmaskinResult)
-                        )
-                    }
-                }
-            },
-            onFailure = { error ->
-                secureLog.error("Feil ved kall til tilgangsmaskinen: ${error.message}", error)
-                Decision.Deny(
-                    message = "Kunne ikke evaluere tilgang: ${error.message}",
-                    reason = DecisionDenyReason.UKLAR_TILGANG_MANGLENDE_INFORMASJON
-                )
-            }
-        )
+		return when (result) {
+			TilgangmaskinResult.Godkjent -> Decision.Permit
+			is TilgangmaskinResult.Avvist -> Decision.Deny(
+				result.begrunnelse,
+				mapAvvisningskodeTilDenyReason(result)
+			)
+		}
     }
 
     private fun mapAvvisningskodeTilDenyReason(avvist: TilgangmaskinResult.Avvist): DecisionDenyReason {

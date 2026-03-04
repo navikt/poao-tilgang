@@ -5,15 +5,15 @@ sealed class TilgangmaskinResult {
 	object Godkjent : TilgangmaskinResult()
 
 	data class Avvist(
-		val type: String?,
-		val title: Avvisningskode?,
-		val status: Int?,
-		val instance: String?,
-		val brukerIdent: String?,
-		val navIdent: String?,
-		val begrunnelse: String?,
-		val traceId: String?,
-		val kanOverstyres: Boolean?
+		val type: String,
+		val title: Avvisningskode,
+		val status: Int,
+		val instance: String,
+		val brukerIdent: String,
+		val navIdent: String,
+		val begrunnelse: String,
+		val traceId: String,
+		val kanOverstyres: Boolean
 	) : TilgangmaskinResult()
 }
 
