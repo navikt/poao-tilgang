@@ -45,6 +45,7 @@ open class IntegrationTest {
 		lateinit var mockAoKontorHttpServer: MockAoKontorHttpServer
 		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
 		lateinit var mockNorgHttpServer: MockNorgHttpServer
+		lateinit var mockTilgangsmaskinHttpServer: MockTilgangsmaskinHttpServer
 		lateinit var mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
 
 		@BeforeAll
@@ -71,6 +72,7 @@ open class IntegrationTest {
 			mockAoKontorHttpServer = MockAoKontorHttpServer()
 			mockPdlPipHttpServer = MockPdlPipHttpServer()
 			mockNorgHttpServer = MockNorgHttpServer()
+			mockTilgangsmaskinHttpServer = MockTilgangsmaskinHttpServer()
 			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
 			mockSkjermetPersonHttpServer.start()
 			System.setProperty("SKJERMET_PERSON_URL", mockSkjermetPersonHttpServer.serverUrl())
@@ -81,7 +83,8 @@ open class IntegrationTest {
 			mockAoKontorHttpServer.start()
 			System.setProperty("AO_KONTOR_URL", mockAoKontorHttpServer.serverUrl())
 			System.setProperty("AO_KONTOR_SCOPE", "api://test.dab.ao-kontor/.default")
-			System.setProperty("TILGANGSMASKIN_URL", mockAoKontorHttpServer.serverUrl())
+			mockTilgangsmaskinHttpServer.start()
+			System.setProperty("TILGANGSMASKIN_URL", mockTilgangsmaskinHttpServer.serverUrl())
 			System.setProperty("TILGANGSMASKIN_SCOPE", "api://test.tilgangsmaskin.populasjonstilgangskontroll/.default")
 			mockPdlPipHttpServer.start()
 			System.setProperty("PDLPIP_URL", mockPdlPipHttpServer.serverUrl())
@@ -110,6 +113,7 @@ open class IntegrationTest {
 			mockMicrosoftGraphHttpServer.close()
 			mockSkjermetPersonHttpServer.close()
 			mockAoKontorHttpServer.close()
+			mockTilgangsmaskinHttpServer.close()
 			mockPdlPipHttpServer.close()
 			mockNorgHttpServer.close()
 		}
@@ -120,6 +124,7 @@ open class IntegrationTest {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
 		mockAoKontorHttpServer.reset()
+		mockTilgangsmaskinHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
 	}
