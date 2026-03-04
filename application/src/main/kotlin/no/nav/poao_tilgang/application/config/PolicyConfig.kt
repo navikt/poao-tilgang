@@ -13,12 +13,14 @@ open class PolicyConfig {
 	@Bean
 	open fun navAnsattTilgangTilEksternBrukerPolicy(
 		tilgangmaskinProvider: TilgangmaskinProvider,
+		adGruppeProvider: AdGruppeProvider,
 		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
 		timerService: TimerService,
 	): NavAnsattTilgangTilEksternBrukerPolicy {
 		return NavAnsattTilgangTilEksternBrukerPolicyImpl(
 			tilgangmaskinProvider,
+			adGruppeProvider,
 			navAnsattTilgangTilOppfolgingPolicy,
 			navAnsattTilgangTilModiaGenerellPolicy,
 			timerService,
@@ -144,14 +146,12 @@ open class PolicyConfig {
 
 	@Bean
 	open fun navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy(
-		navAnsattTilgangTilAdressebeskyttetBrukerPolicy: NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-		navAnsattTilgangTilSkjermetPersonPolicy: NavAnsattTilgangTilSkjermetPersonPolicy,
-		navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
+		adGruppeProvider: AdGruppeProvider,
+		tilgangsmaskinProvider: TilgangmaskinProvider
 	): NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy {
 		return NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
-			navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-			navAnsattTilgangTilSkjermetPersonPolicy,
-			navAnsattTilgangTilEksternBrukerNavEnhetPolicy
+			adGruppeProvider,
+			tilgangsmaskinProvider
 		)
 	}
 }

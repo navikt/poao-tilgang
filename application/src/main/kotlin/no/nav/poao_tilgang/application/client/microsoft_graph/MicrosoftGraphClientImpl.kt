@@ -154,8 +154,12 @@ open class MicrosoftGraphClientImpl(
 	object HentNavIdentMedAzureId {
 
 		data class Response(
-			val onPremisesSamAccountName: NavIdent?
-		)
+			val value: List<UserData>
+		) {
+			data class UserData(
+				val onPremisesSamAccountName: NavIdent
+			)
+		}
 
 	}
 
