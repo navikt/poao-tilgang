@@ -26,3 +26,9 @@ object TestDataGenerator {
 	fun navAnsattId(): UUID = UUID.randomUUID()
 }
 
+data class TestIds(
+	val navIdent: String,
+	val navAnsattId: UUID,
+	val brukersEnhet: String,
+	val norskIdent: String
+)

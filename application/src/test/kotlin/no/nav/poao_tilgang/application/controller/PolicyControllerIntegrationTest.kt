@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
 import no.nav.poao_tilgang.application.test_util.TestDataGenerator
+import no.nav.poao_tilgang.application.test_util.TestIds
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENHET_PREFIKS
@@ -548,11 +549,4 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 		return TestIds(navIdent, navAnsattId, brukersEnhet, norskIdent)
 	}
-
-	data class TestIds(
-		val navIdent: String,
-		val navAnsattId: UUID,
-		val brukersEnhet: String,
-		val norskIdent: String
-	)
 }
