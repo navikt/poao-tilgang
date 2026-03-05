@@ -16,6 +16,7 @@
         <module>client</module>
         <module>api-core-mapper</module>
         <module>poao-tilgang-test-core</module>
+        <module>poao-tilgang-test-fidelity</module>
         <module>poao-tilgang-test-mockclient</module>
         <module>poao-tilgang-test-wiremock</module>
     </modules>
@@ -100,12 +101,17 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.poao-tilgang</groupId>
+                <artifactId>poao-tilgang-test-fidelity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.poao-tilgang</groupId>
                 <artifactId>poao-tilgang-test-mockclient</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.poao-tilgang</groupId>
-                <artifactId>poao-tilgang-test-wiermock</artifactId>
+                <artifactId>poao-tilgang-test-wiremock</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

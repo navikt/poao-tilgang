@@ -16,6 +16,8 @@ import no.nav.poao_tilgang.api.dto.request.ErSkjermetPersonBulkRequest
 import no.nav.poao_tilgang.api.dto.request.EvaluatePoliciesRequest
 import no.nav.poao_tilgang.api.dto.request.HarTilgangTilModiaRequest
 import no.nav.poao_tilgang.api.dto.request.HentAdGrupperForBrukerRequest
+import no.nav.poao_tilgang.api.dto.request.PolicyId
+import no.nav.poao_tilgang.api.dto.request.policy_input.NavAnsattTilgangTilModiaPolicyInputV1Dto
 import no.nav.poao_tilgang.api.dto.response.AdGruppeDto
 import no.nav.poao_tilgang.api.dto.response.DecisionDto
 import no.nav.poao_tilgang.api.dto.response.DecisionType
@@ -23,22 +25,22 @@ import no.nav.poao_tilgang.api.dto.response.EvaluatePoliciesResponse
 import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
 import no.nav.poao_tilgang.api.dto.response.PolicyEvaluationResultDto
 import no.nav.poao_tilgang.api.dto.response.TilgangResponse
-import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
-import no.nav.poao_tilgang.core.domain.Decision
-import no.nav.poao_tilgang.core.domain.NorskIdent
-import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
-import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
+import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
+import no.nav.poao_tilgang.poao_tilgang_test_core.NorskIdent
+import no.nav.poao_tilgang.poao_tilgang_test_core.PolicyEvaluator
+import no.nav.poao_tilgang.poao_tilgang_test_core.PolicyEvaluators
 import kotlin.reflect.KFunction1
 
 
-class WiremockTransformers(val policies: Policies = Policies(), baspath : String) {
-	val navContext = policies.navContext
-
-
+class WiremockTransformers(
+	val navContext: NavContext = NavContext(),
+	private val policyEvaluator: PolicyEvaluator = PolicyEvaluators.load(navContext),
+	baspath : String
+) {
 	val skjermetPerson = Response("skjermetPerson", "$baspath/api/v1/skjermet-person", ::kjermetPerson, ErSkjermetPersonBulkRequest::class.java)
 	val adgroupController = Response("adgroupController", "$baspath/api/v1/ad-gruppe", ::getAdGrupper, HentAdGrupperForBrukerRequest::class.java)
 	val tilgangsKontroller = Response("tilgangsKontroller", "$baspath/api/v1/tilgang/modia", ::harTilgang, HarTilgangTilModiaRequest::class.java)
-	val polecyController = PolicyController(policies, baspath)
+	val polecyController = PolicyController(policyEvaluator, baspath)
 
 	val listOfExtension = arrayOf(skjermetPerson, adgroupController, polecyController, tilgangsKontroller)
 
@@ -50,9 +52,9 @@ class WiremockTransformers(val policies: Policies = Policies(), baspath : String
 		val navAnsatt = navContext.navAnsatt.get(navIdent)
 			?: return TilgangResponse(DecisionDto(DecisionType.DENY, "ikke satt i mock", "Ikke ansatt"))
 
-
-		val evaluate =  policies.navAnsattTilgangTilModiaPolicy.evaluate(NavAnsattTilgangTilModiaPolicy.Input(navAnsatt.azureObjectId))
-		val decisionDto = decisionDto(evaluate)
+		val policyInput = NavAnsattTilgangTilModiaPolicyInputV1Dto(navAnsatt.azureObjectId)
+		val inputJson = ClientObjectMapper.objectMapper.valueToTree<JsonNode>(policyInput)
+		val decisionDto = policyEvaluator.evaluate(PolicyId.NAV_ANSATT_TILGANG_TIL_MODIA_V1, inputJson)
 		return TilgangResponse(decisionDto)
 
 	}
@@ -71,9 +73,7 @@ class WiremockTransformers(val policies: Policies = Policies(), baspath : String
 
 
 
-class PolicyController(val policies: Policies, baspath: String) : ResponseDefinitionTransformer() {
-	val apiCoreMapper = ApiCoreMapper(policies.providers.adGruppeProvider)
-
+class PolicyController(private val policyEvaluator: PolicyEvaluator, baspath: String) : ResponseDefinitionTransformer() {
 	val path = "$baspath/api/v1/policy/evaluate"
 	override fun getName(): String {
 		return "policyController"
@@ -102,33 +102,15 @@ class PolicyController(val policies: Policies, baspath: String) : ResponseDefini
 	}
 
 	private fun response(requestDto: EvaluatePoliciesRequest<JsonNode>): EvaluatePoliciesResponse {
-		val a = requestDto.requests.map {
-			val kake = apiCoreMapper.mapToPolicyInput(it.policyId, it.policyInput)
-			val evaluate = policies.policyResolver.evaluate(kake)
-			val value = decisionDto(evaluate.decision)
-
-			PolicyEvaluationResultDto(it.requestId,  value)
+		val results = requestDto.requests.map {
+			val decision = policyEvaluator.evaluate(it.policyId, it.policyInput)
+			PolicyEvaluationResultDto(it.requestId, decision)
 		}
-		return EvaluatePoliciesResponse(a)
+		return EvaluatePoliciesResponse(results)
 	}
 
 	override fun applyGlobally(): Boolean {
 		return false
-	}
-}
-
-private fun decisionDto(decision: Decision): DecisionDto {
-	return when (decision) {
-		is Decision.Permit -> DecisionDto(
-			DecisionType.PERMIT,
-			null, null
-		)
-
-		is Decision.Deny -> DecisionDto(
-			DecisionType.DENY,
-			decision.message,
-			decision.reason.name,
-			)
 	}
 }
 

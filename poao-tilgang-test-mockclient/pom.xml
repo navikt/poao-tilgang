@@ -21,11 +21,13 @@
             <groupId>no.nav.poao-tilgang</groupId>
             <artifactId>poao-tilgang-test-core</artifactId>
         </dependency>
+
+
         <dependency>
             <groupId>no.nav.poao-tilgang</groupId>
-            <artifactId>api-core-mapper</artifactId>
+            <artifactId>poao-tilgang-test-fidelity</artifactId>
+            <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>io.kotest</groupId>

@@ -1,7 +1,5 @@
 package no.nav.poao_tilgang.poao_tilgang_test_core
 
-import no.nav.poao_tilgang.core.domain.*
-import no.nav.poao_tilgang.core.provider.NavEnhetTilgang
 import no.nav.poao_tilgang.poao_tilgang_test_core.fnr_generator.FoedselsnummerGenerator
 import java.util.*
 

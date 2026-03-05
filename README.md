@@ -252,8 +252,57 @@ data class NavAnsattNavIdentTilgangTilNavEnhetPolicyInput(
 ```
 ## Testing
 For å legge tilrette for enkel testing av poao-tilgang så er det laget en mockClient og wiremock oppsett.  
-Disse ligger i modulene `poao-tilgang-test-wiremock` og `poao-tilgang-test-mockClient`.  
+Disse ligger i modulene `poao-tilgang-test-wiremock` og `poao-tilgang-test-mockclient`.  
 Eksempel på bruk finnes i testene.
+
+### Test-avhengigheter
+
+For mock-klient:
+```xml
+<dependency>
+    <groupId>no.nav.poao-tilgang</groupId>
+    <artifactId>poao-tilgang-test-mockclient</artifactId>
+    <version>YYYY.MM.DD_HH.mm-SHA</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For wiremock:
+```xml
+<dependency>
+    <groupId>no.nav.poao-tilgang</groupId>
+    <artifactId>poao-tilgang-test-wiremock</artifactId>
+    <version>YYYY.MM.DD_HH.mm-SHA</version>
+    <scope>test</scope>
+</dependency>
+```
+
+#### Full policy-fidelity
+
+Test-hjelperne (`poao-tilgang-test-mockclient` og `poao-tilgang-test-wiremock`) eksponerer **ikke** `core`-modulen.
+For å få full fidelity (dvs. de faktiske policy-reglene evaluert i testene) må du legge til `poao-tilgang-test-fidelity`:
+
+```xml
+<dependency>
+    <groupId>no.nav.poao-tilgang</groupId>
+    <artifactId>poao-tilgang-test-fidelity</artifactId>
+    <version>YYYY.MM.DD_HH.mm-SHA</version>
+    <scope>test</scope>
+</dependency>
+```
+
+Uten denne avhengigheten vil du få en feilmelding om at ingen `PolicyEvaluatorFactory` ble funnet.
+
+### Publiserte Maven-artifakter for konsumenter
+
+| Artifakt | Beskrivelse | Eksponerer `core`? |
+|---|---|---|
+| `api` | Felles DTOer brukt av klient og applikasjon | Nei |
+| `client` | HTTP-klient for å kalle poao-tilgang API-et (avhenger kun av `api`) | Nei |
+| `poao-tilgang-test-core` | Felles test-typer og `NavContext` for mock-oppsett | Nei |
+| `poao-tilgang-test-mockclient` | In-memory mock av `PoaoTilgangClient` | Nei |
+| `poao-tilgang-test-wiremock` | WireMock-basert mock av poao-tilgang API | Nei |
+| `poao-tilgang-test-fidelity` | Full policy-fidelity evaluator (bruker `core` + `api-core-mapper`) | Ja (med vilje) |
 
 
 ## Prosjektstruktur
@@ -266,6 +315,11 @@ Modulene er som følger:
 * **application** - kjører opp applikasjonen, definerer endepunkter, etc. Tar i bruk _core-modulen_ for å eksponere tilgangskontrollregler med et REST API
 * **client** - brukes ikke direkte av poao-tilgang, men av andre konsumerende applikasjoner som ønsker en ferdig testet klient for å gjøre requests mot poao-tilgang
 * **core** - inneholder implementasjon og definisjon av alle de ulike tilgangskontrollreglene til poao-tilgang
+* **api-core-mapper** - mapper mellom API DTOer og core-domeneobjekter (intern modul)
+* **poao-tilgang-test-core** - felles test-typer (`NavContext`, domenemodeller) uten core-avhengighet
+* **poao-tilgang-test-fidelity** - full-fidelity policy-evaluator for tester, avhenger av core
+* **poao-tilgang-test-mockclient** - in-memory mock av `PoaoTilgangClient`
+* **poao-tilgang-test-wiremock** - WireMock-basert mock av poao-tilgang API-et
 
 ## Poao-tilgang spesielle privilegier
 

@@ -1,7 +1,5 @@
 package no.nav.poao_tilgang.poao_tilgang_test_core
 
-import no.nav.poao_tilgang.core.domain.NavEnhetId
-
 
 private val navidener: HashSet<String> = hashSetOf()
 
