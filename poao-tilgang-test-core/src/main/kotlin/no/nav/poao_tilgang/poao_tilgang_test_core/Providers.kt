@@ -14,7 +14,8 @@ data class Providers(
 	),
 	val diskresjonskodeProvider: DiskresjonskodeProvider = DiskresjonskodeProviderImpl(navContext),
 	val adGruppeProvider: AdGruppeProvider = AdGruppeProviderImpl(navContext),
-)
+	val tilgangmaskinProvider: TilgangmaskinProvider = TilgangmaskinProviderImpl(navContext),
+	)
 
 class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetPersonProvider {
 	override fun erSkjermetPerson(norskIdent: String): Boolean {
@@ -72,5 +73,11 @@ class AdGruppeProviderImpl(private val navContext: NavContext) : AdGruppeProvide
 
 	override fun hentTilgjengeligeAdGrupper(): AdGrupper {
 		return tilgjengligeAdGrupper
+	}
+}
+
+class TilgangmaskinProviderImpl(private val navContext: NavContext) : TilgangmaskinProvider {
+	override fun evaluerKompletteRegler(norskIdent: String, navIdent: NavIdent): Decision {
+		return Decision.Permit
 	}
 }
