@@ -29,10 +29,6 @@ class SkjermetPersonServiceIntegrationTest : IntegrationTest() {
 			norskIdent to true
 		))
 
-		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(
-			norskIdent to true
-		))
-
 		skjermetPersonProvider.erSkjermetPerson(norskIdent) shouldBe true
 		skjermetPersonProvider.erSkjermetPerson(norskIdent) shouldBe true
 

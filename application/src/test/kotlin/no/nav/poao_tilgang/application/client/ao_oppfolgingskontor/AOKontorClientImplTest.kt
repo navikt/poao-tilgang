@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.client.ao_oppfolgingskontor
 
 import io.kotest.matchers.shouldBe
 import no.nav.common.types.identer.Fnr
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockAoKontorHttpServer
 import no.nav.poao_tilgang.application.utils.JsonUtils
 import org.junit.jupiter.api.AfterEach
@@ -27,6 +28,8 @@ class AOKontorClientImplTest {
 
 	@Test
 	fun `hentBrukerOppfolgingsenhetId skal lage riktig request og parse respons`() {
+		val norskIdent = TestDataGenerator.norskIdent()
+		val enhetId = TestDataGenerator.navEnhetId()
 		val client = AoKontorClientImpl(
 			baseUrl = mockServer.serverUrl(),
 			tokenProvider = { "TOKEN" },
@@ -34,11 +37,11 @@ class AOKontorClientImplTest {
 
 		val personRequestJSON = JsonUtils.toJsonString(GraphqlRequest(Variables("987654")))
 
-		mockServer.mockOppfolgingsenhet("1234", null)
+		mockServer.mockOppfolgingsenhet(norskIdent, enhetId, null)
 
-		val oppfolgingsenhetId = client.hentBrukerOppfolgingsenhetId(Fnr.of("987654"))
+		val oppfolgingsenhetId = client.hentBrukerOppfolgingsenhetId(Fnr.of(norskIdent))
 
-		oppfolgingsenhetId shouldBe "1234"
+		oppfolgingsenhetId shouldBe enhetId
 
 		val request = mockServer.latestRequest()
 

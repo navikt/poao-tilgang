@@ -46,7 +46,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val navIdent = TestDataGenerator.navIdent()
 		val navAnsattId = TestDataGenerator.navAnsattId()
 		val brukersEnhet = TestDataGenerator.navEnhetId()
-		val brukersKommune = "5000"
+		val brukersKommune = TestDataGenerator.geografiskTilknytning()
 
 		mockTilgangsMaskinPermit(navIdent)
 		mockPersonData(nyIdent, brukersEnhet, brukersKommune, gammelIdent = gammelIdent)
@@ -207,8 +207,9 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val brukersEnhet = TestDataGenerator.navEnhetId()
 		val navIdent = TestDataGenerator.navIdent()
 		val navAnsattId = TestDataGenerator.navAnsattId()
+		val gt = TestDataGenerator.geografiskTilknytning()
 
-		mockPersonData(norskIdent, brukersEnhet, "5000")
+		mockPersonData(norskIdent, brukersEnhet, gt)
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal, AdGruppe(
@@ -234,8 +235,9 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val brukersEnhet = TestDataGenerator.navEnhetId()
 		val navIdent = TestDataGenerator.navIdent()
 		val navAnsattId = TestDataGenerator.navAnsattId()
+		val gt = TestDataGenerator.geografiskTilknytning()
 
-		mockPersonData(norskIdent, brukersEnhet, "5000")
+		mockPersonData(norskIdent, brukersEnhet, gt)
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin, AdGruppe(
@@ -544,8 +546,9 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val navIdent = TestDataGenerator.navIdent()
 		val navAnsattId = TestDataGenerator.navAnsattId()
 		val norskIdent = TestDataGenerator.norskIdent()
+		val gt = TestDataGenerator.geografiskTilknytning()
 		mockTilgangsMaskinPermit(navIdent)
-		mockPersonData(norskIdent, brukersEnhet, "5000")
+		mockPersonData(norskIdent, brukersEnhet,  gt)
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 		return TestIds(navIdent, navAnsattId, brukersEnhet, norskIdent)
 	}

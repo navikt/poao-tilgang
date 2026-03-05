@@ -9,6 +9,7 @@ import java.io.Closeable
 import java.util.concurrent.TimeUnit
 
 open class MockHttpServer : Closeable {
+	open val mockServerName: String = "<mock server without name>"
 
 	private val server = MockWebServer()
 
@@ -16,7 +17,7 @@ open class MockHttpServer : Closeable {
 
 	private var lastRequestCount = 0
 
-	private val responseHandlers = mutableMapOf<(request: RecordedRequest) -> Boolean, (RecordedRequest) -> MockResponse>()
+	private val responseHandlers = mutableMapOf<(request: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, ResponseCreator>()
 
 	fun start() {
 		try {
@@ -37,10 +38,10 @@ open class MockHttpServer : Closeable {
 		return server.url("").toString().removeSuffix("/")
 	}
 
-	fun addResponseHandler(requestMatcher: (req: RecordedRequest) -> Boolean, response: MockResponse) {
-		responseHandlers[requestMatcher] = { response }
+	fun addResponseHandler(requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, response: MockResponse) {
+		responseHandlers[requestMatcher] = { _, _ -> response }
 	}
-	fun addResponseHandler(requestMatcher: (req: RecordedRequest) -> Boolean, responseCreator: (RecordedRequest) -> MockResponse) {
+	fun addResponseHandler(requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, responseCreator: ResponseCreator) {
 		responseHandlers[requestMatcher] = responseCreator
 	}
 
@@ -51,15 +52,16 @@ open class MockHttpServer : Closeable {
 	 * For example, if you have a request which matches on a path, and another request which matches on the same path and a query parameter,
 	 * Put the query parameter matcher first.
 	 */
+
 	fun handleRequest(
 		matchPath: String? = null,
 		matchMethod: String? = null,
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
 		matchQueryParam: Map<String, String>? = null,
-		response: (RecordedRequest) -> MockResponse
+		responseCreator: ResponseCreator
 	) {
-		val requestMatcher = matcher@{ req: RecordedRequest ->
+		val requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean = matcher@{ req, requestBody ->
 			if (matchPath != null && (req.path?.startsWith(matchPath) != true))
 				return@matcher false
 
@@ -78,13 +80,17 @@ open class MockHttpServer : Closeable {
 			if (matchHeaders != null && !hasExpectedHeaders(req.headers, matchHeaders))
 				return@matcher false
 
-			if (matchBodyContains != null && !req.body.readUtf8().contains(matchBodyContains))
-				return@matcher false
+			if (matchBodyContains != null) {
+				if (requestBody.value == null) throw RuntimeException("Request matching on body requires the request to have a body")
+				if (!requestBody.value!!.contains(matchBodyContains)) {
+					return@matcher false
+				}
+			}
 
 			true
 		}
 
-		addResponseHandler(requestMatcher, response)
+		addResponseHandler(requestMatcher, responseCreator)
 	}
 	/* If mock setup does not require requeset input to create response they can just send the response as response param */
 	fun handleRequest(
@@ -94,7 +100,7 @@ open class MockHttpServer : Closeable {
 		matchBodyContains: String? = null,
 		matchQueryParam: Map<String, String>? = null,
 		response: MockResponse
-	) = handleRequest(matchPath, matchMethod, matchHeaders, matchBodyContains, matchQueryParam, { response })
+	) = handleRequest(matchPath, matchMethod, matchHeaders, matchBodyContains, matchQueryParam, { _, _ -> response })
 
 	fun latestRequest(): RecordedRequest {
 		return server.takeRequest()
@@ -107,16 +113,17 @@ open class MockHttpServer : Closeable {
 	private fun createResponseDispatcher(): Dispatcher {
 		return object : Dispatcher() {
 			override fun dispatch(request: RecordedRequest): MockResponse {
+				val body = lazy { request.body.readUtf8() }
 				val response = responseHandlers.entries
 					.find {
 						val requestMatcher = it.key
-						requestMatcher.invoke(request)
+						requestMatcher.invoke(request, body)
 					}?.value
-					?: throw IllegalStateException("No handler for path:${request.path} - body ${request.bodySize} :${request.body.readUtf8()}")
+					?: throw IllegalStateException("No handler for ${mockServerName} path:${request.path} - body ${request.bodySize} :${request.body.readUtf8()}")
 
 				log.info("Responding [${request.path}]: $response")
 
-				return response(request)
+				return response(request, body)
 			}
 		}
 	}
@@ -140,3 +147,6 @@ open class MockHttpServer : Closeable {
 		server.close()
 	}
 }
+
+typealias ResponseCreator = (RecordedRequest, requestBody: Lazy<String?>) -> MockResponse
+

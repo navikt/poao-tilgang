@@ -419,7 +419,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		val erSkjermetPerson = false
 
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
-		mockAoKontorHttpServer.mockOppfolgingsenhet(kontorEnhet, null)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,kontorEnhet, null)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 
 		val tilgansAttributter = client.hentTilgangsAttributter(norskIdent).getOrThrow()

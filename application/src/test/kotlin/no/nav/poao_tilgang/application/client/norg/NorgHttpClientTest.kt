@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.application.client.norg
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockNorgHttpServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -20,8 +21,6 @@ class NorgHttpClientTest {
 		}
 	}
 
-	private val navVikaFossen = "2103"
-
 	@AfterEach
 	fun reset() {
 		mockServer.reset()
@@ -33,15 +32,18 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345")
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		tilhorendeEnhet shouldBe "4321"
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt)
+
+		tilhorendeEnhet shouldBe vanligEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 	@Test
@@ -50,17 +52,22 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4331", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val skjermetEnhet = TestDataGenerator.navEnhetId()
+		val gradertEnhet = TestDataGenerator.navEnhetId()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		tilhorendeEnhet shouldBe navVikaFossen
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+
+		tilhorendeEnhet shouldBe gradertEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 
@@ -69,18 +76,22 @@ class NorgHttpClientTest {
 		val client = NorgHttpClient(
 			baseUrl = mockServer.serverUrl()
 		)
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val skjermetEnhet = TestDataGenerator.navEnhetId()
+		val gradertEnhet = TestDataGenerator.navEnhetId()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, skjermet = true)
 
-		tilhorendeEnhet shouldBe "5321"
+		tilhorendeEnhet shouldBe skjermetEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 
@@ -90,17 +101,22 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = navVikaFossen, gradering = Diskresjonskode.STRENGT_FORTROLIG)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val skjermetEnhet = TestDataGenerator.navEnhetId()
+		val gradertEnhet = TestDataGenerator.navEnhetId()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.STRENGT_FORTROLIG)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		tilhorendeEnhet shouldBe navVikaFossen
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, diskresjonskode = no.nav.poao_tilgang.core.domain.Diskresjonskode.STRENGT_FORTROLIG_UTLAND)
+
+		tilhorendeEnhet shouldBe gradertEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 
@@ -110,17 +126,22 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val skjermetEnhet = TestDataGenerator.navEnhetId()
+		val gradertEnhet = TestDataGenerator.navEnhetId()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		tilhorendeEnhet shouldBe "5321"
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, skjermet = true)
+
+		tilhorendeEnhet shouldBe skjermetEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 
@@ -130,17 +151,22 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "5321", skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "1024", gradering = Diskresjonskode.UGRADERT)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = "12345", tilhorendeEnhet = "4321")
+		val gt = TestDataGenerator.geografiskTilknytning()
+		val skjermetEnhet = TestDataGenerator.navEnhetId()
+		val gradertEnhet = TestDataGenerator.navEnhetId()
+		val vanligEnhet = TestDataGenerator.navEnhetId()
 
-		val tilhorendeEnhet = client.hentTilhorendeEnhet("12345", skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.UGRADERT)
+		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
 
-		tilhorendeEnhet shouldBe "5321"
+		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, skjermet = true)
+
+		tilhorendeEnhet shouldBe skjermetEnhet
 
 		val request = mockServer.latestRequest()
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/12345"
+		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
 		request.method shouldBe "GET"
 	}
 
@@ -151,9 +177,11 @@ class NorgHttpClientTest {
 			baseUrl = mockServer.serverUrl()
 		)
 
-		mockServer.mockIngenTilhorendeEnhet("23456")
+		val gt = TestDataGenerator.geografiskTilknytning()
 
-		val geografiskTilknyttetEnhet = client.hentTilhorendeEnhet("23456")
+		mockServer.mockIngenTilhorendeEnhet(gt)
+
+		val geografiskTilknyttetEnhet = client.hentTilhorendeEnhet(gt)
 
 		geografiskTilknyttetEnhet shouldBe null
 	}

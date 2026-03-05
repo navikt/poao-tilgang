@@ -47,7 +47,7 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 	@Test
 	fun `tilgangsattributter - should return correct response for ikke skjermet eller fortrolig`() {
 		val norskIdent = TestDataGenerator.norskIdent()
-		val geografiskTilknytning = TestDataGenerator.navEnhetId()
+		val geografiskTilknytning = TestDataGenerator.geografiskTilknytning()
 		val enhet = TestDataGenerator.navEnhetId()
 		val gradering = Gradering.UGRADERT // DTO fra pdl
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
@@ -82,7 +82,7 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
 		val erSkjermetPerson = false
 
-		mockAoKontorHttpServer.mockOppfolgingsenhet(enhet, null)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,enhet, null)
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 

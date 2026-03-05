@@ -21,23 +21,27 @@ class GeografiskTilknyttetEnhetProviderImplIntegrationTest : IntegrationTest() {
 	@Test
 	fun `henter tilhørende enhet basert på geografisk tilknyting kommune`() {
 		val norskIdent = TestDataGenerator.norskIdent()
+		val navEnhet = TestDataGenerator.navEnhetId()
+		val gt = TestDataGenerator.geografiskTilknytning()
 		mockPdlPipHttpServer.mockBrukerInfo(
-			norskIdent = norskIdent, gtType = GeografiskTilknytningType.KOMMUNE, gtKommune = "0570"
+			norskIdent = norskIdent, gtType = GeografiskTilknytningType.KOMMUNE, gtKommune = gt
 		)
-		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning = "0570", tilhorendeEnhet = "1234")
+		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = navEnhet)
 
-		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent) shouldBe "1234"
+		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent) shouldBe navEnhet
 	}
 
 	@Test
 	fun `henter tilhørende enhet basert på geografisk tilknyting bydel`() {
+		val navEnhet = TestDataGenerator.navEnhetId()
+		val gtBydel = TestDataGenerator.geografiskTilknytningBydel()
 		val norskIdent = TestDataGenerator.norskIdent()
 		mockPdlPipHttpServer.mockBrukerInfo(
-			norskIdent = norskIdent, gtType = GeografiskTilknytningType.BYDEL, gtBydel = "057021"
+			norskIdent = norskIdent, gtType = GeografiskTilknytningType.BYDEL, gtBydel = gtBydel
 		)
-		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning = "057021", tilhorendeEnhet = "1235")
+		mockNorgHttpServer.mockTilhorendeEnhet(geografiskTilknytning = gtBydel, tilhorendeEnhet = navEnhet)
 
-		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent) shouldBe "1235"
+		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent) shouldBe navEnhet
 	}
 
 	@Test
@@ -67,11 +71,12 @@ class GeografiskTilknyttetEnhetProviderImplIntegrationTest : IntegrationTest() {
 	@Test
 	fun `skal returnere null dersom tilhørende enhet for geografisk tilknyting ikke finnes`() {
 		val norskIdent = TestDataGenerator.norskIdent()
+		val gt = TestDataGenerator.geografiskTilknytning()
 		mockPdlPipHttpServer.mockBrukerInfo(
-			norskIdent = norskIdent, gtType = GeografiskTilknytningType.KOMMUNE, gtKommune = "9999"
+			norskIdent = norskIdent, gtType = GeografiskTilknytningType.KOMMUNE, gtKommune = gt
 		)
 
-		mockNorgHttpServer.mockIngenTilhorendeEnhet("9999")
+		mockNorgHttpServer.mockIngenTilhorendeEnhet(gt)
 
 		geografiskTilknyttetEnhetProvider.hentGeografiskTilknyttetEnhet(norskIdent) shouldBe null
 	}

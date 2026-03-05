@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.application.test_util.mock_clients
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClientImpl
 import no.nav.poao_tilgang.application.client.microsoft_graph.MicrosoftGraphClientImpl.HentAdGrupper
 import no.nav.poao_tilgang.application.test_util.MockHttpServer
+import no.nav.poao_tilgang.application.test_util.ResponseCreator
 import no.nav.poao_tilgang.application.utils.JsonUtils.fromJsonString
 import no.nav.poao_tilgang.application.utils.JsonUtils.toJsonString
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -32,8 +33,8 @@ class MockMicrosoftGraphHttpServer : MockHttpServer() {
 		handleRequest(
 			matchPath = "/v1.0/directoryObjects/getByIds?\$select=id,displayName",
 			matchMethod = "POST",
-			response = { req ->
-				val queriedAdGrupperIds = fromJsonString<HentAdGrupper.Request>(req.body.readUtf8()).ids
+			responseCreator = { _, body ->
+				val queriedAdGrupperIds = fromJsonString<HentAdGrupper.Request>(body.value!!).ids
 				response(queriedAdGrupperIds)
 			}
 		)

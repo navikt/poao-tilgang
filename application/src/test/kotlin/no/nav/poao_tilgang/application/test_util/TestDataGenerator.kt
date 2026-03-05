@@ -24,6 +24,9 @@ object TestDataGenerator {
 
 	/** Generates a unique NAV ansatt Azure AD UUID */
 	fun navAnsattId(): UUID = UUID.randomUUID()
+
+	fun geografiskTilknytningBydel(): String = "%06d".format(next() % 9000 + 100000)
+	fun geografiskTilknytning(): String = "%04d".format(next() % 9000 + 1000)
 }
 
 data class TestIds(

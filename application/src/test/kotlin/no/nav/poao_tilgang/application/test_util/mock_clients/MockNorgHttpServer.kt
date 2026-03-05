@@ -7,7 +7,13 @@ import okhttp3.mockwebserver.MockResponse
 
 class MockNorgHttpServer : MockHttpServer() {
 
+	val gtTilEnhetMock: MutableMap<Triple<String, Boolean?, Diskresjonskode?>, NavEnhetId> = mutableMapOf()
 	fun mockTilhorendeEnhet(geografiskTilknytning: String, tilhorendeEnhet: NavEnhetId, skjermet: Boolean? = null, gradering: Diskresjonskode? = null) {
+		val mockArgs = Triple(geografiskTilknytning, skjermet, gradering)
+		if (gtTilEnhetMock.containsKey(mockArgs)) throw RuntimeException("Samme gt ble mocked flere ganger gt:${geografiskTilknytning} skjermet:${skjermet} gradering:${gradering}, det ødelegger for paralellitet i testene")
+
+		gtTilEnhetMock[mockArgs] = tilhorendeEnhet
+
 		val response = MockResponse()
 			.setBody(
 				"""

@@ -127,7 +127,7 @@ open class IntegrationTest {
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
-		mockAoKontorHttpServer.reset()
+//		mockAoKontorHttpServer.reset()
 		mockTilgangsmaskinHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
@@ -159,7 +159,7 @@ open class IntegrationTest {
 	fun mockPersonData(
 		norskIdent: NorskIdent,
 		brukersEnhet: NavEnhetId,
-		kommuneNr: String = "5000",
+		kommuneNr: String,
 		erSkjermet: Boolean = false,
 		gammelIdent: NorskIdent? = null
 	) {
@@ -175,7 +175,7 @@ open class IntegrationTest {
 			)
 		)
 		mockNorgHttpServer.mockTilhorendeEnhet(kommuneNr, brukersEnhet)
-		mockAoKontorHttpServer.mockOppfolgingsenhet(brukersEnhet, brukersEnhet)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,brukersEnhet, brukersEnhet)
 	}
 
 	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {
