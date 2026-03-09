@@ -73,17 +73,15 @@ data class Policies(
 		navAnsattBehandleStrengtFortroligUtlandBrukerePolicy,
 	),
 	val navAnsattTilgangTilEksternBrukerPolicy: NavAnsattTilgangTilEksternBrukerPolicyImpl = NavAnsattTilgangTilEksternBrukerPolicyImpl(
-		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-		navAnsattTilgangTilSkjermetPersonPolicy,
-		navAnsattTilgangTilEksternBrukerNavEnhetPolicy,
+		providers.tilgangmaskinProvider,
+		providers.adGruppeProvider,
 		navAnsattTilgangTilOppfolgingPolicy,
 		navAnsattTilgangTilModiaGenerellPolicy,
 		timer,
 	),
 	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
-		navAnsattTilgangTilAdressebeskyttetBrukerPolicy,
-		navAnsattTilgangTilSkjermetPersonPolicy,
-		navAnsattTilgangTilEksternBrukerNavEnhetPolicy
+		providers.adGruppeProvider,
+		providers.tilgangmaskinProvider,
 	),
 	val policyResolver: PolicyResolver = PolicyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy,
