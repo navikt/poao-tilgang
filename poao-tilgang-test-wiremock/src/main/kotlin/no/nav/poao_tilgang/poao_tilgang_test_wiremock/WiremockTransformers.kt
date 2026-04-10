@@ -1,11 +1,9 @@
 package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.json.JsonMapper
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.common.FileSource
 import com.github.tomakehurst.wiremock.extension.Parameters
@@ -168,8 +166,7 @@ class Response<T>(
 }
 
 internal object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+	val objectMapper: JsonMapper = JsonMapper.builder()
+		.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		.build()
 }

@@ -1,13 +1,12 @@
 package no.nav.poao_tilgang.client
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.cfg.EnumFeature
+import tools.jackson.databind.json.JsonMapper
 
 internal object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+	val objectMapper: JsonMapper = JsonMapper.builder()
+		.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+		.enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
+		.build()
 }

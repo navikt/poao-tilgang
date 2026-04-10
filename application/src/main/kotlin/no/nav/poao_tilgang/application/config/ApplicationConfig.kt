@@ -45,9 +45,7 @@ open class ApplicationConfig {
 	open fun requesterLogFilterRegistrationBean(
 		tokenValidationContextHolder: TokenValidationContextHolder
 	): FilterRegistrationBean<RequesterLogFilter> {
-		val registration = FilterRegistrationBean<RequesterLogFilter>()
-		registration.filter = RequesterLogFilter(tokenValidationContextHolder)
-
+		val registration = FilterRegistrationBean(RequesterLogFilter(tokenValidationContextHolder))
 		registration.order = 1
 		registration.addUrlPatterns("/api/*")
 		return registration
@@ -55,10 +53,9 @@ open class ApplicationConfig {
 
 	@Bean
 	open fun logFilterRegistrationBean(): FilterRegistrationBean<LogRequestFilter> {
-		val registration = FilterRegistrationBean<LogRequestFilter>()
-		registration.filter = LogRequestFilter(
+		val registration = FilterRegistrationBean(LogRequestFilter(
 			APPLICATION_NAME, EnvironmentUtils.isDevelopment().orElse(false)
-		)
+		))
 		registration.order = 2
 		registration.addUrlPatterns("/api/*")
 		return registration
@@ -66,8 +63,7 @@ open class ApplicationConfig {
 
 	@Bean
 	open fun requestTimingFilterRegistrationBean(): FilterRegistrationBean<RequestTimingFilter> {
-		val registration = FilterRegistrationBean<RequestTimingFilter>()
-		registration.filter = RequestTimingFilter()
+		val registration = FilterRegistrationBean(RequestTimingFilter())
 		registration.order = 3
 		registration.addUrlPatterns("/api/*")
 		return registration
