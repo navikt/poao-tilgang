@@ -48,6 +48,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		val gammelIdent = "012345678901"
 		val nyIdent = norskIdent
 
+		mockTilgangsMaskinPermit(navIdent)
 		mockPersonData(nyIdent, brukersEnhet, brukersKommune, gammelIdent = gammelIdent)
 		mockRolleTilganger(
 			navIdent,
@@ -505,6 +506,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 			)
 		),
 	) {
+		mockTilgangsMaskinPermit(navIdent)
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
 		mockRolleTilganger(navIdent, navAnsattId, adGrupper)
 	}
