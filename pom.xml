@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.3</version>
+        <version>4.0.5</version>
     </parent>
 
     <modules>
@@ -34,7 +34,6 @@
         <revision>1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
-        <kotlin.version>2.2.20</kotlin.version>
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
