@@ -60,5 +60,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ env.VERSION }}
-          tag_name: test:${{ env.VERSION }}
+          tag_name: test_${{ env.VERSION }}
           prerelease: false
