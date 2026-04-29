@@ -85,9 +85,9 @@ spec:
     - name: NORG_URL
       value: http://norg2.org.svc.nais.local
     - name: AD_GRUPPE_ID_FORTROLIG_ADRESSE
-      value: ea930b6b-9397-44d9-b9e6-f4cf527a632a
+      value: 2e1dc582-f762-4510-a660-88bf68fb7128
     - name: AD_GRUPPE_ID_STRENGT_FORTROLIG_ADRESSE
-      value: 5ef775f2-61f8-4283-bf3d-8d03f428aa14
+      value: a1b518e2-3947-478d-8929-e5d685c47cac
     - name: AD_GRUPPE_ID_MODIA_ADMIN
       value: fd0e475e-698b-4bcd-aa62-7540433f3e80
     - name: AD_GRUPPE_ID_MODIA_OPPFOLGING
