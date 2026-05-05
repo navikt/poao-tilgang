@@ -255,6 +255,35 @@ For å legge tilrette for enkel testing av poao-tilgang så er det laget en mock
 Disse ligger i modulene `poao-tilgang-test-wiremock` og `poao-tilgang-test-mockClient`.  
 Eksempel på bruk finnes i testene.
 
+_Maven artifaktene for testing har private tilgang, 
+så man må opprette et private access token (PAT) i github developer settings (classic med scope read:packages) 
+og konfigurere ~/.m2/settings.xml for å kunne hente ned disse avhengighetene._
+```xml
+<servers>
+    <server>
+        <id>github</id>
+        <username>username</username>
+        <password>access-token</password>
+    </server>
+</servers>
+<profiles>
+<profile>
+    <id>github</id>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/navikt/poao-tilgang</url>
+        </repository>
+    </repositories>
+</profile>
+</profiles>
+
+<activeProfiles>
+<activeProfile>github</activeProfile>
+</activeProfiles>
+```
+
 
 ## Prosjektstruktur
 

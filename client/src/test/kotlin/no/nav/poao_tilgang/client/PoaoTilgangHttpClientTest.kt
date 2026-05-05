@@ -436,10 +436,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		val brukersEnhet = TestDataGenerator.navEnhetId()
 		val navAnsattId = TestDataGenerator.navAnsattId()
 		val navIdent = TestDataGenerator.navIdent()
-		mockPersonData(norskIdent, brukersEnhet)
+		val kommunenr = TestDataGenerator.geografiskTilknytning()
+		mockPersonData(norskIdent, brukersEnhet, kommunenr)
 		mockRolleTilganger(
 			navIdent, navAnsattId, adGrupper
 		)
+		mockTilgangsMaskinPermit(navIdent)
 		return TestIds(
 			navIdent,
 			navAnsattId,
