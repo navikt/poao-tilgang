@@ -35,7 +35,7 @@ class AOKontorClientImplTest {
 			tokenProvider = { "TOKEN" },
 		)
 
-		val personRequestJSON = JsonUtils.toJsonString(GraphqlRequest(Variables("987654")))
+		val personRequestJSON = JsonUtils.toJsonString(GraphqlRequest(Variables(norskIdent)))
 
 		mockServer.mockOppfolgingsenhet(norskIdent, enhetId, null)
 
@@ -43,12 +43,12 @@ class AOKontorClientImplTest {
 
 		oppfolgingsenhetId shouldBe enhetId
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(norskIdent)
 
-		request.path shouldBe "/graphql"
-		request.method shouldBe "POST"
-		request.getHeader("Authorization") shouldBe "Bearer TOKEN"
-		request.body.readUtf8() shouldBe personRequestJSON
+		captured.request.path shouldBe "/graphql"
+		captured.request.method shouldBe "POST"
+		captured.request.getHeader("Authorization") shouldBe "Bearer TOKEN"
+		captured.body shouldBe personRequestJSON
 	}
 
 	@Test

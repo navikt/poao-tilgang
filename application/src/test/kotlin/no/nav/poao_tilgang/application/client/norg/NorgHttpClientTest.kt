@@ -5,7 +5,6 @@ import io.kotest.matchers.string.shouldStartWith
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.application.test_util.mock_clients.MockNorgHttpServer
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -19,11 +18,6 @@ class NorgHttpClientTest {
 		fun start() {
 			mockServer.start()
 		}
-	}
-
-	@AfterEach
-	fun reset() {
-		mockServer.reset()
 	}
 
 	@Test
@@ -41,10 +35,10 @@ class NorgHttpClientTest {
 
 		tilhorendeEnhet shouldBe vanligEnhet
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(gt)
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
+		captured.request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
+		captured.request.method shouldBe "GET"
 	}
 	@Test
 	fun `hentTilhorendeEnhet skal gi spesialenhet hvis personen har streng fortrolig adresse`() {
@@ -65,10 +59,10 @@ class NorgHttpClientTest {
 
 		tilhorendeEnhet shouldBe gradertEnhet
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(gt)
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
+		captured.request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
+		captured.request.method shouldBe "GET"
 	}
 
 	@Test
@@ -89,10 +83,10 @@ class NorgHttpClientTest {
 
 		tilhorendeEnhet shouldBe skjermetEnhet
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(gt)
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
+		captured.request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
+		captured.request.method shouldBe "GET"
 	}
 
 	@Test
@@ -114,10 +108,10 @@ class NorgHttpClientTest {
 
 		tilhorendeEnhet shouldBe gradertEnhet
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(gt)
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
+		captured.request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
+		captured.request.method shouldBe "GET"
 	}
 
 	@Test
@@ -139,35 +133,10 @@ class NorgHttpClientTest {
 
 		tilhorendeEnhet shouldBe skjermetEnhet
 
-		val request = mockServer.latestRequest()
+		val captured = mockServer.takeRequest(gt)
 
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
-	}
-
-	@Test
-	fun `hentTilhorendeEnhet skal gi vikafossen hvis personen har diskresjonskode, selv om GT er null`() {
-		val client = NorgHttpClient(
-			baseUrl = mockServer.serverUrl()
-		)
-
-		val gt = TestDataGenerator.geografiskTilknytning()
-		val skjermetEnhet = TestDataGenerator.navEnhetId()
-		val gradertEnhet = TestDataGenerator.navEnhetId()
-		val vanligEnhet = TestDataGenerator.navEnhetId()
-
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = skjermetEnhet, skjermet = true)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = gradertEnhet, gradering = Diskresjonskode.UGRADERT)
-		mockServer.mockTilhorendeEnhet(geografiskTilknytning = gt, tilhorendeEnhet = vanligEnhet)
-
-		val tilhorendeEnhet = client.hentTilhorendeEnhet(gt, skjermet = true)
-
-		tilhorendeEnhet shouldBe skjermetEnhet
-
-		val request = mockServer.latestRequest()
-
-		request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
-		request.method shouldBe "GET"
+		captured.request.path shouldStartWith  "/norg2/api/v1/enhet/navkontor/$gt"
+		captured.request.method shouldBe "GET"
 	}
 
 

@@ -79,7 +79,7 @@ spec:
       value: api://prod-gcp.dab.ao-oppfolgingskontor/.default
     - name: TILGANGSMASKIN_URL
       value: https://tilgangsmaskin.intern.nav.no
-    - name: TILGANGSMASKIN_URL_SCOPE
+    - name: TILGANGSMASKIN_SCOPE
       value: api://prod-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default
     - name: PDLPIP_SCOPE
       value: api://prod-fss.pdl.pdl-pip-api/.default

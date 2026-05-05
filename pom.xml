@@ -202,6 +202,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
+                <configuration>
+                    <properties>
+                        <configurationParameters>
+                            junit.jupiter.execution.parallel.enabled=true
+                            junit.jupiter.execution.parallel.config.strategy=dynamic
+                            junit.jupiter.execution.parallel.mode.default=concurrent
+                            junit.jupiter.execution.parallel.mode.classes.default=concurrent
+                        </configurationParameters>
+                    </properties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>

@@ -2,11 +2,24 @@ package no.nav.poao_tilgang.application.test_util.mock_clients
 
 import no.nav.poao_tilgang.application.client.pdl_pip.GeografiskTilknytningType
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
+import no.nav.poao_tilgang.application.test_util.CapturedRequest
 import no.nav.poao_tilgang.application.test_util.MockHttpServer
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import okhttp3.mockwebserver.MockResponse
+import java.util.concurrent.ConcurrentHashMap
 
 class MockPdlPipHttpServer : MockHttpServer() {
+
+	private val capturedRequests = ConcurrentHashMap<NorskIdent, CapturedRequest>()
+
+	fun takeRequest(norskIdent: NorskIdent, timeoutMs: Long = 2000): CapturedRequest {
+		val deadline = System.currentTimeMillis() + timeoutMs
+		while (System.currentTimeMillis() < deadline) {
+			capturedRequests.remove(norskIdent)?.let { return it }
+			Thread.sleep(50)
+		}
+		throw IllegalStateException("No captured PdlPip request for norskIdent '$norskIdent' within ${timeoutMs}ms. Available: ${capturedRequests.keys}")
+	}
 
 	fun mockBrukerInfo(
 		norskIdent: NorskIdent,
@@ -16,6 +29,8 @@ class MockPdlPipHttpServer : MockHttpServer() {
 		gtBydel: String? = null,
 		gammelIdent: String? = null
 	) {
+		val lookupIdent = gammelIdent ?: norskIdent
+
 		val response = MockResponse()
 			.setBody(
 				"""
@@ -70,7 +85,8 @@ class MockPdlPipHttpServer : MockHttpServer() {
 		handleRequest(
 			matchPath = "/api/v1/person",
 			matchMethod = "GET",
-			matchHeaders = mapOf("ident" to (gammelIdent ?: norskIdent)),
+			matchHeaders = mapOf("ident" to lookupIdent),
+			onRequestCaptured = { capturedRequests[lookupIdent] = it },
 			response = response
 		)
 	}

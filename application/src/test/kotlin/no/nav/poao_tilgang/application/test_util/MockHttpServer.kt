@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.util.concurrent.TimeUnit
 
+data class CapturedRequest(
+	val request: RecordedRequest,
+	val body: String?
+)
+
 open class MockHttpServer : Closeable {
 	open val mockServerName: String = "<mock server without name>"
 
@@ -17,7 +22,12 @@ open class MockHttpServer : Closeable {
 
 	private var lastRequestCount = 0
 
-	private val responseHandlers = mutableMapOf<(request: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, ResponseCreator>()
+	private data class HandlerEntry(
+		val responseCreator: ResponseCreator,
+		val onRequestCaptured: ((CapturedRequest) -> Unit)? = null
+	)
+
+	private val responseHandlers = mutableMapOf<(request: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, HandlerEntry>()
 
 	fun start() {
 		try {
@@ -39,10 +49,10 @@ open class MockHttpServer : Closeable {
 	}
 
 	fun addResponseHandler(requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, response: MockResponse) {
-		responseHandlers[requestMatcher] = { _, _ -> response }
+		responseHandlers[requestMatcher] = HandlerEntry({ _, _ -> response })
 	}
 	fun addResponseHandler(requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean, responseCreator: ResponseCreator) {
-		responseHandlers[requestMatcher] = responseCreator
+		responseHandlers[requestMatcher] = HandlerEntry(responseCreator)
 	}
 
 	/**
@@ -59,6 +69,7 @@ open class MockHttpServer : Closeable {
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
 		matchQueryParam: Map<String, String>? = null,
+		onRequestCaptured: ((CapturedRequest) -> Unit)? = null,
 		responseCreator: ResponseCreator
 	) {
 		val requestMatcher: (req: RecordedRequest, requestBody: Lazy<String?>) -> Boolean = matcher@{ req, requestBody ->
@@ -90,18 +101,20 @@ open class MockHttpServer : Closeable {
 			true
 		}
 
-		addResponseHandler(requestMatcher, responseCreator)
+		responseHandlers[requestMatcher] = HandlerEntry(responseCreator, onRequestCaptured)
 	}
-	/* If mock setup does not require requeset input to create response they can just send the response as response param */
+	/* If mock setup does not require request input to create response they can just send the response as response param */
 	fun handleRequest(
 		matchPath: String? = null,
 		matchMethod: String? = null,
 		matchHeaders: Map<String, String>? = null,
 		matchBodyContains: String? = null,
 		matchQueryParam: Map<String, String>? = null,
+		onRequestCaptured: ((CapturedRequest) -> Unit)? = null,
 		response: MockResponse
-	) = handleRequest(matchPath, matchMethod, matchHeaders, matchBodyContains, matchQueryParam, { _, _ -> response })
+	) = handleRequest(matchPath, matchMethod, matchHeaders, matchBodyContains, matchQueryParam, onRequestCaptured, { _, _ -> response })
 
+	@Deprecated("Use domain-specific takeRequest on subclasses instead for parallel-safe request capture")
 	fun latestRequest(): RecordedRequest {
 		return server.takeRequest()
 	}
@@ -114,16 +127,20 @@ open class MockHttpServer : Closeable {
 		return object : Dispatcher() {
 			override fun dispatch(request: RecordedRequest): MockResponse {
 				val body = lazy { request.body.readUtf8() }
-				val response = responseHandlers.entries
+				val matchedEntry = responseHandlers.entries
 					.find {
 						val requestMatcher = it.key
 						requestMatcher.invoke(request, body)
-					}?.value
+					}
 					?: throw IllegalStateException("No handler for ${mockServerName} path:${request.path} - body ${request.bodySize} :${request.body.readUtf8()}")
 
-				log.info("Responding [${request.path}]: $response")
+				val handlerEntry = matchedEntry.value
 
-				return response(request, body)
+				handlerEntry.onRequestCaptured?.invoke(CapturedRequest(request, body.value))
+
+				log.info("Responding [${request.path}]")
+
+				return handlerEntry.responseCreator(request, body)
 			}
 		}
 	}
