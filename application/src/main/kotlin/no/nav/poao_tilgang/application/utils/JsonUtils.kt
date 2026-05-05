@@ -1,16 +1,12 @@
 package no.nav.poao_tilgang.application.utils
 
-import tools.jackson.databind.DeserializationFeature
 import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.readValue
+import no.nav.poao_tilgang.api_core_mapper.PoaoTilgangObjectMapper
 
 object JsonUtils {
 
-	//TODO burde denne flyttes til api-core-mapper? da har vi bare en instans av objectmapper
-	//eksisiterer også en instangs av objectmapper i api-core-mapper
-	val objectMapper: JsonMapper = JsonMapper.builder()
-		.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-		.build()
+	val objectMapper: JsonMapper = PoaoTilgangObjectMapper.objectMapper
 
 	inline fun <reified T> fromJsonString(jsonStr: String): T {
 		return objectMapper.readValue(jsonStr)

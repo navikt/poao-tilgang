@@ -1,8 +1,6 @@
 package no.nav.poao_tilgang.api_core_mapper
 
-import tools.jackson.databind.DeserializationFeature
 import tools.jackson.databind.JsonNode
-import tools.jackson.databind.json.JsonMapper
 import tools.jackson.module.kotlin.treeToValue
 import no.nav.poao_tilgang.api.dto.request.PolicyId
 import no.nav.poao_tilgang.api.dto.request.policy_input.*
@@ -13,15 +11,8 @@ import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 
 class ApiCoreMapper(private val adGruppeProvider: AdGruppeProvider) {
 
-	//eksisiterer også en instangs av objectmapper i application/utils/JsonUtils.kt
-	private val objectMapper: JsonMapper = JsonMapper.builder()
-		.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-		.build()
-
-
 	private inline fun <reified T> fromJsonNode(jsonNode: JsonNode): T {
-		return objectMapper.treeToValue(jsonNode)
-
+		return PoaoTilgangObjectMapper.objectMapper.treeToValue(jsonNode)
 	}
 
 	fun mapToPolicyInput(policyId: PolicyId, policyInput: JsonNode): PolicyInput {

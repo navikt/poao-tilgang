@@ -1,11 +1,10 @@
 package no.nav.poao_tilgang.client
 
-import tools.jackson.databind.DeserializationFeature
 import tools.jackson.databind.JsonNode
-import tools.jackson.databind.json.JsonMapper
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
+import no.nav.poao_tilgang.api_core_mapper.PoaoTilgangObjectMapper
 import no.nav.poao_tilgang.client.api.ApiResult
 import no.nav.poao_tilgang.client.api.ResponseDataApiException
 import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
@@ -13,9 +12,7 @@ import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 import java.util.*
 
 internal object ClientObjectMapper {
-	val objectMapper: JsonMapper = JsonMapper.builder()
-		.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-		.build()
+	val objectMapper = PoaoTilgangObjectMapper.objectMapper
 }
 class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilgangClient {
 	private val policyes = Policies(navContext)
@@ -42,7 +39,7 @@ class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilg
 	private fun valuatePolicy(input: PolicyRequest): Decision {
 		val requestDto = toRequestDto(input)
 
-		val valueToTree = ClientObjectMapper.objectMapper.valueToTree<JsonNode>(requestDto.policyInput)
+		val valueToTree = PoaoTilgangObjectMapper.objectMapper.valueToTree<JsonNode>(requestDto.policyInput)
 		val policyInput = apiCoreMapper.mapToPolicyInput(requestDto.policyId, valueToTree)
 		val result = resolver.evaluate(policyInput)
 		val decision = result.decision
