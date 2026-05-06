@@ -11,9 +11,6 @@ import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
 import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
 import java.util.*
 
-internal object ClientObjectMapper {
-	val objectMapper = PoaoTilgangObjectMapper.objectMapper
-}
 class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilgangClient {
 	private val policyes = Policies(navContext)
 	private val apiCoreMapper = ApiCoreMapper(policyes.providers.adGruppeProvider)
