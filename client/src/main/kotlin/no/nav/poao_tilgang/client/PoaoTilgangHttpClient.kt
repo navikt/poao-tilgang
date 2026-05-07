@@ -1,6 +1,6 @@
 package no.nav.poao_tilgang.client
 
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.module.kotlin.readValue
 import no.nav.common.rest.client.RestClient
 import no.nav.common.utils.UrlUtils.joinPaths
 import no.nav.poao_tilgang.api.dto.request.*

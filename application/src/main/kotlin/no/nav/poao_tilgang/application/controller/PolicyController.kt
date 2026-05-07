@@ -1,6 +1,6 @@
 package no.nav.poao_tilgang.application.controller
 
-import com.fasterxml.jackson.databind.JsonNode
+import tools.jackson.databind.JsonNode
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.binder.cache.CaffeineStatsCounter

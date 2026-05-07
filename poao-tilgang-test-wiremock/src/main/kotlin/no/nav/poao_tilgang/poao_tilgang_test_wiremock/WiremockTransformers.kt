@@ -1,11 +1,7 @@
 package no.nav.poao_tilgang.poao_tilgang_test_wiremock
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.JsonNode
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.common.FileSource
 import com.github.tomakehurst.wiremock.extension.Parameters
@@ -24,6 +20,7 @@ import no.nav.poao_tilgang.api.dto.response.HentAdGrupperForBrukerResponse
 import no.nav.poao_tilgang.api.dto.response.PolicyEvaluationResultDto
 import no.nav.poao_tilgang.api.dto.response.TilgangResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
+import no.nav.poao_tilgang.api_core_mapper.PoaoTilgangObjectMapper
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.NorskIdent
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
@@ -168,8 +165,5 @@ class Response<T>(
 }
 
 internal object ClientObjectMapper {
-	val objectMapper: ObjectMapper = ObjectMapper()
-		.registerKotlinModule()
-		.registerModule(JavaTimeModule())
-		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+	val objectMapper = PoaoTilgangObjectMapper.objectMapper
 }

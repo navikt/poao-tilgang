@@ -13,7 +13,7 @@ import java.util.UUID
  * Klassen er 'open' slik at bønnen kan mockes bort i IntegrationTest.kt
  */
 open class MyApplicationRunner(private val microsoftClient: MicrosoftGraphClient): ApplicationRunner {
-	override fun run(args: ApplicationArguments?) {
+	override fun run(args: ApplicationArguments) {
 		try {
 			microsoftClient.hentNavIdentMedAzureId(UUID.randomUUID())
 		} catch (e: Exception) {
