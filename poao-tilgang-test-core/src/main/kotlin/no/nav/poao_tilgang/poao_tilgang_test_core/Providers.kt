@@ -78,6 +78,37 @@ class AdGruppeProviderImpl(private val navContext: NavContext) : AdGruppeProvide
 
 class TilgangmaskinProviderImpl(private val navContext: NavContext) : TilgangmaskinProvider {
 	override fun evaluerKompletteRegler(norskIdent: String, navIdent: NavIdent): Decision {
-		return Decision.Permit
+		val navAnsatt = navContext.navAnsatt.get(navIdent) ?: throw IllegalArgumentException("NavAnsatt med navIdent $navIdent finnes ikke")
+		val privatBruker = navContext.privatBrukere.get(norskIdent) ?: throw IllegalArgumentException("PrivatBruker med norskIdent $norskIdent finnes ikke")
+
+		if (privatBruker.diskresjonskode != null) {
+			if (privatBruker.diskresjonskode == Diskresjonskode.STRENGT_FORTROLIG_UTLAND) {
+				if (navAnsatt.adGrupper.none { it == tilgjengligeAdGrupper.strengtFortroligAdresse }) {
+					return Decision.Deny("Veileder har ikke tilgang til bruker med strengt fortrolig utland", DecisionDenyReason.IKKE_TILGANG_TIL_STRENGT_FORTROLIG_UTLAND_BRUKER)
+				}
+			}
+			if (privatBruker.diskresjonskode == Diskresjonskode.STRENGT_FORTROLIG) {
+				if (navAnsatt.adGrupper.none { it == tilgjengligeAdGrupper.strengtFortroligAdresse }) {
+					return Decision.Deny("Veileder har ikke tilgang til bruker med strengt fortrolig adresse", DecisionDenyReason.IKKE_TILGANG_TIL_STRENGT_FORTROLIG_BRUKER)
+				}
+			}
+			if (privatBruker.diskresjonskode == Diskresjonskode.FORTROLIG) {
+				if (navAnsatt.adGrupper.none { it == tilgjengligeAdGrupper.fortroligAdresse }) {
+					return Decision.Deny("Veileder har ikke tilgang til bruker med fortrolig adresse", DecisionDenyReason.IKKE_TILGANG_TIL_FORTROLIG_BRUKER)
+				}
+			}
+		}
+
+		if (privatBruker.erSkjermet && navAnsatt.adGrupper.none { it == tilgjengligeAdGrupper.egneAnsatte }) {
+			return Decision.Deny("Veileder har ikke tilgang til skjermet person", DecisionDenyReason.IKKE_TILGANG_TIL_SKJERMET_PERSON)
+		}
+
+		return if (navAnsatt.adGrupper.any { it == tilgjengligeAdGrupper.gosysNasjonal }) {
+			Decision.Permit
+		} else if (navAnsatt.enheter.any { it.enhetId == privatBruker.oppfolgingsenhet }) {
+			Decision.Permit
+		} else {
+			Decision.Deny("Veileder har ikke tilgang til brukers enhet", DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET)
+		}
 	}
 }

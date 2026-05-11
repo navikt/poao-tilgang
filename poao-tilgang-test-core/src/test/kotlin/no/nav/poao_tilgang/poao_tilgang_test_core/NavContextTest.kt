@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class NavContextTest {
 	val navContext = NavContext()
 	val providers = Policies(navContext)
-	val polecyResolver = providers.policyResolver
+	val policyResolver = providers.policyResolver
 
 	@Test
 	fun `veileder skal ha tilgang til bruker`() {
@@ -22,7 +22,7 @@ class NavContextTest {
 			norskIdent = nyEksternBruker.norskIdent
 		)
 
-		val result = polecyResolver.evaluate(input)
+		val result = policyResolver.evaluate(input)
 
 		result.decision shouldBe Decision.Permit
 	}
@@ -38,7 +38,7 @@ class NavContextTest {
 			norskIdent = nyEksternBruker.norskIdent
 		)
 
-		val result = polecyResolver.evaluate(input)
+		val result = policyResolver.evaluate(input)
 
 		result.decision shouldBe Decision.Permit
 	}
@@ -54,9 +54,31 @@ class NavContextTest {
 			norskIdent = nyEksternBruker.norskIdent
 		)
 
-		val result = polecyResolver.evaluate(input)
+		val result = policyResolver.evaluate(input)
 
 		result.decision shouldBe Decision.Permit
 	}
 
+	@Test
+	fun `tilgangsmaskinprodvider - brukers veileder skal ha tilgang til bruker`() {
+		val nyEksternBruker = navContext.privatBrukere.ny()
+		val veileder = navContext.navAnsatt.nyFor(nyEksternBruker)
+		val tilgangsmaskinProvider = TilgangmaskinProviderImpl(navContext)
+
+		val result = tilgangsmaskinProvider.evaluerKompletteRegler(nyEksternBruker.norskIdent, veileder.navIdent)
+
+		result.isPermit shouldBe true
+	}
+
+	@Test
+	fun `tilgangsmaskinprodvider - annen veileder har ikke tilgang til bruker`() {
+		val nyEksternBruker = navContext.privatBrukere.ny()
+		val annenEksternBruker = navContext.privatBrukere.ny()
+		val veileder = navContext.navAnsatt.nyFor(annenEksternBruker)
+		val tilgangsmaskinProvider = TilgangmaskinProviderImpl(navContext)
+
+		val result = tilgangsmaskinProvider.evaluerKompletteRegler(nyEksternBruker.norskIdent, veileder.navIdent)
+
+		result.isDeny shouldBe true
+	}
 }
