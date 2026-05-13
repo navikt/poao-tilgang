@@ -10,7 +10,8 @@ import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
-import no.nav.poao_tilgang.application.test_util.IntegrationTest.Companion.mockTilgangsmaskinHttpServer
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
+import no.nav.poao_tilgang.application.test_util.TestIds
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -26,15 +27,6 @@ import java.time.Duration
 import java.util.*
 
 class PoaoTilgangHttpClientTest : IntegrationTest() {
-
-	private val navIdent = "Z1235"
-	private val norskIdent = "6456532"
-	private val brukersEnhet = "0123"
-	private val navAnsattId = UUID.randomUUID()
-
-	private val fnr1 = "124253321"
-	private val fnr2 = "654756834"
-
 
 	lateinit var client: PoaoTilgangHttpClient
 
@@ -53,12 +45,13 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	@ParameterizedTest
 	@EnumSource(TilgangType::class)
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilEksternBrukerPolicy V2`(tilgangType: TilgangType) {
-		setupMocks(
+		val (navIdent, navAnsattId, _, norskIdent) = setupMocks(
 			adGrupper = listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
 				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal
 			)
 		)
+		mockTilgangsMaskinPermit(navIdent)
 
 		val decision =
 			client.evaluatePolicy(NavAnsattTilgangTilEksternBrukerPolicyInput(navAnsattId, tilgangType, norskIdent))
@@ -69,7 +62,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy`() {
-		setupMocks(adGrupper = listOf(AdGruppe(UUID.randomUUID(), "${ENHET_PREFIKS}0123")))
+		val (navIdent, navAnsattId, _, norskIdent) = setupMocks(adGrupper = listOf(AdGruppe(UUID.randomUUID(), "${ENHET_PREFIKS}0123")))
+		mockTilgangsMaskinPermit(navIdent)
+
 		val decision =
 			client.evaluatePolicy(NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyInput(navAnsattId, norskIdent))
 				.getOrThrow()
@@ -79,6 +74,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilModiaPolicy`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent,
 			navAnsattId,
@@ -104,6 +102,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetPolicy`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent,
 			navAnsattId,
@@ -125,6 +126,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattHarTilgangTilNavEnhetMedSperrePolicy`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().aktivitetsplanKvp)
 		)
@@ -141,6 +145,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `hentAdGrupper - skal hente AD-grupper`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
@@ -157,6 +164,11 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente enkelt skjermet person`() {
+		val fnr1 = TestDataGenerator.norskIdent()
+		val fnr2 = TestDataGenerator.norskIdent()
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
@@ -177,6 +189,12 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal hente bulk skjermet person`() {
+		val fnr1 = TestDataGenerator.norskIdent()
+		val fnr2 = TestDataGenerator.norskIdent()
+
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				AdGruppe(UUID.randomUUID(), "0000-ga-123"),
@@ -219,6 +237,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell,
@@ -237,6 +258,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_STRENGT_FORTROLIG_BRUKERE`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
@@ -257,6 +281,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaAdmin,
@@ -275,6 +302,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_TILGANG_TIL_MODIA_ADMIN_V1`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
@@ -295,6 +325,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell,
@@ -313,6 +346,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_FORTROLIG_BRUKERE`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
@@ -333,6 +369,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should permit NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().egneAnsatte,
@@ -350,6 +389,9 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 
 	@Test
 	fun `evaluatePolicy - should deny NAV_ANSATT_BEHANDLE_SKJERMEDE_PERSONER`() {
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+
 		mockRolleTilganger(
 			navIdent, navAnsattId, listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell
@@ -377,7 +419,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		val erSkjermetPerson = false
 
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
-		mockAoKontorHttpServer.mockOppfolgingsenhet(kontorEnhet, null)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,kontorEnhet, null)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 
 		val tilgansAttributter = client.hentTilgangsAttributter(norskIdent).getOrThrow()
@@ -389,11 +431,22 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		)
 	}
 
-	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group"))) {
-		mockPersonData(norskIdent, brukersEnhet)
+	private fun setupMocks(adGrupper: List<AdGruppe> = listOf(AdGruppe(UUID.randomUUID(), "0000-some-group"))): TestIds {
+		val norskIdent = TestDataGenerator.norskIdent()
+		val brukersEnhet = TestDataGenerator.navEnhetId()
+		val navAnsattId = TestDataGenerator.navAnsattId()
+		val navIdent = TestDataGenerator.navIdent()
+		val kommunenr = TestDataGenerator.geografiskTilknytning()
+		mockPersonData(norskIdent, brukersEnhet, kommunenr)
 		mockRolleTilganger(
 			navIdent, navAnsattId, adGrupper
 		)
 		mockTilgangsMaskinPermit(navIdent)
+		return TestIds(
+			navIdent,
+			navAnsattId,
+			brukersEnhet,
+			norskIdent
+		)
 	}
 }

@@ -3,6 +3,7 @@ package no.nav.poao_tilgang.application.service
 import io.kotest.matchers.shouldBe
 import no.nav.poao_tilgang.application.provider.SkjermetPersonProvider
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -13,7 +14,7 @@ class SkjermetPersonServiceIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal defaulte til true hvis data mangler`() {
-		val norskIdent = "123879347"
+		val norskIdent = TestDataGenerator.norskIdent()
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf())
 
@@ -22,11 +23,7 @@ class SkjermetPersonServiceIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `erSkjermetPerson - skal cache enkelt skjermet person`() {
-		val norskIdent = "123879347"
-
-		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(
-			norskIdent to true
-		))
+		val norskIdent = TestDataGenerator.norskIdent()
 
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(
 			norskIdent to true

@@ -15,7 +15,7 @@ data class Providers(
 	val diskresjonskodeProvider: DiskresjonskodeProvider = DiskresjonskodeProviderImpl(navContext),
 	val adGruppeProvider: AdGruppeProvider = AdGruppeProviderImpl(navContext),
 	val tilgangmaskinProvider: TilgangmaskinProvider = TilgangmaskinProviderImpl(navContext),
-	)
+)
 
 class SkjermetPersonProviderImpl(private val navContext: NavContext) : SkjermetPersonProvider {
 	override fun erSkjermetPerson(norskIdent: String): Boolean {

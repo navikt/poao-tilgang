@@ -20,7 +20,7 @@ class MockMachineToMachineHttpServer : MockHttpServer() {
 	}
 
 	private fun mockToken() {
-		val predicate = { req: RecordedRequest ->
+		val predicate = { req: RecordedRequest, _: Lazy<String?> ->
 			req.path == tokenPath
 		}
 

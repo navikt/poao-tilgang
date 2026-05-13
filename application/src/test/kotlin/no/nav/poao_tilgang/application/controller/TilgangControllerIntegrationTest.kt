@@ -2,6 +2,7 @@ package no.nav.poao_tilgang.application.controller
 
 import io.kotest.matchers.shouldBe
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
@@ -20,21 +21,21 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 401 when not authenticated`() {
-		val response = sendTilgangTilModiaRequest("Z123456")
+		val response = sendTilgangTilModiaRequest(TestDataGenerator.navIdent())
 
 		response.code shouldBe 401
 	}
 
 	@Test
 	fun `harTilgangTilModia - should return 403 when not machine-to-machine request`() {
-		val response = sendTilgangTilModiaRequest("Z123456") { mockOAuthServer.issueAzureAdToken() }
+		val response = sendTilgangTilModiaRequest(TestDataGenerator.navIdent()) { mockOAuthServer.issueAzureAdToken() }
 
 		response.code shouldBe 403
 	}
 
 	@Test
 	fun `harTilgangTilModia - should return 'deny' if not member of any ad group`() {
-		val navIdent = "Z123716"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(navIdent, emptyList())
 
@@ -49,7 +50,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 'deny' if not member of correct ad group`() {
-		val navIdent = "Z123716"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(
 			navIdent, listOf(
@@ -68,7 +69,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 'permit' if member of modiagenerelltilgang`() {
-		val navIdent = "Z123716"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(navIdent, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaGenerell))
 
@@ -79,7 +80,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 'permit' if member of modia-oppfolging`() {
-		val navIdent = "Z123716"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(navIdent, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging))
 
@@ -90,7 +91,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 'permit' if member of syfo-sensitiv`() {
-		val navIdent = "Z123716"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(navIdent, listOf(adGruppeProvider.hentTilgjengeligeAdGrupper().syfoSensitiv))
 
@@ -101,7 +102,7 @@ class TilgangControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `harTilgangTilModia - should return 'permit' if member of correct role and other`() {
-		val navIdent = "Z123761"
+		val navIdent = TestDataGenerator.navIdent()
 
 		mockAdGrupperResponse(
 			navIdent, listOf(

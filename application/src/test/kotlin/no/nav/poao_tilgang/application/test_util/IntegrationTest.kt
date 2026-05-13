@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -25,7 +24,6 @@ import java.time.Duration
 import java.util.*
 
 @ExtendWith(SpringExtension::class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [Application::class])
 @ActiveProfiles("test")
 open class IntegrationTest {
@@ -40,33 +38,20 @@ open class IntegrationTest {
 		.build()
 
 	companion object {
-		lateinit var mockOAuthServer: MockOAuthServer
-		lateinit var mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
-		lateinit var mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
-		lateinit var mockAoKontorHttpServer: MockAoKontorHttpServer
-		lateinit var mockPdlPipHttpServer: MockPdlPipHttpServer
-		lateinit var mockNorgHttpServer: MockNorgHttpServer
-		lateinit var mockTilgangsmaskinHttpServer: MockTilgangsmaskinHttpServer
-		lateinit var mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
+		// Servers are initialized exactly once for the entire test suite lifetime via the companion
+		// object initializer (equivalent to Java static initializer). Re-creating them in @BeforeAll
+		// would start them on new ports for every test class while the shared Spring context still
+		// holds HTTP clients wired to the original ports, causing connection failures.
+		val mockOAuthServer: MockOAuthServer
+		val mockMicrosoftGraphHttpServer: MockMicrosoftGraphHttpServer
+		val mockSkjermetPersonHttpServer: MockSkjermetPersonHttpServer
+		val mockAoKontorHttpServer: MockAoKontorHttpServer
+		val mockPdlPipHttpServer: MockPdlPipHttpServer
+		val mockNorgHttpServer: MockNorgHttpServer
+		val mockTilgangsmaskinHttpServer: MockTilgangsmaskinHttpServer
+		val mockMachineToMachineHttpServer: MockMachineToMachineHttpServer
 
-		@BeforeAll
-		@JvmStatic
-		fun setupMockServers() {
-			setupClients()
-			setupAdGrupperIder()
-			mockOAuthServer.start()
-			System.setProperty("AZURE_APP_WELL_KNOWN_URL", mockOAuthServer.getDiscoveryUrl())
-			System.setProperty("AZURE_APP_CLIENT_ID", "test")
-			mockMachineToMachineHttpServer.start()
-			System.setProperty("AZURE_APP_JWK", MockMachineToMachineHttpServer.jwk)
-			System.setProperty(
-				"AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
-				mockMachineToMachineHttpServer.serverUrl() + MockMachineToMachineHttpServer.tokenPath
-			)
-		}
-
-
-		private fun setupClients() {
+		init {
 			mockOAuthServer = MockOAuthServer()
 			mockMicrosoftGraphHttpServer = MockMicrosoftGraphHttpServer()
 			mockSkjermetPersonHttpServer = MockSkjermetPersonHttpServer()
@@ -75,6 +60,7 @@ open class IntegrationTest {
 			mockNorgHttpServer = MockNorgHttpServer()
 			mockTilgangsmaskinHttpServer = MockTilgangsmaskinHttpServer()
 			mockMachineToMachineHttpServer = MockMachineToMachineHttpServer()
+
 			mockSkjermetPersonHttpServer.start()
 			System.setProperty("SKJERMET_PERSON_URL", mockSkjermetPersonHttpServer.serverUrl())
 			System.setProperty("SKJERMET_PERSON_SCOPE", "api://test.nom.skjermede-personer-pip/.default")
@@ -92,6 +78,26 @@ open class IntegrationTest {
 			System.setProperty("PDLPIP_SCOPE", "api://test.pdl.pdl-pip-api/.default")
 			mockNorgHttpServer.start()
 			System.setProperty("NORG_URL", mockNorgHttpServer.serverUrl())
+
+			mockOAuthServer.start()
+			System.setProperty("AZURE_APP_WELL_KNOWN_URL", mockOAuthServer.getDiscoveryUrl())
+			System.setProperty("AZURE_APP_CLIENT_ID", "test")
+			mockMachineToMachineHttpServer.start()
+			System.setProperty("AZURE_APP_JWK", MockMachineToMachineHttpServer.jwk)
+			System.setProperty(
+				"AZURE_OPENID_CONFIG_TOKEN_ENDPOINT",
+				mockMachineToMachineHttpServer.serverUrl() + MockMachineToMachineHttpServer.tokenPath
+			)
+
+			setupAdGrupperIder()
+		}
+
+		@BeforeAll
+		@JvmStatic
+		fun setupMockServers() {
+			// Servers and system properties are already configured in the companion object initializer.
+			// This hook is intentionally left empty; it exists so Spring can finalize context setup
+			// after system properties have been set.
 		}
 
 		private fun setupAdGrupperIder() {
@@ -110,13 +116,10 @@ open class IntegrationTest {
 
 		@JvmStatic
 		@AfterAll
-		fun close(): Unit {
-			mockMicrosoftGraphHttpServer.close()
-			mockSkjermetPersonHttpServer.close()
-			mockAoKontorHttpServer.close()
-			mockTilgangsmaskinHttpServer.close()
-			mockPdlPipHttpServer.close()
-			mockNorgHttpServer.close()
+		fun close() {
+			// Intentionally empty: servers are kept alive for the entire test suite so that the
+			// shared Spring context can keep using the same URLs across all test classes.
+			// They will be cleaned up automatically when the JVM exits.
 		}
 	}
 
@@ -124,7 +127,7 @@ open class IntegrationTest {
 	fun reset() {
 		mockMicrosoftGraphHttpServer.reset()
 		mockSkjermetPersonHttpServer.reset()
-		mockAoKontorHttpServer.reset()
+//		mockAoKontorHttpServer.reset()
 		mockTilgangsmaskinHttpServer.reset()
 		mockPdlPipHttpServer.reset()
 		mockNorgHttpServer.reset()
@@ -156,7 +159,7 @@ open class IntegrationTest {
 	fun mockPersonData(
 		norskIdent: NorskIdent,
 		brukersEnhet: NavEnhetId,
-		kommuneNr: String = "5000",
+		kommuneNr: String,
 		erSkjermet: Boolean = false,
 		gammelIdent: NorskIdent? = null
 	) {
@@ -172,7 +175,7 @@ open class IntegrationTest {
 			)
 		)
 		mockNorgHttpServer.mockTilhorendeEnhet(kommuneNr, brukersEnhet)
-		mockAoKontorHttpServer.mockOppfolgingsenhet(brukersEnhet, brukersEnhet)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,brukersEnhet, brukersEnhet)
 	}
 
 	fun mockRolleTilganger(navIdent: String, navAnsattId: UUID, adGrupper: List<AdGruppe>) {

@@ -4,6 +4,7 @@ import io.kotest.matchers.shouldBe
 import no.nav.common.types.identer.Fnr
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
+import no.nav.poao_tilgang.application.test_util.TestDataGenerator
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.utils.JsonUtils
@@ -15,9 +16,9 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 	private val logger = LoggerFactory.getLogger(TilgangsattributtControllerIntegrationTest::class.java)
 	@Test
 	fun `tilgangsattributter - should return correct response for skjermet og fortrolig`() {
-		val norskIdent = "12345678910"
-		val geografiskTilknytning = "434576"
-		val enhet = "9999"
+		val norskIdent = TestDataGenerator.norskIdent()
+		val geografiskTilknytning = TestDataGenerator.navEnhetId()
+		val enhet = TestDataGenerator.navEnhetId()
 		val gradering = Gradering.FORTROLIG // DTO fra pdl
 		val disk = Diskresjonskode.FORTROLIG // Response DTO fra poao-tilgang
 		val erSkjermetPerson = true
@@ -45,9 +46,9 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `tilgangsattributter - should return correct response for ikke skjermet eller fortrolig`() {
-		val norskIdent = "12345678910"
-		val geografiskTilknytning = "434576"
-		val enhet = "9999"
+		val norskIdent = TestDataGenerator.norskIdent()
+		val geografiskTilknytning = TestDataGenerator.geografiskTilknytning()
+		val enhet = TestDataGenerator.navEnhetId()
 		val gradering = Gradering.UGRADERT // DTO fra pdl
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
 		val erSkjermetPerson = false
@@ -74,14 +75,14 @@ class TilgangsattributtControllerIntegrationTest : IntegrationTest() {
 	}
 	@Test
 	fun `tilgangsattributter - should return arena kontor when present`() {
-		val norskIdent = "12345678910"
-		val geografiskTilknytning = "434576"
-		val enhet = "9999"
+		val norskIdent = TestDataGenerator.norskIdent()
+		val geografiskTilknytning = TestDataGenerator.navEnhetId()
+		val enhet = TestDataGenerator.navEnhetId()
 		val gradering = Gradering.UGRADERT // DTO fra pdl
 		val disk = Diskresjonskode.UGRADERT // Response DTO fra poao-tilgang
 		val erSkjermetPerson = false
 
-		mockAoKontorHttpServer.mockOppfolgingsenhet(enhet, null)
+		mockAoKontorHttpServer.mockOppfolgingsenhet(norskIdent,enhet, null)
 		mockPdlPipHttpServer.mockBrukerInfo(norskIdent, gradering, gtKommune = geografiskTilknytning)
 		mockSkjermetPersonHttpServer.mockErSkjermet(mapOf(norskIdent to erSkjermetPerson))
 
