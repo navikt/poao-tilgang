@@ -1,14 +1,20 @@
-package no.nav.poao_tilgang.client
+package no.nav.poao_tilgang.poao_tilgang_test_core
 
 import tools.jackson.databind.JsonNode
 import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.api_core_mapper.ApiCoreMapper
 import no.nav.poao_tilgang.api_core_mapper.PoaoTilgangObjectMapper
+import no.nav.poao_tilgang.client.AdGruppe
+import no.nav.poao_tilgang.client.Decision
+import no.nav.poao_tilgang.client.NorskIdent
+import no.nav.poao_tilgang.client.PoaoTilgangClient
+import no.nav.poao_tilgang.client.PolicyInput
+import no.nav.poao_tilgang.client.PolicyRequest
+import no.nav.poao_tilgang.client.PolicyResult
 import no.nav.poao_tilgang.client.api.ApiResult
 import no.nav.poao_tilgang.client.api.ResponseDataApiException
-import no.nav.poao_tilgang.poao_tilgang_test_core.NavContext
-import no.nav.poao_tilgang.poao_tilgang_test_core.Policies
+import no.nav.poao_tilgang.client.toRequestDto
 import java.util.*
 
 class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilgangClient {
@@ -39,8 +45,7 @@ class PoaoTilgangMockClient(val navContext: NavContext = NavContext()): PoaoTilg
 		val valueToTree = PoaoTilgangObjectMapper.objectMapper.valueToTree<JsonNode>(requestDto.policyInput)
 		val policyInput = apiCoreMapper.mapToPolicyInput(requestDto.policyId, valueToTree)
 		val result = resolver.evaluate(policyInput)
-		val decision = result.decision
-		return when(decision) {
+		return when(val decision = result.decision) {
 			is no.nav.poao_tilgang.core.domain.Decision.Permit -> Decision.Permit
 			is no.nav.poao_tilgang.core.domain.Decision.Deny -> Decision.Deny(decision.message, decision.reason.name)
 		}
