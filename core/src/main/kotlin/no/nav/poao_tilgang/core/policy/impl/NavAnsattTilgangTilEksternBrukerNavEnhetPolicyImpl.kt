@@ -56,8 +56,8 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
 			harTilgangTilEnhetForBruker(navAnsattAzureId, navEnhetId, "oppfolgingsEnhet")
 				.whenPermit { return it }
 		}
-		if (gtEnhet == null && oppfolgingsEnhet == null) return denyDecisionEksternbrukerMissingEnhet
-		else return denyDecisionNotAccessToEnhet
+		return if (gtEnhet == null && oppfolgingsEnhet == null) denyDecisionEksternbrukerMissingEnhet
+		else denyDecisionNotAccessToEnhet
 	}
 
 	fun harTilgangTilEnhetForBruker(
