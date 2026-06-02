@@ -268,7 +268,7 @@ flowchart
 ```mermaid
 flowchart
     Start([NavAnsattTilgangTilEksternBrukerNavEnhetPolicy])
-    Check_1{Har minst en av AD-gruppene <br> <li>0000-GA-GOSYS_NASJONAL</li> <li>0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL</li> <li>0000-GA-Modia_Admin</li>?}
+    Check_1{Har minst en av AD-gruppene <br> <li>0000-GA-GEO_NASJONAL</li> <li>0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL</li> <li>0000-GA-Modia_Admin</li>?}
     Check_2{"Har tilgang til <br> brukers geografisk <br> tilknyttede enhet <br> (0000-GA-ENHET_XXXX)?"}
     Check_3{"Har tilgang til <br> brukers oppfølgingsenhet <br> (0000-GA-ENHET_XXXX)?"}
     Permit[/Permit/]

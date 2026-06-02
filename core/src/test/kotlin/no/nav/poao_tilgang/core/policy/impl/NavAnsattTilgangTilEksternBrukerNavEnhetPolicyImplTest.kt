@@ -52,7 +52,7 @@ class NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImplTest {
 	}
 
 	@Test
-	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GOSYS_NASJONAL`() {
+	internal fun `skal ikke sjekke tilgang til enhet og returnere permit hvis tilgang til 0000-GA-GEO_NASJONAL`() {
 		every {
 			adGruppeProvider.hentAdGrupper(navAnsattAzureId)
 		} returns listOf(testAdGrupper.gosysNasjonal)
