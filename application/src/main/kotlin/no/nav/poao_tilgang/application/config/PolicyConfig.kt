@@ -68,21 +68,6 @@ open class PolicyConfig {
 	}
 
 	@Bean
-	open fun navAnsattTilgangTilEksternBrukerNavEnhetPolicy(
-		oppfolgingsenhetProvider: OppfolgingsenhetProvider,
-		geografiskTilknyttetEnhetProvider: GeografiskTilknyttetEnhetProvider,
-		adGruppeProvider: AdGruppeProvider,
-		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2
-	): NavAnsattTilgangTilEksternBrukerNavEnhetPolicy {
-		return NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
-			oppfolgingsenhetProvider,
-			geografiskTilknyttetEnhetProvider,
-			adGruppeProvider,
-			navEnhetTilgangProviderV2
-		)
-	}
-
-	@Bean
 	open fun tilgangTilNavEnhetPolicy(
 		navEnhetTilgangProviderV2: NavEnhetTilgangProviderV2,
 		adGruppeProvider: AdGruppeProvider,
