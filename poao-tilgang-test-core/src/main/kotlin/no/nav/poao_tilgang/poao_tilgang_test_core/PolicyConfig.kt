@@ -12,7 +12,6 @@ class TimerService() : Timer {
 	override fun <T> measure(name: String, vararg tags: String, method: () -> T): T {
 		return method()
 	}
-
 }
 
 data class Policies(
@@ -27,12 +26,6 @@ data class Policies(
 		providers.adGruppeProvider,
 		timer,
 		navAnsattTilgangTilOppfolgingPolicy
-	),
-	val navAnsattTilgangTilEksternBrukerNavEnhetPolicy: NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl = NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl(
-		providers.oppfolgingsenhetProvider,
-		providers.geografiskTilknyttetEnhetProvider,
-		providers.adGruppeProvider,
-		providers.navEnhetTilgangProviderV2,
 	),
 	val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicyImpl = NavAnsattTilgangTilNavEnhetPolicyImpl(
 		providers.navEnhetTilgangProviderV2,

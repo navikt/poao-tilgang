@@ -7,8 +7,6 @@ import no.nav.poao_tilgang.core.domain.AdGruppe
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.AKTIVITETSPLAN_KVP
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.EGNE_ANSATTE
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.FORTROLIG_ADRESSE
-import no.nav.poao_tilgang.core.domain.AdGruppeNavn.GOSYS_NASJONAL
-import no.nav.poao_tilgang.core.domain.AdGruppeNavn.GOSYS_UTVIDBAR_TIL_NASJONAL
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_ADMIN
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_GENERELL
 import no.nav.poao_tilgang.core.domain.AdGruppeNavn.MODIA_OPPFOLGING
@@ -44,8 +42,6 @@ class AdGruppeProviderImpl(
 		modiaAdmin = AdGruppe(adGruppeIdModiaAdmin, MODIA_ADMIN),
 		modiaOppfolging = AdGruppe(adGruppeIdModiaOppfolging, MODIA_OPPFOLGING),
 		modiaGenerell = AdGruppe(adGruppeIdModiaGenerell, MODIA_GENERELL),
-		gosysNasjonal = AdGruppe(adGruppeIdGosysNasjonal, GOSYS_NASJONAL),
-		gosysUtvidbarTilNasjonal = AdGruppe(adGruppeIdGosysUtvidbarTilNasjonal, GOSYS_UTVIDBAR_TIL_NASJONAL),
 		syfoSensitiv = AdGruppe(adGruppeIdSyfoSensitiv, SYFO_SENSITIV),
 		egneAnsatte = AdGruppe(adGruppeIdEgneAnsatte, EGNE_ANSATTE),
 		aktivitetsplanKvp = AdGruppe(adGruppeIdAktivitetsplanKvp, AKTIVITETSPLAN_KVP)

@@ -103,7 +103,7 @@ class TilgangmaskinProviderImpl(private val navContext: NavContext) : Tilgangmas
 			return Decision.Deny("Veileder har ikke tilgang til skjermet person", DecisionDenyReason.IKKE_TILGANG_TIL_SKJERMET_PERSON)
 		}
 
-		return if (navAnsatt.adGrupper.any { it == tilgjengligeAdGrupper.gosysNasjonal }) {
+		return if (navAnsatt.adGrupper.any { it == tilgjengligeAdGrupper.modiaOppfolging } && navAnsatt.enheter.any { it.enhetNavn == "NAV Viken" }) {
 			Decision.Permit
 		} else if (navAnsatt.enheter.any { it.enhetId == privatBruker.oppfolgingsenhet }) {
 			Decision.Permit
