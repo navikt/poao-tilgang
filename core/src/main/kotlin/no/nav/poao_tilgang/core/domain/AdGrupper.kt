@@ -8,9 +8,6 @@ data class AdGrupper(
 	val modiaOppfolging: AdGruppe,
 	val modiaGenerell: AdGruppe,
 
-	val gosysNasjonal: AdGruppe,
-	val gosysUtvidbarTilNasjonal: AdGruppe,
-
 	val syfoSensitiv: AdGruppe,
 	val egneAnsatte: AdGruppe,
 

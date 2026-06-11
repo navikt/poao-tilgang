@@ -44,7 +44,6 @@ graph LR
     
     %% Nivå 2
     NavAnsattTilgangTilAdressebeskyttetBrukerPolicy
-    NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
     NavAnsattTilgangTilModiaGenerellPolicy
     NavAnsattTilgangTilOppfolgingPolicy
     NavAnsattTilgangTilSkjermetPersonPolicy
@@ -58,13 +57,11 @@ graph LR
     %% Nivå 1 --> nivå 2
     NavAnsattTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilModiaGenerellPolicy
     NavAnsattTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilAdressebeskyttetBrukerPolicy
-    NavAnsattTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
     NavAnsattTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilSkjermetPersonPolicy
     NavAnsattTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilOppfolgingPolicy
     NavAnsattTilgangTilNavEnhetMedSperrePolicy --> NavAnsattTilgangTilOppfolgingPolicy
     NavAnsattTilgangTilNavEnhetPolicy --> NavAnsattTilgangTilOppfolgingPolicy
     NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilAdressebeskyttetBrukerPolicy
-    NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
     NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy --> NavAnsattTilgangTilSkjermetPersonPolicy
     
     %% Nivå 2 --> nivå 3
@@ -80,7 +77,7 @@ graph LR
     classDef standalone fill:#525962,stroke:none,color:#FFFFFF
     
     class NavAnsattTilgangTilEksternBrukerPolicy,NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,NavAnsattTilgangTilNavEnhetPolicy,NavAnsattTilgangTilNavEnhetMedSperrePolicy niva1;
-    class NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,NavAnsattTilgangTilSkjermetPersonPolicy,NavAnsattTilgangTilEksternBrukerNavEnhetPolicy,NavAnsattTilgangTilOppfolgingPolicy,NavAnsattTilgangTilModiaGenerellPolicy niva2;
+    class NavAnsattTilgangTilAdressebeskyttetBrukerPolicy,NavAnsattTilgangTilSkjermetPersonPolicy,NavAnsattTilgangTilOppfolgingPolicy,NavAnsattTilgangTilModiaGenerellPolicy niva2;
     class NavAnsattBehandleFortroligBrukerePolicy,NavAnsattBehandleStrengtFortroligBrukerePolicy,NavAnsattBehandleStrengtFortroligUtlandBrukerePolicy,NavAnsattBehandleSkjermedePersonerPolicy niva3;
     class EksternBrukerTilgangTilEksternBrukerPolicy,NavAnsattTilgangTilModiaPolicy,NavAnsattTilgangTilModiaAdminPolicy standalone;
 ```
@@ -259,39 +256,6 @@ flowchart
     click Evaluate_NavAnsattBehandleFortroligBrukerePolicy "https://github.com/navikt/poao-tilgang/blob/main/core/src/main/kotlin/no/nav/poao_tilgang/core/policy/Policies.md#navansattbehandlefortroligbrukerepolicy"
     click Evaluate_NavAnsattBehandleStrengtFortroligBrukerePolicy "https://github.com/navikt/poao-tilgang/blob/main/core/src/main/kotlin/no/nav/poao_tilgang/core/policy/Policies.md#navansattbehandlestrengtfortroligbrukerepolicy"
     click Evaluate_NavAnsattBehandleStrengtFortroligUtlandBrukerePolicy "https://github.com/navikt/poao-tilgang/blob/main/core/src/main/kotlin/no/nav/poao_tilgang/core/policy/Policies.md#navansattbehandlestrengtfortroligutlandbrukerepolicy"
-```
-
-### NavAnsattTilgangTilEksternBrukerNavEnhetPolicy
-
-**[Implementasjon](./impl/NavAnsattTilgangTilEksternBrukerNavEnhetPolicyImpl.kt)**
-
-```mermaid
-flowchart
-    Start([NavAnsattTilgangTilEksternBrukerNavEnhetPolicy])
-    Check_1{Har minst en av AD-gruppene <br> <li>0000-GA-GOSYS_NASJONAL</li> <li>0000-GA-GOSYS_UTVIDBAR_TIL_NASJONAL</li> <li>0000-GA-Modia_Admin</li>?}
-    Check_2{"Har tilgang til <br> brukers geografisk <br> tilknyttede enhet <br> (0000-GA-ENHET_XXXX)?"}
-    Check_3{"Har tilgang til <br> brukers oppfølgingsenhet <br> (0000-GA-ENHET_XXXX)?"}
-    Permit[/Permit/]
-    Deny[/Deny/]
-
-    Start-->Check_1
-    Check_1--Ja-->Permit
-    Check_1--Nei-->Check_2
-    Check_2--Ja-->Permit
-    Check_2--Nei-->Check_3
-    Check_3--Ja-->Permit
-    Check_3--Nei-->Deny
-
-    classDef success fill:#06893A,color:#FFFFFF,stroke:none
-    classDef danger fill:#C30000,color:#FFFFFF,stroke:none
-    classDef info fill:#66CBEC,color:#23262A,stroke:none
-    classDef neutral fill:#525962,color:#FFFFFF,stroke:none
-    class Start info
-    class Permit success
-    class Deny danger
-    class Check_1 neutral
-    class Check_2 neutral
-    class Check_3 neutral
 ```
 
 ### NavAnsattTilgangTilEksternBrukerPolicy
