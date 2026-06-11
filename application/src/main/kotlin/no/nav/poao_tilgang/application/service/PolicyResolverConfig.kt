@@ -14,6 +14,7 @@ open class PolicyResolverConfig {
 	@Bean
 	open fun policyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy: NavAnsattTilgangTilEksternBrukerPolicy,
+		navAnsattTilgangTilEksternBrukerKjernereglerPolicy: NavAnsattTilgangTilEksternBrukerKjernereglerPolicy,
 		navAnsattTilgangTilModiaPolicy: NavAnsattTilgangTilModiaPolicy,
 		eksternBrukerTilgangTilEksternBrukerPolicy: EksternBrukerTilgangTilEksternBrukerPolicy,
 		navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicy,
@@ -27,6 +28,7 @@ open class PolicyResolverConfig {
 	): PolicyResolver {
 		return PolicyResolver(
 			navAnsattTilgangTilEksternBrukerPolicy,
+			navAnsattTilgangTilEksternBrukerKjernereglerPolicy,
 			navAnsattTilgangTilModiaPolicy,
 			eksternBrukerTilgangTilEksternBrukerPolicy,
 			navAnsattTilgangTilNavEnhetPolicy,

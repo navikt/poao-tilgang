@@ -79,12 +79,20 @@ data class Policies(
 		navAnsattTilgangTilModiaGenerellPolicy,
 		timer,
 	),
+	val navAnsattTilgangTilEksternBrukerKjernereglerPolicy: NavAnsattTilgangTilEksternBrukerKjernereglerPolicyImpl = NavAnsattTilgangTilEksternBrukerKjernereglerPolicyImpl(
+		providers.tilgangmaskinProvider,
+		providers.adGruppeProvider,
+		navAnsattTilgangTilOppfolgingPolicy,
+		navAnsattTilgangTilModiaGenerellPolicy,
+		timer,
+	),
 	val navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl = NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl(
 		providers.adGruppeProvider,
 		providers.tilgangmaskinProvider,
 	),
 	val policyResolver: PolicyResolver = PolicyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy,
+		navAnsattTilgangTilEksternBrukerKjernereglerPolicy,
 		navAnsattTilgangTilModiaPolicy,
 		eksternBrukerTilgangTilEksternBrukerPolicy,
 		navAnsattTilgangTilNavEnhetPolicy,

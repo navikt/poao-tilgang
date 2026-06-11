@@ -67,6 +67,23 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		decision shouldBe Decision.Permit
 	}
 
+	@ParameterizedTest
+	@EnumSource(TilgangType::class)
+	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilEksternBrukerKjernereglerPolicy`(tilgangType: TilgangType) {
+		setupMocks(
+			adGrupper = listOf(
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
+				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal
+			)
+		)
+
+		val decision =
+			client.evaluatePolicy(NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput(navAnsattId, tilgangType, norskIdent))
+				.getOrThrow()
+
+		decision shouldBe Decision.Permit
+	}
+
 	@Test
 	fun `evaluatePolicy - should evaluate NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy`() {
 		setupMocks(adGrupper = listOf(AdGruppe(UUID.randomUUID(), "${ENHET_PREFIKS}0123")))

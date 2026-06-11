@@ -14,6 +14,12 @@ data class NavAnsattTilgangTilEksternBrukerPolicyInput(
 	val norskIdent: String
 ) : PolicyInput()
 
+data class NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput(
+	val navAnsattAzureId: UUID,
+	val tilgangType: TilgangType,
+	val norskIdent: String
+) : PolicyInput()
+
 data class NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInput(
 	val navIdent: String,
 	val norskIdent: String

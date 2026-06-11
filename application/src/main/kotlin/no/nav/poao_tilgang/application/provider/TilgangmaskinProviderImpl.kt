@@ -26,6 +26,18 @@ class TilgangmaskinProviderImpl(
 		}
     }
 
+	override fun evaluerKjerneregler(norskIdent: String, navIdent: NavIdent): Decision {
+		val result = tilgangmaskinClient.evaluerKjerneregler(norskIdent, navIdent)
+
+		return when (result) {
+			TilgangmaskinResult.Godkjent -> Decision.Permit
+			is TilgangmaskinResult.Avvist -> Decision.Deny(
+				result.begrunnelse,
+				mapAvvisningskodeTilDenyReason(result)
+			)
+		}
+	}
+
     private fun mapAvvisningskodeTilDenyReason(avvist: TilgangmaskinResult.Avvist): DecisionDenyReason {
         return when (avvist.title) {
             Avvisningskode.AVVIST_GEOGRAFISK -> DecisionDenyReason.IKKE_TILGANG_TIL_NAV_ENHET
