@@ -10,7 +10,6 @@ import no.nav.poao_tilgang.api.dto.response.Diskresjonskode
 import no.nav.poao_tilgang.api.dto.response.TilgangsattributterResponse
 import no.nav.poao_tilgang.application.client.pdl_pip.Gradering
 import no.nav.poao_tilgang.application.test_util.IntegrationTest
-import no.nav.poao_tilgang.application.test_util.IntegrationTest.Companion.mockTilgangsmaskinHttpServer
 import no.nav.poao_tilgang.client.api.BadHttpStatusApiException
 import no.nav.poao_tilgang.client.api.NetworkApiException
 import no.nav.poao_tilgang.core.domain.AdGruppe
@@ -72,7 +71,6 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 		setupMocks(
 			adGrupper = listOf(
 				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
-				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal
 			)
 		)
 
