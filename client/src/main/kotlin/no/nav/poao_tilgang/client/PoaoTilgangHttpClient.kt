@@ -176,6 +176,19 @@ fun toRequestDto(policyRequest: PolicyRequest): PolicyEvaluationRequestDto<Any> 
 			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_V2
 		)
 
+		is NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput -> PolicyEvaluationRequestDto(
+			requestId = policyRequest.requestId,
+			policyInput = NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInputV1Dto(
+				navAnsattAzureId = policyRequest.policyInput.navAnsattAzureId,
+				norskIdent = policyRequest.policyInput.norskIdent,
+				tilgangType = when (policyRequest.policyInput.tilgangType) {
+					TilgangType.LESE -> no.nav.poao_tilgang.api.dto.request.TilgangType.LESE
+					TilgangType.SKRIVE -> no.nav.poao_tilgang.api.dto.request.TilgangType.SKRIVE
+				}
+			),
+			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1
+		)
+
 		is NavAnsattTilgangTilModiaPolicyInput -> PolicyEvaluationRequestDto(
 			requestId = policyRequest.requestId,
 			policyInput = NavAnsattTilgangTilModiaPolicyInputV1Dto(

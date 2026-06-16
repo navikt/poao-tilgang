@@ -133,6 +133,44 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 		response.body?.string() shouldContain "MANGLER_TILGANG_TIL_AD_GRUPPE"
 	}
 
+	@ParameterizedTest
+	@EnumSource(TilgangType::class)
+	fun `should evaluate NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1 policy - permit`(tilgangType: TilgangType) {
+		setupMocksHappyCase()
+
+		val requestId = UUID.randomUUID()
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"navAnsattAzureId": "$navAnsattId", "tilgangType": "${tilgangType.name}", "norskIdent": "$norskIdent"}""",
+			"NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1"
+		)
+
+		response.body?.string() shouldBe permitResponse(requestId)
+	}
+
+	@ParameterizedTest
+	@EnumSource(TilgangType::class)
+	fun `should evaluate NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1 policy - deny`(tilgangType: TilgangType) {
+		setupMocksHappyCase(
+			adGrupper = listOf(
+				noAccessGroup, AdGruppe(
+					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
+				)
+			)
+		)
+
+		val requestId = UUID.randomUUID()
+
+		val response = sendPolicyRequest(
+			requestId,
+			"""{"navAnsattAzureId": "$navAnsattId", "tilgangType": "${tilgangType.name}", "norskIdent": "$norskIdent"}""",
+			"NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1"
+		)
+
+		response.body?.string() shouldContain "MANGLER_TILGANG_TIL_AD_GRUPPE"
+	}
+
 	@Test
 	fun `should evaluate NAV_ANSATT_TILGANG_TIL_MODIA_V1 policy - permit`() {
 		val requestId = UUID.randomUUID()

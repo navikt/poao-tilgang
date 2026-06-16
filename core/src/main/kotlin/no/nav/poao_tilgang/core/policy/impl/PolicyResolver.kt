@@ -9,6 +9,7 @@ import no.nav.poao_tilgang.core.utils.Timer
 
 class PolicyResolver(
 	private val navAnsattTilgangTilEksternBrukerPolicy: NavAnsattTilgangTilEksternBrukerPolicy,
+	private val navAnsattTilgangTilEksternBrukerKjernereglerPolicy: NavAnsattTilgangTilEksternBrukerKjernereglerPolicy,
 	private val navAnsattTilgangTilModiaPolicy: NavAnsattTilgangTilModiaPolicy,
 	private val eksternBrukerTilgangTilEksternBrukerPolicy: EksternBrukerTilgangTilEksternBrukerPolicy,
 	private val navAnsattTilgangTilNavEnhetPolicy: NavAnsattTilgangTilNavEnhetPolicy,
@@ -25,6 +26,11 @@ class PolicyResolver(
 			is NavAnsattTilgangTilEksternBrukerPolicy.Input -> evaluateWithName(
 				input,
 				navAnsattTilgangTilEksternBrukerPolicy
+			)
+
+			is NavAnsattTilgangTilEksternBrukerKjernereglerPolicy.Input -> evaluateWithName(
+				input,
+				navAnsattTilgangTilEksternBrukerKjernereglerPolicy
 			)
 
 			is NavAnsattTilgangTilModiaPolicy.Input -> evaluateWithName(input, navAnsattTilgangTilModiaPolicy)

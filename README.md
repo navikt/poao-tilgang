@@ -142,6 +142,18 @@ data class NavAnsattTilgangTilEksternBrukerPolicyInput(
 ) : PolicyInput()
 
 /*
+ Sjekker det samme som NavAnsattTilgangTilEksternBrukerPolicyInput, men sjekker kun mot kjernereglene til tilgangsmaskinen, 
+ ikke komplette regler. 
+ 
+ Brukes for sjekk av tilgang til personer som er parter i brukers sak, f.eks. barn.
+*/
+data class NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput(
+    val navAnsattAzureId: UUID,
+    val tilgangType: TilgangType,
+    val norskIdent: String
+) : PolicyInput()
+
+/*
  Sjekker om en NAV ansatt har skrivetilgang til en ekstern bruker.
  */
 data class NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInput(

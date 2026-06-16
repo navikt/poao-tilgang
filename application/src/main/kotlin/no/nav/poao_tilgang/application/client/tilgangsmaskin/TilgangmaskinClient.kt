@@ -5,4 +5,6 @@ import no.nav.poao_tilgang.core.domain.NorskIdent
 
 interface TilgangmaskinClient {
 	fun evaluerKompletteRegler(norskIdent: NorskIdent, navIdent: NavIdent): TilgangmaskinResult
+
+	fun evaluerKjerneregler(norskIdent: NorskIdent, navIdent: NavIdent): TilgangmaskinResult
 }

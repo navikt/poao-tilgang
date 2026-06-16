@@ -40,4 +40,27 @@ class TilgangmaskinHttpClient(
 			}
 		}
 	}
+
+	override fun evaluerKjerneregler(norskIdent: NorskIdent, navIdent: NavIdent): TilgangmaskinResult {
+		val request = Request.Builder()
+			.url(joinPaths(baseUrl, "/api/v1/ccf/kjerne/${navIdent}"))
+			.post(toJsonString(norskIdent).toJsonRequestBody())
+			.authorization(tokenProvider)
+			.build()
+
+		return client.newCall(request).execute().use { response ->
+			when (response.code) {
+				204 -> TilgangmaskinResult.Godkjent
+				403 -> {
+					val body = response.body?.string()
+					if (body != null) {
+						objectMapper.readValue<TilgangmaskinResult.Avvist>(body)
+					} else {
+						throw RuntimeException("HTTP 403 fra tilgangsmaskinen uten body (kjerneregler)")
+					}
+				}
+				else -> throw RuntimeException("Fikk uhåndtert statuskode ${response.code} fra tilgangsmaskinen (kjerneregler), body=${response.body?.string()}")
+			}
+		}
+	}
 }

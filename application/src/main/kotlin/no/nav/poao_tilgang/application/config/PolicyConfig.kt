@@ -28,6 +28,23 @@ open class PolicyConfig {
 	}
 
 	@Bean
+	open fun navAnsattTilgangTilEksternBrukerKjernereglerPolicy(
+		tilgangmaskinProvider: TilgangmaskinProvider,
+		adGruppeProvider: AdGruppeProvider,
+		navAnsattTilgangTilOppfolgingPolicy: NavAnsattTilgangTilOppfolgingPolicy,
+		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
+		timerService: TimerService,
+	): NavAnsattTilgangTilEksternBrukerKjernereglerPolicy {
+		return NavAnsattTilgangTilEksternBrukerKjernereglerPolicyImpl(
+			tilgangmaskinProvider,
+			adGruppeProvider,
+			navAnsattTilgangTilOppfolgingPolicy,
+			navAnsattTilgangTilModiaGenerellPolicy,
+			timerService,
+		)
+	}
+
+	@Bean
 	open fun navAnsattTilgangTilAdressebeskyttetBrukerPolicy(
 		diskresjonskodeProvider: DiskresjonskodeProvider,
 		navAnsattBehandleFortroligBrukerePolicy: NavAnsattBehandleFortroligBrukerePolicy,

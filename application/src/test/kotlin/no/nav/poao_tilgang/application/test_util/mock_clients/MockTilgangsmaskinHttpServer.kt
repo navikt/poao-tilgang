@@ -57,5 +57,57 @@ class MockTilgangsmaskinHttpServer : MockHttpServer() {
 			response = response
 		)
 	}
+
+	fun mockGodkjentKjerneregler(navIdent: String) {
+		val response = MockResponse().setResponseCode(204)
+
+		handleRequest(
+			matchPath = "/api/v1/ccf/kjerne/$navIdent",
+			matchMethod = "POST",
+			response = response
+		)
+	}
+
+	fun mockAvvistKjerneregler(
+		navIdent: String,
+		brukerIdent: String,
+		avvisningskode: Avvisningskode,
+		begrunnelse: String = "Ikke tilgang",
+		kanOverstyres: Boolean = false
+	) {
+		val response = MockResponse()
+			.setResponseCode(403)
+			.setBody(
+				"""
+					{
+						"type": "about:blank",
+						"title": "$avvisningskode",
+						"status": 403,
+						"instance": "/api/v1/ccf/kjerne/$navIdent",
+						"brukerIdent": "$brukerIdent",
+						"navIdent": "$navIdent",
+						"begrunnelse": "$begrunnelse",
+						"traceId": "test-trace-id",
+						"kanOverstyres": $kanOverstyres
+					}
+				""".trimIndent()
+			)
+
+		handleRequest(
+			matchPath = "/api/v1/ccf/kjerne/$navIdent",
+			matchMethod = "POST",
+			response = response
+		)
+	}
+
+	fun mockFeilKjerneregler(navIdent: String, statusCode: Int = 500) {
+		val response = MockResponse().setResponseCode(statusCode)
+
+		handleRequest(
+			matchPath = "/api/v1/ccf/kjerne/$navIdent",
+			matchMethod = "POST",
+			response = response
+		)
+	}
 }
 

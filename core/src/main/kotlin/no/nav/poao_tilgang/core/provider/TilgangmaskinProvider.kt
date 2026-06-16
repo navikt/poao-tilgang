@@ -5,5 +5,7 @@ import no.nav.poao_tilgang.core.domain.NavIdent
 
 interface TilgangmaskinProvider {
     fun evaluerKompletteRegler(norskIdent: String, navIdent: NavIdent): Decision
+
+	fun evaluerKjerneregler(norskIdent: String, navIdent: NavIdent): Decision
 }
 

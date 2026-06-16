@@ -151,6 +151,7 @@ open class IntegrationTest {
 
 	fun mockTilgangsMaskinPermit(navIdent: NavIdent) {
 		mockTilgangsmaskinHttpServer.mockGodkjent(navIdent)
+		mockTilgangsmaskinHttpServer.mockGodkjentKjerneregler(navIdent)
 	}
 
 	fun mockPersonData(
