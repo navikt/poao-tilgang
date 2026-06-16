@@ -239,8 +239,7 @@ class PolicyControllerIntegrationTest : IntegrationTest() {
 
 		mockPersonData(norskIdent, brukersEnhet, brukersKommune)
 		mockRolleTilganger(
-			navIdent, navAnsattId, listOf(
-				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal, AdGruppe(
+			navIdent, navAnsattId, listOf(AdGruppe(
 					UUID.randomUUID(), "$ENHET_PREFIKS$brukersEnhet"
 				)
 			)

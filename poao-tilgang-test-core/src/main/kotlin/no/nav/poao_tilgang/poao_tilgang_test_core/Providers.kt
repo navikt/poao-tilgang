@@ -87,7 +87,7 @@ class TilgangmaskinProviderImpl(private val navContext: NavContext) : Tilgangmas
 			return fellesDecision
 		}
 
-		return if (navAnsatt.adGrupper.any { it == tilgjengligeAdGrupper.gosysNasjonal }) {
+		return if (navAnsatt.adGrupper.any { it == tilgjengligeAdGrupper.modiaOppfolging} && navAnsatt.enheter.any { it.enhetNavn == "NAV Viken" }) {
 			Decision.Permit
 		} else if (navAnsatt.enheter.any { it.enhetId == privatBruker.oppfolgingsenhet }) {
 			Decision.Permit

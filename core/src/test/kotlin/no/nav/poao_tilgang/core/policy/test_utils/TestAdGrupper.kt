@@ -15,8 +15,6 @@ object TestAdGrupper {
 		modiaAdmin = AdGruppe(UUID.randomUUID(), AdGruppeNavn.MODIA_ADMIN),
 		modiaOppfolging = AdGruppe(UUID.randomUUID(), AdGruppeNavn.MODIA_OPPFOLGING),
 		modiaGenerell = AdGruppe(UUID.randomUUID(), AdGruppeNavn.MODIA_GENERELL),
-		gosysNasjonal = AdGruppe(UUID.randomUUID(), AdGruppeNavn.GOSYS_NASJONAL),
-		gosysUtvidbarTilNasjonal = AdGruppe(UUID.randomUUID(), AdGruppeNavn.GOSYS_UTVIDBAR_TIL_NASJONAL),
 		syfoSensitiv = AdGruppe(UUID.randomUUID(), AdGruppeNavn.SYFO_SENSITIV),
 		egneAnsatte = AdGruppe(UUID.randomUUID(), AdGruppeNavn.EGNE_ANSATTE),
 		aktivitetsplanKvp = AdGruppe(UUID.randomUUID(), AdGruppeNavn.AKTIVITETSPLAN_KVP)

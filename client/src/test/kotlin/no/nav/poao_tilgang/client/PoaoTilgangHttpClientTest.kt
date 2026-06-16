@@ -55,8 +55,7 @@ class PoaoTilgangHttpClientTest : IntegrationTest() {
 	fun `evaluatePolicy - should evaluate NavAnsattTilgangTilEksternBrukerPolicy V2`(tilgangType: TilgangType) {
 		setupMocks(
 			adGrupper = listOf(
-				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging,
-				adGruppeProvider.hentTilgjengeligeAdGrupper().gosysNasjonal
+				adGruppeProvider.hentTilgjengeligeAdGrupper().modiaOppfolging
 			)
 		)
 
