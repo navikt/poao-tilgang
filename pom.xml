@@ -43,7 +43,7 @@
         <token-validaiton.version>6.0.10</token-validaiton.version>
         <mockk.version>1.14.11</mockk.version>
         <kotest.version>6.1.11</kotest.version>
-        <common.version>4.2026.06.22_05.06-8cd381cd084b</common.version>
+        <common.version>4.2026.06.25_10.50-baa9d54e3cd8</common.version>
         <okhttp.version>5.4.0</okhttp.version>
     </properties>
 
