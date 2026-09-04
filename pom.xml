@@ -39,12 +39,12 @@
         <maven.compiler.target>21</maven.compiler.target>
         <java.version>21</java.version>
 
-        <mock-oauth-server.version>5.0.2</mock-oauth-server.version>
-        <token-validaiton.version>6.0.11</token-validaiton.version>
+        <mock-oauth-server.version>6.0.2</mock-oauth-server.version>
+        <token-validaiton.version>6.0.12</token-validaiton.version>
         <mockk.version>1.14.11</mockk.version>
-        <kotest.version>6.2.3</kotest.version>
-        <common.version>4.2026.08.10_07.01-38289b000bb0</common.version>
-        <okhttp.version>5.4.0</okhttp.version>
+        <kotest.version>6.2.4</kotest.version>
+        <common.version>4.2026.09.01_09.49-e681e09ca089</common.version>
+        <okhttp.version>5.5.0</okhttp.version>
     </properties>
 
     <distributionManagement>
