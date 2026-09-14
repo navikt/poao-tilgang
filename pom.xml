@@ -45,6 +45,8 @@
         <kotest.version>6.2.4</kotest.version>
         <common.version>4.2026.09.01_09.49-e681e09ca089</common.version>
         <okhttp.version>5.5.0</okhttp.version>
+        <!-- Midlertidig override pga Tomcat-CVE-er. Fjernes når Spring Boot henter en ny versjon -->
+        <tomcat.version>11.0.25</tomcat.version>
     </properties>
 
     <distributionManagement>
