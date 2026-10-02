@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Set up JDK 21
-        uses: actions/setup-java@v6.0.0
+        uses: actions/setup-java@v6.0.1
         with:
           distribution: temurin
           java-version: 21
@@ -49,7 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais-dev.yaml
@@ -69,7 +69,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais-prod.yaml
@@ -78,7 +78,7 @@ jobs:
       - name: Create Version
         run: echo "VERSION=4.$(TZ=\"Europe/Oslo\" date +%Y.%m.%d_%H.%M)-$(git rev-parse --short=12 HEAD)" >> $GITHUB_ENV
       - name: Set up JDK 21
-        uses: actions/setup-java@v6.0.0
+        uses: actions/setup-java@v6.0.1
         with:
           distribution: temurin
           java-version: 21
@@ -105,7 +105,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais-dev-onprem.yaml
@@ -123,7 +123,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Deploy application
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: prod-fss
           RESOURCE: .nais/nais-prod-onprem.yaml
