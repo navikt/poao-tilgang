@@ -33,13 +33,20 @@ class PoaoTilgangCachedClient(
 
 
 	override fun evaluatePolicy(input: PolicyInput): ApiResult<Decision> {
-		val decision = tryCacheFirstNotNull(policyInputToDecisionCache, input) {
+		val cachedDecision = policyInputToDecisionCache.getIfPresent(input)
+		if (cachedDecision != null) {
+			return ApiResult.success(cachedDecision)
+		} else {
 			val resultat = client.evaluatePolicy(input)
 			if (resultat.isFailure) return resultat
 
-			return@tryCacheFirstNotNull resultat.get()!!
+			val decision = resultat.get()!!
+			if (decision.isPermit) {
+				policyInputToDecisionCache.put(input, decision)
+			}
+
+			return ApiResult.success(decision)
 		}
-		return ApiResult.success(decision)
 	}
 
 	override fun evaluatePolicies(requests: List<PolicyRequest>): ApiResult<List<PolicyResult>> {
@@ -58,7 +65,9 @@ class PoaoTilgangCachedClient(
 		policyResults.forEach {
 			val request = requests.find { r -> it.requestId == r.requestId }
 				?: throw IllegalStateException("Fant ikke request med requestId=${it.requestId}")
-			policyInputToDecisionCache.put(request.policyInput, it.decision)
+			if (it.decision.isPermit) {
+				policyInputToDecisionCache.put(request.policyInput, it.decision)
+			}
 		}
 
 		return ApiResult.success(cachedResults.plus(policyResults))
