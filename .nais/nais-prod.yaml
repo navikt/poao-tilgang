@@ -74,8 +74,6 @@ spec:
         - application: poao-admin
           namespace: poao
           cluster: prod-gcp
-        - application: veilarbfilter
-          namespace: obo
         - application: veilarbarena
           namespace: pto
           cluster: prod-fss
