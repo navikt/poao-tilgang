@@ -100,8 +100,6 @@ open class IntegrationTest {
 			System.setProperty("AD_GRUPPE_ID_MODIA_ADMIN", UUID.randomUUID().toString())
 			System.setProperty("AD_GRUPPE_ID_MODIA_OPPFOLGING", UUID.randomUUID().toString())
 			System.setProperty("AD_GRUPPE_ID_MODIA_GENERELL", UUID.randomUUID().toString())
-			System.setProperty("AD_GRUPPE_ID_GOSYS_NASJONAL", UUID.randomUUID().toString())
-			System.setProperty("AD_GRUPPE_ID_GOSYS_UTVIDBAR_TIL_NASJONAL", UUID.randomUUID().toString())
 			System.setProperty("AD_GRUPPE_ID_SYFO_SENSITIV", UUID.randomUUID().toString())
 			System.setProperty("AD_GRUPPE_ID_EGNE_ANSATTE", UUID.randomUUID().toString())
 			System.setProperty("AD_GRUPPE_ID_AKTIVITETSPLAN_KVP", UUID.randomUUID().toString())

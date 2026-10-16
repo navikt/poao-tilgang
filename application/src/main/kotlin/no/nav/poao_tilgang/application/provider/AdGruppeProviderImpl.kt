@@ -29,8 +29,6 @@ class AdGruppeProviderImpl(
 	@Value("\${ad-gruppe-id.modia-admin}") private val adGruppeIdModiaAdmin: UUID,
 	@Value("\${ad-gruppe-id.modia-oppfolging}") private val adGruppeIdModiaOppfolging: UUID,
 	@Value("\${ad-gruppe-id.modia-generell}") private val adGruppeIdModiaGenerell: UUID,
-	@Value("\${ad-gruppe-id.gosys-nasjonal}") private val adGruppeIdGosysNasjonal: UUID,
-	@Value("\${ad-gruppe-id.gosys-utvidbar-til-nasjonal}") private val adGruppeIdGosysUtvidbarTilNasjonal: UUID,
 	@Value("\${ad-gruppe-id.syfo-sensitiv}") private val adGruppeIdSyfoSensitiv: UUID,
 	@Value("\${ad-gruppe-id.egne-ansatte}") private val adGruppeIdEgneAnsatte: UUID,
 	@Value("\${ad-gruppe-id.aktivitetsplan-kvp}") private val adGruppeIdAktivitetsplanKvp: UUID
