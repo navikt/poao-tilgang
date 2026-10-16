@@ -19,6 +19,7 @@ class PolicyResolver(
 	private val navAnsattBehandleSkjermedePersonerPolicy: NavAnsattBehandleSkjermedePersonerPolicy,
 	private val navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicy,
 	private val navAnsattUtenModiarolleTilgangTilEksternBruker: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
+	private val navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy: NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy,
 	private val timer: Timer,
 ) {
 	fun evaluate(input: PolicyInput): PolicyResult {
@@ -31,6 +32,10 @@ class PolicyResolver(
 			is NavAnsattTilgangTilEksternBrukerKjernereglerPolicy.Input -> evaluateWithName(
 				input,
 				navAnsattTilgangTilEksternBrukerKjernereglerPolicy
+			)
+			is NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy.Input -> evaluateWithName(
+				input,
+				navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy
 			)
 
 			is NavAnsattTilgangTilModiaPolicy.Input -> evaluateWithName(input, navAnsattTilgangTilModiaPolicy)
