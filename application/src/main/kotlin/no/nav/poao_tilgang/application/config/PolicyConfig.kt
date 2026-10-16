@@ -45,6 +45,21 @@ open class PolicyConfig {
 	}
 
 	@Bean
+	open fun navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy(
+		tilgangmaskinProvider: TilgangmaskinProvider,
+		adGruppeProvider: AdGruppeProvider,
+		navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
+		timerService: TimerService,
+	): NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy {
+		return NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
+			tilgangmaskinProvider,
+			adGruppeProvider,
+			navAnsattTilgangTilModiaGenerellPolicy,
+			timerService,
+		)
+	}
+
+	@Bean
 	open fun navAnsattTilgangTilAdressebeskyttetBrukerPolicy(
 		diskresjonskodeProvider: DiskresjonskodeProvider,
 		navAnsattBehandleFortroligBrukerePolicy: NavAnsattBehandleFortroligBrukerePolicy,
