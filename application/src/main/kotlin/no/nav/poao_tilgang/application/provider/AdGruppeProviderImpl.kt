@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.util.*
+import no.nav.poao_tilgang.core.domain.AdGruppeNavn.ENKELTTILGANG
 
 @Component
 class AdGruppeProviderImpl(
@@ -31,7 +32,8 @@ class AdGruppeProviderImpl(
 	@Value("\${ad-gruppe-id.modia-generell}") private val adGruppeIdModiaGenerell: UUID,
 	@Value("\${ad-gruppe-id.syfo-sensitiv}") private val adGruppeIdSyfoSensitiv: UUID,
 	@Value("\${ad-gruppe-id.egne-ansatte}") private val adGruppeIdEgneAnsatte: UUID,
-	@Value("\${ad-gruppe-id.aktivitetsplan-kvp}") private val adGruppeIdAktivitetsplanKvp: UUID
+	@Value("\${ad-gruppe-id.aktivitetsplan-kvp}") private val adGruppeIdAktivitetsplanKvp: UUID,
+	@Value("\${ad-gruppe-id.enkelttilgang}") private val adGruppeIdEnkelttilgang: UUID
 ) : AdGruppeProvider {
 
 	private val tilgjengligeAdGrupper = AdGrupper(
@@ -42,7 +44,8 @@ class AdGruppeProviderImpl(
 		modiaGenerell = AdGruppe(adGruppeIdModiaGenerell, MODIA_GENERELL),
 		syfoSensitiv = AdGruppe(adGruppeIdSyfoSensitiv, SYFO_SENSITIV),
 		egneAnsatte = AdGruppe(adGruppeIdEgneAnsatte, EGNE_ANSATTE),
-		aktivitetsplanKvp = AdGruppe(adGruppeIdAktivitetsplanKvp, AKTIVITETSPLAN_KVP)
+		aktivitetsplanKvp = AdGruppe(adGruppeIdAktivitetsplanKvp, AKTIVITETSPLAN_KVP),
+		enkelttilgang = AdGruppe(adGruppeIdEnkelttilgang, ENKELTTILGANG)
 	)
 
 	private val navIdentToAzureIdCache = Caffeine.newBuilder()

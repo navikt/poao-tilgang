@@ -11,5 +11,7 @@ data class AdGrupper(
 	val syfoSensitiv: AdGruppe,
 	val egneAnsatte: AdGruppe,
 
-	val aktivitetsplanKvp: AdGruppe
+	val aktivitetsplanKvp: AdGruppe,
+
+	val enkelttilgang: AdGruppe,
 )
