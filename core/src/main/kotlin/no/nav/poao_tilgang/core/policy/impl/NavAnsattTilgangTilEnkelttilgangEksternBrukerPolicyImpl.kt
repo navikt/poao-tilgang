@@ -4,7 +4,7 @@ import java.time.Duration
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy
-import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaGenerellPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
 import no.nav.poao_tilgang.core.provider.TilgangmaskinProvider
 import no.nav.poao_tilgang.core.utils.Timer
@@ -15,7 +15,7 @@ import no.nav.poao_tilgang.core.utils.Timer
 class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
 	private val tilgangmaskinProvider: TilgangmaskinProvider,
 	private val adGruppeProvider: AdGruppeProvider,
-	private val navAnsattTilgangTilModiaGenerellPolicy: NavAnsattTilgangTilModiaGenerellPolicy,
+	private val navAnsattTilgangTilModiaPolicy: NavAnsattTilgangTilModiaPolicy,
 	private val timer: Timer,
 ) : NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy {
 
@@ -40,8 +40,8 @@ class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
 	private fun harTilgangEgen(input: NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy.Input): Decision {
 		val (navAnsattAzureId, norskIdent) = input
 		// sjekker lesetilgang
-		navAnsattTilgangTilModiaGenerellPolicy.evaluate(
-			NavAnsattTilgangTilModiaGenerellPolicy.Input(navAnsattAzureId)
+		navAnsattTilgangTilModiaPolicy.evaluate(
+			NavAnsattTilgangTilModiaPolicy.Input(navAnsattAzureId)
 		).whenDeny { return it }
 
 		val navIdent = adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId)

@@ -7,7 +7,7 @@ import java.util.UUID
 import no.nav.poao_tilgang.core.domain.Decision
 import no.nav.poao_tilgang.core.domain.DecisionDenyReason
 import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy
-import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaGenerellPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
 import no.nav.poao_tilgang.core.policy.test_utils.MockTimer
 import no.nav.poao_tilgang.core.policy.test_utils.TestAdGrupper.testAdGrupper
 import no.nav.poao_tilgang.core.provider.AdGruppeProvider
@@ -22,14 +22,14 @@ class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImplTest {
 
 	private val tilgangsMaskinProvider = mockk<TilgangmaskinProvider>()
 	private val adGruppeProvider = mockk<AdGruppeProvider>()
-	private val navAnsattTilgangTilModiaGenerellPolicy = mockk<NavAnsattTilgangTilModiaGenerellPolicy>()
+	private val navAnsattTilgangTilModiaPolicy = mockk<NavAnsattTilgangTilModiaPolicy>()
 
 	private val mockTimer = MockTimer()
 
 	private val policy = NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
 		tilgangsMaskinProvider,
 		adGruppeProvider,
-		navAnsattTilgangTilModiaGenerellPolicy,
+		navAnsattTilgangTilModiaPolicy,
 		mockTimer
 	)
 
@@ -46,11 +46,11 @@ class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImplTest {
 	}
 
 	@Test
-	internal fun `harTilgang svarer DENY hvis tilgangTilModiaGenerell er DENY`() {
+	internal fun `harTilgang svarer DENY hvis tilgangTilModia er DENY`() {
 		val message = UUID.randomUUID().toString()
 
 		mockDecision(
-			modiaGenerellPolicyDecision = deny(message)
+			modiaPolicyDecision = deny(message)
 		)
 
 		val decision =
@@ -94,7 +94,7 @@ class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImplTest {
 
 	private fun mockDecision(
 		tilgangsMaskinDecision: Decision = Decision.Permit,
-		modiaGenerellPolicyDecision: Decision = Decision.Permit,
+		modiaPolicyDecision: Decision = Decision.Permit,
 		harEnkelttilgang: Boolean = true,
 	) {
 		every { adGruppeProvider.hentNavIdentMedAzureId(navAnsattAzureId) } returns navIdent
@@ -115,9 +115,9 @@ class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImplTest {
 		} returns tilgangsMaskinDecision
 
 		every {
-			navAnsattTilgangTilModiaGenerellPolicy.evaluate(
-				NavAnsattTilgangTilModiaGenerellPolicy.Input(navAnsattAzureId)
+			navAnsattTilgangTilModiaPolicy.evaluate(
+				NavAnsattTilgangTilModiaPolicy.Input(navAnsattAzureId)
 			)
-		} returns modiaGenerellPolicyDecision
+		} returns modiaPolicyDecision
 	}
 }

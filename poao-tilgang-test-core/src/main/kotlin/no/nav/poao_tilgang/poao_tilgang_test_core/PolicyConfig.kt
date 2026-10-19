@@ -86,7 +86,7 @@ data class Policies(
 	val navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy: NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl = NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
 		providers.tilgangmaskinProvider,
 		providers.adGruppeProvider,
-		navAnsattTilgangTilModiaGenerellPolicy,
+		navAnsattTilgangTilModiaPolicy,
 		timer,
 	),
 	val policyResolver: PolicyResolver = PolicyResolver(
