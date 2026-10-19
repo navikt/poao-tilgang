@@ -83,6 +83,12 @@ data class Policies(
 		providers.adGruppeProvider,
 		providers.tilgangmaskinProvider,
 	),
+	val navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy: NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl = NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
+		providers.tilgangmaskinProvider,
+		providers.adGruppeProvider,
+		navAnsattTilgangTilModiaPolicy,
+		timer,
+	),
 	val policyResolver: PolicyResolver = PolicyResolver(
 		navAnsattTilgangTilEksternBrukerPolicy,
 		navAnsattTilgangTilEksternBrukerKjernereglerPolicy,
@@ -95,6 +101,7 @@ data class Policies(
 		navAnsattBehandleSkjermedePersonerPolicy,
 		navAnsattTilgangTilModiaAdminPolicy,
 		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
+		navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy,
 		timer
 	)
 ) {

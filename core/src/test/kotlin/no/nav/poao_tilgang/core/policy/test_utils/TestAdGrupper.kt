@@ -17,8 +17,7 @@ object TestAdGrupper {
 		modiaGenerell = AdGruppe(UUID.randomUUID(), AdGruppeNavn.MODIA_GENERELL),
 		syfoSensitiv = AdGruppe(UUID.randomUUID(), AdGruppeNavn.SYFO_SENSITIV),
 		egneAnsatte = AdGruppe(UUID.randomUUID(), AdGruppeNavn.EGNE_ANSATTE),
-		aktivitetsplanKvp = AdGruppe(UUID.randomUUID(), AdGruppeNavn.AKTIVITETSPLAN_KVP)
+		aktivitetsplanKvp = AdGruppe(UUID.randomUUID(), AdGruppeNavn.AKTIVITETSPLAN_KVP),
+		enkelttilgang = AdGruppe(UUID.randomUUID(), AdGruppeNavn.ENKELTTILGANG),
 	)
-
-
 }
