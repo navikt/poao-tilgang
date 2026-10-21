@@ -51,6 +51,9 @@ spec:
         - application: paw-tilgangskontroll
           namespace: paw
           cluster: prod-gcp
+        - application: paw-tilgangskontroll-v2
+          namespace: paw
+          cluster: prod-gcp
         - application: paw-arbeidssoker-besvarelse
           namespace: paw
           cluster: prod-gcp
