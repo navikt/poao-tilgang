@@ -49,6 +49,9 @@ spec:
         - application: paw-tilgangskontroll
           namespace: paw
           cluster: dev-gcp
+        - application: paw-tilgangskontroll-v2
+          namespace: paw
+          cluster: dev-gcp
         - application: paw-arbeidssoker-besvarelse
           namespace: paw
           cluster: dev-gcp
