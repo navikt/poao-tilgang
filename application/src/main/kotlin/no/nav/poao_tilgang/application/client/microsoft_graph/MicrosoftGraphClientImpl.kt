@@ -7,6 +7,7 @@ import no.nav.poao_tilgang.application.utils.JsonUtils.toJsonString
 import no.nav.poao_tilgang.application.utils.RestUtils.authorization
 import no.nav.poao_tilgang.application.utils.RestUtils.toJsonRequestBody
 import no.nav.poao_tilgang.core.domain.AzureObjectId
+import no.nav.poao_tilgang.core.domain.DisplayName
 import no.nav.poao_tilgang.core.domain.NavIdent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -105,7 +106,30 @@ open class MicrosoftGraphClientImpl(
 
 			val responseData = fromJsonString<HentNavIdentMedAzureId.Response>(body)
 
-			responseData.value.firstOrNull()?.onPremisesSamAccountName ?: throw RuntimeException("Fant ikke NAV-ident med Azure Id=$navAnsattAzureId")
+			responseData.value.firstOrNull()?.onPremisesSamAccountName
+				?: throw RuntimeException("Fant ikke NAV-ident med Azure Id=$navAnsattAzureId")
+		}
+	}
+
+	@Timed("microsoft_graph.hent_navn_for_nav_ident", histogram = true, percentiles = [0.5, 0.95, 0.99], extraTags = ["type", "client"])
+	override fun hentNavnForNavIdent(navIdent: NavIdent): DisplayName {
+		val request = Request.Builder()
+			.url("$baseUrl/v1.0/users?\$select=displayName&\$filter=onPremisesSamAccountName eq '$navIdent'\$count=true")
+			.header("ConsistencyLevel", "eventual")
+			.get()
+			.authorization(tokenProvider)
+			.build()
+
+		return client.newCall(request).execute().use { response ->
+			if (!response.isSuccessful) {
+				throw RuntimeException("Fant ikke navn for navIdent=$navIdent")
+			}
+			val body = response.body?.string() ?: throw RuntimeException("Body is missing")
+
+			val responseData = fromJsonString<HentNavnForNavIdent.Response>(body)
+
+			responseData.value.firstOrNull()?.displayName
+				?: throw RuntimeException("Fant ikke navn for navIdent=$navIdent")
 		}
 	}
 
@@ -160,7 +184,17 @@ open class MicrosoftGraphClientImpl(
 				val onPremisesSamAccountName: NavIdent
 			)
 		}
+	}
 
+	object HentNavnForNavIdent {
+
+		data class Response(
+			val value: List<UserData>
+		) {
+			data class UserData(
+				val displayName: DisplayName
+			)
+		}
 	}
 
 }
