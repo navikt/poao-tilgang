@@ -63,6 +63,8 @@ spec:
         - host: ao-oppfolgingskontor.intern.nav.no
         - host: tilgangsmaskin.intern.nav.no
   env:
+    - name: JAVA_TOOL_OPTIONS
+      value: "$(JAVA_PROXY_OPTIONS)"
     - name: spring_profiles_active
       value: fss
     - name: MICROSOFT_GRAPH_SCOPE
