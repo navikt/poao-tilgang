@@ -13,7 +13,7 @@ class SkjermetPersonProvider(
 ) : SkjermetPersonProvider {
 
 	private val norkIdentToErSkjermetCache = Caffeine.newBuilder()
-		.expireAfterWrite(Duration.ofHours(1))
+		.expireAfterWrite(Duration.ofMinutes(30))
 		.build<String, Boolean>()
 
 	override fun erSkjermetPerson(norskIdent: String): Boolean {

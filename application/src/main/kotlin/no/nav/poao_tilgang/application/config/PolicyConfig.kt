@@ -1,9 +1,45 @@
 package no.nav.poao_tilgang.application.config
 
 import no.nav.poao_tilgang.application.service.TimerService
-import no.nav.poao_tilgang.core.policy.*
-import no.nav.poao_tilgang.core.policy.impl.*
-import no.nav.poao_tilgang.core.provider.*
+import no.nav.poao_tilgang.core.policy.EksternBrukerTilgangTilEksternBrukerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattBehandleFortroligBrukerePolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattBehandleSkjermedePersonerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattBehandleStrengtFortroligBrukerePolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattBehandleStrengtFortroligUtlandBrukerePolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilAdressebeskyttetBrukerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerKjernereglerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEksternBrukerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaAdminPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaGenerellPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilModiaPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetMedSperrePolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilNavEnhetPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilOppfolgingPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattTilgangTilSkjermetPersonPolicy
+import no.nav.poao_tilgang.core.policy.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy
+import no.nav.poao_tilgang.core.policy.impl.EksternBrukerTilgangTilEksternBrukerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattBehandleFortroligBrukerePolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattBehandleSkjermedePersonerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattBehandleStrengtFortroligBrukerePolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattBehandleStrengtFortroligUtlandBrukerePolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilAdressebeskyttetBrukerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilEksternBrukerKjernereglerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilEksternBrukerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilModiaAdminPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilModiaGenerellPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilModiaPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilNavEnhetMedSperrePolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilNavEnhetPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilOppfolgingPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattTilgangTilSkjermetPersonPolicyImpl
+import no.nav.poao_tilgang.core.policy.impl.NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicyImpl
+import no.nav.poao_tilgang.core.provider.AdGruppeProvider
+import no.nav.poao_tilgang.core.provider.DiskresjonskodeProvider
+import no.nav.poao_tilgang.core.provider.NavEnhetTilgangProviderV2
+import no.nav.poao_tilgang.core.provider.SkjermetPersonProvider
+import no.nav.poao_tilgang.core.provider.TilgangmaskinProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -40,6 +76,21 @@ open class PolicyConfig {
 			adGruppeProvider,
 			navAnsattTilgangTilOppfolgingPolicy,
 			navAnsattTilgangTilModiaGenerellPolicy,
+			timerService,
+		)
+	}
+
+	@Bean
+	open fun navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy(
+		tilgangmaskinProvider: TilgangmaskinProvider,
+		adGruppeProvider: AdGruppeProvider,
+		navAnsattTilgangTilModiaPolicy: NavAnsattTilgangTilModiaPolicy,
+		timerService: TimerService,
+	): NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy {
+		return NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyImpl(
+			tilgangmaskinProvider,
+			adGruppeProvider,
+			navAnsattTilgangTilModiaPolicy,
 			timerService,
 		)
 	}

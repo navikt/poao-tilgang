@@ -21,7 +21,7 @@ class PoaoTilgangCachedClientTest {
 	}
 
 	@Test
-	fun `evaluatePolicy - skal cache og returnere decision`() {
+	fun `evaluatePolicy - skal cache positivt svar og returnere decision`() {
 		val input = NavAnsattTilgangTilEksternBrukerPolicyInput(UUID.randomUUID(), TilgangType.LESE, "1321321321")
 		every { client.evaluatePolicy(input) } returns ApiResult.success(Decision.Permit)
 
@@ -30,6 +30,18 @@ class PoaoTilgangCachedClientTest {
 
 		result.get() shouldBe result2.get()
 		verify (exactly = 1) { client.evaluatePolicy(any()) }
+	}
+
+	@Test
+	fun `evaluatePolicy - skal ikke cache negativt svar`() {
+		val input = NavAnsattTilgangTilEksternBrukerPolicyInput(UUID.randomUUID(), TilgangType.LESE, "1321321321")
+		every { client.evaluatePolicy(input) } returns ApiResult.success(Decision.Deny("Ikke tilgang", "Mangler rolle XYZ"))
+
+		val result = cachedClient.evaluatePolicy(input)
+		val result2 = cachedClient.evaluatePolicy(input)
+
+		result.get() shouldBe result2.get()
+		verify (exactly = 2) { client.evaluatePolicy(any()) }
 	}
 
 	@Test

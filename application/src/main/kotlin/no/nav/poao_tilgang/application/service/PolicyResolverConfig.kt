@@ -24,6 +24,7 @@ open class PolicyResolverConfig {
 		navAnsattBehandleSkjermedePersonerPolicy: NavAnsattBehandleSkjermedePersonerPolicy,
 		navAnsattTilgangTilModiaAdminPolicy: NavAnsattTilgangTilModiaAdminPolicy,
 		navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy: NavAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
+		navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy: NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicy,
 		timer: Timer
 	): PolicyResolver {
 		return PolicyResolver(
@@ -38,6 +39,7 @@ open class PolicyResolverConfig {
 			navAnsattBehandleSkjermedePersonerPolicy,
 			navAnsattTilgangTilModiaAdminPolicy,
 			navAnsattUtenModiarolleTilgangTilEksternBrukerPolicy,
+			navAnsattTilgangTilEnkelttilgangEksternBrukerPolicy,
 			timer
 		)
 	}

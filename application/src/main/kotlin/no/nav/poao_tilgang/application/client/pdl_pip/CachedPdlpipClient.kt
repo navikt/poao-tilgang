@@ -10,7 +10,7 @@ class CachedPdlpipClient(
 ) : PdlPipClient {
 
 	private val norskIdentToBrukerInfoCache = Caffeine.newBuilder()
-		.expireAfterWrite(Duration.ofHours(1))
+		.expireAfterWrite(Duration.ofMinutes(30))
 		.build<NorskIdent, BrukerInfo>()
 
 	override fun hentBrukerInfo(brukerIdent: String): BrukerInfo {

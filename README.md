@@ -154,6 +154,14 @@ data class NavAnsattTilgangTilEksternBrukerKjernereglerPolicyInput(
 ) : PolicyInput()
 
 /*
+ Sjekker om Nav-ansatt kan gi seg selv midlertidig tilgang til bruker (enkelttilgang).
+ */
+data class NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyInput(
+    val navAnsattAzureId: UUID,
+    val norskIdent: String
+) : PolicyInput()
+
+/*
  Sjekker om en NAV ansatt har skrivetilgang til en ekstern bruker.
  */
 data class NavAnsattNavIdentSkrivetilgangTilEksternBrukerPolicyInput(

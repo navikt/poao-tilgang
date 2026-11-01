@@ -10,4 +10,5 @@ object AdGruppeNavn {
 	const val EGNE_ANSATTE               	= "0000-GA-Egne_ansatte"
 	const val AKTIVITETSPLAN_KVP            = "0000-GA-aktivitesplan_kvp"
 	const val ENHET_PREFIKS 				= "0000-GA-ENHET_"
+	const val ENKELTTILGANG 				= "0000-GA-enkelttilgang"
 }

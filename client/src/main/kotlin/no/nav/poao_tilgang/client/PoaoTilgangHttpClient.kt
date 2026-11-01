@@ -189,6 +189,15 @@ fun toRequestDto(policyRequest: PolicyRequest): PolicyEvaluationRequestDto<Any> 
 			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_KJERNEREGLER_V1
 		)
 
+		is NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyInput -> PolicyEvaluationRequestDto(
+			requestId = policyRequest.requestId,
+			policyInput = NavAnsattTilgangTilEnkelttilgangEksternBrukerPolicyInputV1Dto(
+				navAnsattAzureId = policyRequest.policyInput.navAnsattAzureId,
+				norskIdent = policyRequest.policyInput.norskIdent
+			),
+			policyId = PolicyId.NAV_ANSATT_TILGANG_TIL_EKSTERN_BRUKER_ENKELTTILGANG_V1
+		)
+
 		is NavAnsattTilgangTilModiaPolicyInput -> PolicyEvaluationRequestDto(
 			requestId = policyRequest.requestId,
 			policyInput = NavAnsattTilgangTilModiaPolicyInputV1Dto(

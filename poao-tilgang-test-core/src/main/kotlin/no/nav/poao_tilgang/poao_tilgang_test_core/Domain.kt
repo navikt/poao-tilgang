@@ -30,7 +30,8 @@ val tilgjengligeAdGrupper = AdGrupper(
 	modiaGenerell = AdGruppe(UUID.fromString("9f95a39e-6b88-4454-9e8b-a8d2a4f950f0"), AdGruppeNavn.MODIA_GENERELL),
 	syfoSensitiv = AdGruppe(UUID.fromString("b6318312-a5e3-4e26-ac4c-08f8b86660e8"), AdGruppeNavn.SYFO_SENSITIV),
 	egneAnsatte = AdGruppe(UUID.fromString("e44768ac-e68a-4dd1-b6ad-eebf5eb29924"), AdGruppeNavn.EGNE_ANSATTE),
-	aktivitetsplanKvp = AdGruppe(UUID.fromString("259362c2-f7cd-4de7-b2dd-5a848bfdf61b"), AdGruppeNavn.AKTIVITETSPLAN_KVP)
+	aktivitetsplanKvp = AdGruppe(UUID.fromString("259362c2-f7cd-4de7-b2dd-5a848bfdf61b"), AdGruppeNavn.AKTIVITETSPLAN_KVP),
+	enkelttilgang = AdGruppe(UUID.fromString("f0c3e1d5-7b8a-4f2e-9c6b-1e2f3d4c5b6a"), AdGruppeNavn.ENKELTTILGANG),
 )
 
 class PrivatBrukere {
