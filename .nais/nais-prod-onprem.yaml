@@ -102,7 +102,7 @@ spec:
     - name: AD_GRUPPE_ID_SYFO_SENSITIV
       value: 100e88eb-79af-4136-8bfe-f79b32021f43
     - name: AD_GRUPPE_ID_EGNE_ANSATTE
-      value: e750ceb5-b70b-4d94-b4fa-9d22467b786b
+      value: 3121171d-bced-4967-b993-caaf57f02b73
     - name: AD_GRUPPE_ID_AKTIVITETSPLAN_KVP
       value: f743db0b-bf8e-4a10-b5be-08a9170346fb
     - name: AD_GRUPPE_ID_ENKELTTILGANG
